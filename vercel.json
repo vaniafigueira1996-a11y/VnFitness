@@ -1,0 +1,27 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api"
+    },
+    {
+      "source": "/",
+      "destination": "/frontend/index.html"
+    },
+    {
+      "source": "/admin",
+      "destination": "/frontend/admin.html"
+    },
+    {
+      "source": "/app",
+      "destination": "/frontend/app.html"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/frontend/$1"
+    }
+  ]
+}
