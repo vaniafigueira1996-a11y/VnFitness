@@ -1134,7 +1134,10 @@ async function carregarConfiguracoesSistema() {
 
     if (inputNome && cfg.nome_academia) inputNome.value = cfg.nome_academia;
     if (inputSub && cfg.subtitulo_unidade) inputSub.value = cfg.subtitulo_unidade;
-    if (selectModo && cfg.modo_aprovacao) selectModo.value = cfg.modo_aprovacao;
+    if (selectModo && cfg.modo_aprovacao) {
+      selectModo.value = cfg.modo_aprovacao;
+      atualizarCardsModoAprovacao(cfg.modo_aprovacao);
+    }
     if (inputTel && cfg.telefone_suporte) inputTel.value = cfg.telefone_suporte;
     if (inputMeta && cfg.frequencia_meta_semanal) inputMeta.value = cfg.frequencia_meta_semanal;
     if (inputDias && cfg.dias_alerta_retencao) inputDias.value = cfg.dias_alerta_retencao;
@@ -1143,6 +1146,20 @@ async function carregarConfiguracoesSistema() {
     atualizarTextosUnidade(cfg.nome_academia, cfg.subtitulo_unidade);
   } catch (err) {
     console.warn('Erro ao carregar configurações do sistema:', err);
+  }
+}
+
+function atualizarCardsModoAprovacao(modo) {
+  const cardManual = document.getElementById('opt-modo-manual');
+  const cardAuto = document.getElementById('opt-modo-automatico');
+  if (!cardManual || !cardAuto) return;
+
+  if (modo === 'automatico') {
+    cardAuto.classList.add('selected');
+    cardManual.classList.remove('selected');
+  } else {
+    cardManual.classList.add('selected');
+    cardAuto.classList.remove('selected');
   }
 }
 
@@ -1159,6 +1176,21 @@ function atualizarTextosUnidade(nome, sub) {
 function configurarFormularioConfiguracoes() {
   const btnSalvar = document.getElementById('btn-salvar-config-sistema');
   const alertBox = document.getElementById('alert-config-sistema');
+  const cardManual = document.getElementById('opt-modo-manual');
+  const cardAuto = document.getElementById('opt-modo-automatico');
+  const selectModo = document.getElementById('cfg-modo-aprovacao');
+
+  if (cardManual && cardAuto && selectModo) {
+    cardManual.addEventListener('click', () => {
+      selectModo.value = 'manual';
+      atualizarCardsModoAprovacao('manual');
+    });
+
+    cardAuto.addEventListener('click', () => {
+      selectModo.value = 'automatico';
+      atualizarCardsModoAprovacao('automatico');
+    });
+  }
 
   if (!btnSalvar) return;
 
