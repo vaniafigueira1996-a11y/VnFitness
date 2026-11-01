@@ -17,21 +17,28 @@
           <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Avatar" class="avatar-img" id="user-avatar-top">
         </div>
         <div class="greeting-text">
-          <h2 id="greeting-name">Olá, Fredson Citty 👋</h2>
+          <h2 id="greeting-name">Olá, Fredson Citty</h2>
           <p id="greeting-sub">Pronto para conquistar suas metas?</p>
         </div>
       </div>
 
       <div class="header-actions">
-        <!-- Atalho direto para o Painel Administrativo (Para o Administrador Fredson Citty) -->
-        <a href="/admin.html" id="btn-switch-admin" class="btn-switch-admin" title="Abrir Painel Administrativo">
-          <span>📊</span>
-          <span>Painel Admin</span>
-        </a>
+        <!-- Alternador de Tema Claro / Escuro com SVG -->
+        <button class="icon-btn" id="theme-toggle-btn" title="Alternar Tema Claro / Escuro">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/>
+            <path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+          </svg>
+        </button>
 
-        <!-- Alternador de Tema Claro / Escuro -->
-        <button class="icon-btn" id="theme-toggle-btn" title="Alternar Tema Claro / Escuro">☀️</button>
-        <button class="icon-btn" id="notif-toggle-btn" title="Notificações e Mensagens">🔔</button>
+        <!-- Botão de Notificações com SVG -->
+        <button class="icon-btn" id="notif-toggle-btn" title="Notificações e Mensagens da Academia">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+          </svg>
+        </button>
       </div>
     </header>
 
@@ -41,7 +48,14 @@
         <h1 style="font-size: 1.6rem; font-weight: 800; text-transform: uppercase;">
           Sua <span style="color: var(--accent-primary);">Evolução</span>
         </h1>
-        <button class="icon-btn" style="width: 36px; height: 36px;" title="Sincronizar dados Supabase" id="btn-refresh-evolucao">🔄</button>
+        <button class="icon-btn" style="width: 38px; height: 38px;" title="Sincronizar dados Supabase" id="btn-refresh-evolucao">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+            <path d="M3 3v5h5"/>
+            <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+            <path d="M16 21h5v-5"/>
+          </svg>
+        </button>
       </div>
 
       <!-- Abas de Subcategoria -->
@@ -85,14 +99,24 @@
             <span>jul</span>
             <span>ago</span>
             <span>set</span>
-            <span class="chart-label-prediction">previsão out ✨</span>
+            <span class="chart-label-prediction" style="display: inline-flex; align-items: center; gap: 4px;">
+              previsão out
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/></svg>
+            </span>
           </div>
         </div>
 
-        <!-- Conquistas Rápidas (Recorde e Cintura) -->
+        <!-- Conquistas Rápidas com Ícones Vetoriais -->
         <div class="quick-stats-grid">
           <div class="quick-stat-card">
-            <div class="stat-icon-box stat-icon-gold">🏆</div>
+            <div class="stat-icon-box stat-icon-gold">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+                <path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+              </svg>
+            </div>
             <div class="stat-details">
               <h4>Recorde supino</h4>
               <p id="stat-supino-recorde">40 kg × 8 • ontem</p>
@@ -100,7 +124,12 @@
           </div>
 
           <div class="quick-stat-card">
-            <div class="stat-icon-box stat-icon-green">📐</div>
+            <div class="stat-icon-box stat-icon-green">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+            </div>
             <div class="stat-details">
               <h4>Cintura -3 cm</h4>
               <p>avaliação de 12/09</p>
@@ -125,7 +154,11 @@
 
         <!-- Card de Insights do Coach IA -->
         <div class="card-coach-insight">
-          <div class="insight-icon">✨</div>
+          <div class="insight-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/>
+            </svg>
+          </div>
           <div class="insight-content">
             <p id="display-coach-insight">
               Melhor mês até aqui! Com <strong>3 treinos por semana</strong>, a carga da remada passa de 60 kg em breve. Mantenha a constância!
@@ -134,23 +167,165 @@
         </div>
       </div>
 
-      <!-- SUBABA C: MEDIDAS -->
+      <!-- SUBABA C: MEDIDAS (COMPOSIÇÃO CORPORAL PROFISSIONAL E RESPONSIVA) -->
       <div id="subtab-medidas" class="subtab-panel" style="display: none;">
-        <div class="activity-rings-card" style="margin-bottom: 16px;">
-          <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 12px;">Composição Corporal (Supabase)</h3>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-            <div style="background: var(--bg-surface); padding: 14px; border-radius: 14px; border: 1px solid var(--border-subtle);">
-              <span style="font-size: 0.75rem; color: var(--text-muted);">Peso Atual</span>
-              <div style="font-size: 1.4rem; font-weight: 800; color: var(--accent-primary);"><span id="medida-peso-val">74.5</span> kg</div>
+        <div class="bio-dashboard">
+          
+          <!-- Cabeçalho do Card de Biometria -->
+          <div class="bio-card-header">
+            <div class="bio-header-text">
+              <h3>Composição Corporal</h3>
+              <p>Última avaliação física sincronizada via Supabase</p>
             </div>
-            <div style="background: var(--bg-surface); padding: 14px; border-radius: 14px; border: 1px solid var(--border-subtle);">
-              <span style="font-size: 0.75rem; color: var(--text-muted);">Índice IMC</span>
-              <div style="font-size: 1.4rem; font-weight: 800; color: #10B981;"><span id="medida-imc-val">23.2</span></div>
+            <span class="bio-badge-verified">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              Oficial VnFitness
+            </span>
+          </div>
+
+          <!-- Grid com 4 Cards Estruturados -->
+          <div class="bio-metrics-grid">
+            
+            <!-- Card 1: Peso Corporal -->
+            <div class="bio-metric-card">
+              <div class="bio-card-top">
+                <span class="bio-metric-label">Peso Atual</span>
+                <div class="bio-icon-box bio-icon-orange">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/>
+                    <path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="bio-metric-value">
+                <span id="medida-peso-val">83.0</span><span>kg</span>
+              </div>
+              <div class="bio-metric-sub">
+                <span style="color: #10B981; font-weight: 700;">↓ 1.4 kg</span><span>no último mês</span>
+              </div>
+            </div>
+
+            <!-- Card 2: Estatura & Idade -->
+            <div class="bio-metric-card">
+              <div class="bio-card-top">
+                <span class="bio-metric-label">Estatura</span>
+                <div class="bio-icon-box bio-icon-blue">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2v20"/><path d="M17 5H7"/><path d="M17 19H7"/><path d="M15 12H9"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="bio-metric-value">
+                <span id="medida-altura-val">1.78</span><span>m</span>
+              </div>
+              <div class="bio-metric-sub">
+                <span>Idade:</span><strong id="medida-idade-val" style="color: var(--text-primary);">28 anos</strong>
+              </div>
+            </div>
+
+            <!-- Card 3: Índice de Massa Corporal (IMC) -->
+            <div class="bio-metric-card">
+              <div class="bio-card-top">
+                <span class="bio-metric-label">Índice IMC</span>
+                <div class="bio-icon-box bio-icon-green">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="bio-metric-value">
+                <span id="medida-imc-val">26.2</span>
+              </div>
+              <div class="bio-metric-sub">
+                <span id="medida-classif-badge" class="badge-bio badge-bio-warning">Sobrepeso Leve</span>
+              </div>
+            </div>
+
+            <!-- Card 4: Meta de Peso Saudável -->
+            <div class="bio-metric-card">
+              <div class="bio-card-top">
+                <span class="bio-metric-label">Meta Saudável</span>
+                <div class="bio-icon-box bio-icon-purple">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="bio-metric-value">
+                <span id="medida-faixa-val" style="font-size: 1.3rem;">59-79</span><span>kg</span>
+              </div>
+              <div class="bio-metric-sub">
+                <span id="medida-diff-val" style="color: #0EA5E9; font-weight: 700;">-4.0 kg p/ ideal</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Card Régua Gráfica de IMC com Indicador Dinâmico -->
+          <div class="bio-gauge-card">
+            <div class="bio-gauge-header">
+              <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary);">Escala de Massa Corporal</span>
+              <span style="font-size: 0.74rem; color: #F59E0B; font-weight: 700;" id="gauge-status-label">Classificação: 26.2</span>
+            </div>
+
+            <div class="bio-gauge-bar">
+              <div class="bio-gauge-pin" id="bio-gauge-pin" style="left: 60%;" title="Seu IMC: 26.2"></div>
+            </div>
+
+            <div class="bio-gauge-labels">
+              <span>Abaixo (&lt;18.5)</span>
+              <span>Normal (18.5-24.9)</span>
+              <span>Sobrepeso (25-29.9)</span>
+              <span>Obesidade (≥30)</span>
             </div>
           </div>
-          <div style="margin-top: 14px; padding: 12px; background: rgba(56, 189, 248, 0.08); border-radius: 12px; font-size: 0.8rem; color: #0284C7;">
-            🎯 <strong>Meta de Saúde:</strong> Faixa de peso saudável de 59 kg a 79 kg para a sua altura.
+
+          <!-- Card de Circunferências Corporais (Perímetros em cm) -->
+          <div class="bio-measurements-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.84rem; font-weight: 700; color: var(--text-primary);">Perímetros & Medidas (cm)</span>
+              <span style="font-size: 0.72rem; color: var(--text-muted);">Evolução últimos 60 dias</span>
+            </div>
+
+            <div class="bio-perimeters-row">
+              <div class="bio-peri-item">
+                <span>Tórax</span>
+                <strong>102 cm</strong>
+                <small style="color: #10B981;">+2 cm</small>
+              </div>
+              <div class="bio-peri-item">
+                <span>Cintura</span>
+                <strong>86 cm</strong>
+                <small style="color: #10B981;">-3 cm 🔥</small>
+              </div>
+              <div class="bio-peri-item">
+                <span>Quadril</span>
+                <strong>98 cm</strong>
+                <small style="color: #0EA5E9;">-1 cm</small>
+              </div>
+              <div class="bio-peri-item">
+                <span>Braço</span>
+                <strong>37.5 cm</strong>
+                <small style="color: #10B981;">+1.5 cm</small>
+              </div>
+            </div>
           </div>
+
+          <!-- Card de Orientação do Coach IA -->
+          <div class="bio-coach-advice">
+            <div class="bio-advice-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/>
+              </svg>
+            </div>
+            <div class="bio-advice-content">
+              <h4>Prescrição Inteligente VnFitness</h4>
+              <p id="bio-advice-text">
+                Com base no seu IMC de <strong>26.2</strong> e frequência de <strong>2.9 treinos/semana</strong>, seu plano nutricional tem déficit calórico leve (-300 kcal) preservando massa muscular com treinos de força.
+              </p>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
@@ -192,9 +367,12 @@
         </div>
       </div>
 
-      <!-- Formulário de Entrada do Usuário: Peso, Altura e Idade (Requisito 3) -->
+      <!-- Formulário de Entrada do Usuário: Peso, Altura e Idade -->
       <div class="imc-calculator-card">
-        <h3>🎯 Avaliação Biométrica & Coach IA</h3>
+        <h3 style="display: flex; align-items: center; gap: 8px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF7300" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          Avaliação Biométrica & Coach IA
+        </h3>
         <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 14px;">
           Informe seus dados para a IA calcular seu IMC, peso ideal e montar sua rotina sob medida.
         </p>
@@ -219,17 +397,24 @@
           <label class="form-label" style="display: block; margin-bottom: 8px;">ONDE VOCÊ VAI TREINAR?</label>
           <div class="training-location-selector">
             <div class="location-radio-btn" id="opt-treino-casa">
-              <span>🏠 Em Casa</span>
+              <span style="display: flex; align-items: center; gap: 6px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                Em Casa
+              </span>
               <small>Sem equipamentos (peso corporal)</small>
             </div>
             <div class="location-radio-btn selected" id="opt-treino-academia">
-              <span>🏋️‍♂️ Na Academia</span>
+              <span style="display: flex; align-items: center; gap: 6px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6.5 6.5 11 11"/><path d="m21 21-1-1a2.83 2.83 0 0 0 0-4l-1-1 4-4-1-1a2.83 2.83 0 0 0-4 0l-1 1-4-4 1-1a2.83 2.83 0 0 0 0-4l-1-1-4 4 1 1a2.83 2.83 0 0 0 0 4l1 1-4 4-1-1a2.83 2.83 0 0 0-4 0l-1 1 4 4 1 1a2.83 2.83 0 0 0 4 0l1-1 4 4-1 1a2.83 2.83 0 0 0 0 4Z"/></svg>
+                Na Academia
+              </span>
               <small>Com aparelhos, pesos e máquinas</small>
             </div>
           </div>
 
-          <button type="submit" id="btn-gerar-ia" class="btn btn-primary w-full">
-            🚀 Gerar Meu Treino e Dieta com IA
+          <button type="submit" id="btn-gerar-ia" class="btn btn-primary w-full" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+            Gerar Meu Treino e Dieta com IA
           </button>
         </form>
 
@@ -295,37 +480,58 @@
     <!-- ================= BARRA DE NAVEGAÇÃO INFERIOR ================= -->
     <nav class="bottom-nav">
       <div class="nav-tab-item" data-target="tab-hoje">
-        <span style="font-size: 1.2rem;">🏠</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
         <span>Hoje</span>
       </div>
 
       <div class="nav-tab-item" data-target="tab-treino">
-        <span style="font-size: 1.2rem;">🏋️</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m6.5 6.5 11 11"/>
+          <path d="m21 21-1-1a2.83 2.83 0 0 0 0-4l-1-1 4-4-1-1a2.83 2.83 0 0 0-4 0l-1 1-4-4 1-1a2.83 2.83 0 0 0 0-4l-1-1-4 4 1 1a2.83 2.83 0 0 0 0 4l1 1-4 4-1-1a2.83 2.83 0 0 0-4 0l-1 1 4 4 1 1a2.83 2.83 0 0 0 4 0l1-1 4 4-1 1a2.83 2.83 0 0 0 0 4Z"/>
+        </svg>
         <span>Treino</span>
       </div>
 
-      <!-- Botão Central de Check-in em Destaque Laranja Neon (Tela de evolução.png) -->
+      <!-- Botão Central de Check-in em Destaque Laranja Neon com SVG -->
       <div class="nav-tab-center-btn" id="center-checkin-btn" title="Fazer Check-in de Treino">
-        <span>⚡</span>
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>
+        </svg>
       </div>
 
       <div class="nav-tab-item active" data-target="tab-evolucao">
-        <span style="font-size: 1.2rem;">📈</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+          <polyline points="16 7 22 7 22 13"/>
+        </svg>
         <span>Evolução</span>
       </div>
 
       <div class="nav-tab-item" data-target="tab-coach">
-        <span style="font-size: 1.2rem;">✨</span>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/>
+          <path d="M5 3v4"/>
+          <path d="M19 17v4"/>
+          <path d="M3 5h4"/>
+          <path d="M17 19h4"/>
+        </svg>
         <span>Coach IA</span>
       </div>
     </nav>
     <!-- ================= MODAL DE CELEBRAÇÃO DE CHECK-IN (SUPABASE) ================= -->
     <div id="checkin-modal" class="checkin-toast-overlay">
       <div class="checkin-toast-card">
-        <div class="checkin-toast-icon">⚡</div>
+        <div class="checkin-toast-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>
+          </svg>
+        </div>
         <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 8px;">Check-in Confirmado!</h3>
         <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
-          Sua presença foi salva no <strong>Supabase</strong> e sincronizada imediatamente com o Painel Administrativo VnFitness.
+          Sua presença foi confirmada e salva com sucesso no sistema da <strong>VnFitness</strong>.
         </p>
         <div style="background: rgba(255, 115, 0, 0.1); border-radius: 14px; padding: 14px; margin-bottom: 18px; text-align: left; border: 1px solid rgba(255, 115, 0, 0.25);">
           <div style="font-size: 0.82rem; margin-bottom: 6px;">📅 Data: <strong id="modal-checkin-data">Hoje</strong></div>
@@ -344,7 +550,11 @@
       <div class="notif-modal-content">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
           <h3 style="font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
-            <span>🔔</span> Mensagens da Equipe & IA
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF7300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+            </svg>
+            Mensagens da Equipe & IA
           </h3>
           <button id="btn-fechar-notif" style="background: none; border: none; font-size: 1.3rem; color: var(--text-muted); cursor: pointer;">✕</button>
         </div>

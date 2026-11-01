@@ -1,7 +1,8 @@
 /* ==============================================================================
    VnFitness - Auth CSS (Login & Cadastro)
-   Inspirado rigorosamente no arquivo "login.png"
-   Glassmorphism translúcido, gradientes vibrantes neon e campos arredondados
+   Inspirado rigorosamente na Imagem 2 (login.png)
+   Foto da atleta com iluminação neon ao fundo, card inferior translúcido
+   em Glassmorphism, campos arredondados com ícones e botão gradiente ciano.
    ============================================================================== */
 
 .auth-viewport {
@@ -12,11 +13,11 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  background: linear-gradient(135deg, #18192A 0%, #291C3E 50%, #0F172A 100%);
-  padding: 20px;
+  background: radial-gradient(circle at 50% 30%, #1e1b4b 0%, #0f172a 60%, #020617 100%);
+  padding: 24px 16px;
 }
 
-/* Fundo com aura de iluminação neon (magenta e ciano) como em login.png */
+/* Efeito de aura neon no fundo da página */
 .auth-bg-art {
   position: absolute;
   top: 0;
@@ -24,53 +25,71 @@
   width: 100%;
   height: 100%;
   background: 
-    radial-gradient(circle at 75% 20%, rgba(236, 72, 153, 0.45) 0%, transparent 45%),
-    radial-gradient(circle at 25% 60%, rgba(14, 165, 233, 0.45) 0%, transparent 50%),
-    radial-gradient(circle at 80% 85%, rgba(139, 92, 246, 0.35) 0%, transparent 40%);
+    radial-gradient(circle at 75% 20%, rgba(236, 72, 153, 0.3) 0%, transparent 45%),
+    radial-gradient(circle at 25% 60%, rgba(14, 165, 233, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 85%, rgba(139, 92, 246, 0.25) 0%, transparent 40%);
   pointer-events: none;
   z-index: 1;
 }
 
-/* Ilustração fitness estilizada com silhueta neon de alta performance */
-.auth-illustration-container {
-  position: absolute;
-  top: 2%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 320px;
-  height: 380px;
-  z-index: 2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  pointer-events: none;
-}
-
-.auth-silhueta {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: var(--radius-xl);
-  opacity: 0.9;
-  filter: drop-shadow(0 0 25px rgba(236, 72, 153, 0.5));
-}
-
-/* Container do Mockup Mobile */
+/* ==============================================================================
+   Frame do Mobile Phone (Mockup que reproduz fielmente a Imagem 2)
+   ============================================================================== */
 .auth-phone-frame {
   position: relative;
   width: 100%;
   max-width: 414px;
-  min-height: 840px;
-  border-radius: 44px;
-  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 8px rgba(255, 255, 255, 0.05);
+  min-height: 820px;
+  border-radius: 46px;
+  box-shadow: 
+    0 25px 60px -15px rgba(0, 0, 0, 0.8),
+    0 0 0 10px rgba(255, 255, 255, 0.08),
+    0 0 0 11px rgba(0, 0, 0, 0.6);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   overflow: hidden;
   z-index: 10;
-  background: linear-gradient(180deg, #7FA7E8 0%, #D8B4E2 35%, #9BC5F1 100%);
+  background: #0f172a;
 }
 
+/* Fundo com a foto da mulher atleta ou foto personalizada pelo usuário */
+.auth-photo-background-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.auth-bg-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.6s ease, opacity 0.4s ease;
+  display: block;
+}
+
+.auth-photo-gradient-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.15) 0%,
+    rgba(15, 23, 42, 0.0) 30%,
+    rgba(30, 27, 75, 0.25) 60%,
+    rgba(15, 23, 42, 0.5) 100%
+  );
+  pointer-events: none;
+}
+
+/* Barra de status superior do mockup de celular */
 .auth-phone-header {
   position: absolute;
   top: 14px;
@@ -82,7 +101,8 @@
   align-items: center;
   font-size: 0.85rem;
   font-weight: 700;
-  color: #1F2937;
+  color: #FFFFFF;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
   z-index: 15;
 }
 
@@ -95,94 +115,183 @@
   left: 50%;
   top: 10px;
   transform: translateX(-50%);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
-/* Card Inferior Flutuante com Efeito Glassmorphism (login.png) */
+/* Controles para Adicionar / Trocar foto de fundo */
+.auth-photo-controls {
+  position: absolute;
+  top: 48px;
+  right: 18px;
+  display: flex;
+  gap: 8px;
+  z-index: 25;
+}
+
+.btn-photo-action {
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #FFFFFF;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.btn-photo-action:hover {
+  background: rgba(15, 23, 42, 0.75);
+  border-color: rgba(56, 189, 248, 0.6);
+  transform: translateY(-1px);
+}
+
+.btn-reset-photo {
+  background: rgba(239, 68, 68, 0.4);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+.btn-reset-photo:hover {
+  background: rgba(239, 68, 68, 0.7);
+}
+
+/* ==============================================================================
+   Card Inferior Flutuante com Glassmorphism (Translúcido como na Imagem 2)
+   ============================================================================== */
 .auth-glass-card {
   position: relative;
   width: 100%;
-  background: rgba(255, 255, 255, 0.35);
-  backdrop-filter: blur(28px) saturate(160%);
-  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  background: rgba(255, 255, 255, 0.38);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
   border-top-left-radius: 40px;
   border-top-right-radius: 40px;
-  border-top: 1.5px solid rgba(255, 255, 255, 0.5);
-  border-left: 1.5px solid rgba(255, 255, 255, 0.3);
-  border-right: 1.5px solid rgba(255, 255, 255, 0.3);
-  padding: 36px 30px 32px 30px;
-  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.12);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.65);
+  border-left: 1.5px solid rgba(255, 255, 255, 0.4);
+  border-right: 1.5px solid rgba(255, 255, 255, 0.4);
+  padding: 26px 26px 30px 26px;
+  box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.18);
   z-index: 20;
   display: flex;
   flex-direction: column;
 }
 
+/* Abas de Alternância Superior: [ ENTRAR ] / [ CRIAR CONTA ] */
+.auth-mode-tabs {
+  display: flex;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(10px);
+  border-radius: var(--radius-pill);
+  padding: 4px;
+  margin-bottom: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.auth-tab-btn {
+  flex: 1;
+  padding: 9px 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #334155;
+  border-radius: var(--radius-pill);
+  transition: var(--transition-normal);
+  text-align: center;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+}
+
+.auth-tab-btn.active {
+  background: #FFFFFF;
+  color: #0284C7;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
 .auth-title {
   color: #FFFFFF;
   text-align: center;
-  font-size: 1.35rem;
+  font-size: 1.3rem;
   font-weight: 700;
-  margin-bottom: 24px;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  margin-bottom: 20px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
+/* Grupos de Inputs arredondados com ícone à esquerda */
 .auth-input-group {
   position: relative;
-  margin-bottom: 16px;
+  margin-bottom: 15px;
 }
 
 .auth-input {
   width: 100%;
-  padding: 16px 48px 16px 46px;
-  background: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.9);
+  padding: 15px 44px 15px 44px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.95);
   border-radius: var(--radius-pill);
-  font-size: 0.95rem;
-  color: #334155;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.05);
+  font-size: 0.92rem;
+  color: #1e293b;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04), 0 4px 14px rgba(0, 0, 0, 0.06);
   outline: none;
   transition: var(--transition-normal);
 }
 
+.auth-input::placeholder {
+  color: #94a3b8;
+}
+
 .auth-input:focus {
   background: #FFFFFF;
-  border-color: #38BDF8;
+  border-color: #38bdf8;
   box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.35);
 }
 
 .auth-icon-left {
   position: absolute;
-  left: 18px;
+  left: 16px;
   top: 50%;
   transform: translateY(-50%);
-  color: #64748B;
+  color: #64748b;
   display: flex;
   align-items: center;
+  font-size: 0.95rem;
   pointer-events: none;
 }
 
 .auth-icon-right {
   position: absolute;
-  right: 18px;
+  right: 16px;
   top: 50%;
   transform: translateY(-50%);
-  color: #94A3B8;
+  color: #94a3b8;
   cursor: pointer;
   display: flex;
   align-items: center;
+  font-size: 0.95rem;
+  user-select: none;
 }
 
-/* Botão de Ação Primário em Gradiente Ciano/Azul */
+/* Botão de Ação Primário em Gradiente Ciano/Azul (SIGN UP / ENTRAR) */
 .btn-auth-action {
   width: 100%;
-  padding: 16px;
-  margin-top: 8px;
+  padding: 15px;
+  margin-top: 6px;
   border-radius: var(--radius-pill);
-  background: linear-gradient(135deg, #38BDF8 0%, #0284C7 100%);
+  background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
   color: #FFFFFF;
   font-weight: 700;
-  font-size: 1rem;
-  letter-spacing: 0.05em;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
+  border: none;
+  cursor: pointer;
   box-shadow: 0 8px 24px rgba(2, 132, 199, 0.45);
   transition: var(--transition-spring);
 }
@@ -196,89 +305,69 @@
   transform: translateY(1px);
 }
 
-/* Link de alternância */
+.btn-auth-action:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Link de alternância inferior */
 .auth-toggle-text {
   text-align: center;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.95);
-  margin-top: 18px;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  margin-top: 16px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
 
 .auth-toggle-link {
-  color: #EF4444;
+  color: #f43f5e;
   font-weight: 700;
   cursor: pointer;
   margin-left: 4px;
   text-decoration: underline;
 }
 
-/* Divisor OR */
-.auth-divider {
-  display: flex;
-  align-items: center;
-  text-align: center;
-  margin: 18px 0;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.78rem;
-  font-weight: 700;
-}
-
-.auth-divider::before,
-.auth-divider::after {
-  content: '';
-  flex: 1;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
-}
-
-.auth-divider span {
-  padding: 0 12px;
-}
-
-/* Botões Sociais Circulares */
-.auth-social-row {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-}
-
-.social-circle-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  color: #0284C7;
-  font-weight: 700;
-  font-size: 1.1rem;
-  transition: var(--transition-spring);
-}
-
-.social-circle-btn:hover {
-  transform: translateY(-3px);
-  background: #FFFFFF;
-}
-
-/* Caixa de aviso / feedback */
+/* Caixa de alerta / feedback */
 .auth-alert {
-  padding: 12px 16px;
+  padding: 11px 14px;
   border-radius: var(--radius-md);
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   margin-bottom: 14px;
   display: none;
   line-height: 1.4;
+  text-align: center;
+  font-weight: 600;
 }
 
 .auth-alert-error {
-  background: rgba(239, 68, 68, 0.9);
+  background: rgba(239, 68, 68, 0.92);
   color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
 .auth-alert-info {
-  background: rgba(14, 165, 233, 0.9);
+  background: rgba(14, 165, 233, 0.92);
   color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
 }
 
+/* ==============================================================================
+   Responsividade Mobile
+   ============================================================================== */
+@media (max-width: 480px) {
+  .auth-viewport {
+    padding: 0;
+  }
+  .auth-phone-frame {
+    max-width: 100%;
+    min-height: 100vh;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .auth-glass-card {
+    padding: 24px 20px 28px 20px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}

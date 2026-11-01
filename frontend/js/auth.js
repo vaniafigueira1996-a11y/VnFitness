@@ -12,19 +12,79 @@ document.addEventListener('DOMContentLoaded', () => {
   const passwordInput = document.getElementById('password-input');
   const togglePassBtn = document.getElementById('toggle-password');
   const alertBox = document.getElementById('auth-alert');
-  const fillAdminBtn = document.getElementById('fill-admin-btn');
 
   const tabLogin = document.getElementById('tab-btn-login');
   const tabSignup = document.getElementById('tab-btn-signup');
 
-  let isSignUpMode = false; // Inicia em modo LOGIN para o usuário conseguir logar direto!
+  // Gerenciamento de foto de fundo (Mulher atleta como padrão + Upload personalizado)
+  const bgImg = document.getElementById('login-bg-img');
+  const bgFileInput = document.getElementById('bg-file-input');
+  const btnResetBg = document.getElementById('btn-reset-bg');
+  const DEFAULT_BG = 'img/login_bg.jpg';
+  const STORAGE_KEY = 'vnfitness_custom_login_bg';
 
-  // Função para mudar o modo entre LOGIN e CRIAR CONTA
+  function initBackground() {
+    const savedBg = localStorage.getItem(STORAGE_KEY);
+    if (savedBg && bgImg) {
+      bgImg.src = savedBg;
+      if (btnResetBg) btnResetBg.style.display = 'inline-flex';
+    } else if (bgImg) {
+      bgImg.src = DEFAULT_BG;
+      if (btnResetBg) btnResetBg.style.display = 'none';
+    }
+  }
+
+  initBackground();
+
+  if (bgFileInput) {
+    bgFileInput.addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        showAlert('Por favor, selecione um arquivo de imagem válido.', 'error');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (loadEvent) => {
+        const dataUrl = loadEvent.target.result;
+        try {
+          localStorage.setItem(STORAGE_KEY, dataUrl);
+          if (bgImg) bgImg.src = dataUrl;
+          if (btnResetBg) btnResetBg.style.display = 'inline-flex';
+          showAlert('Foto de fundo atualizada com sucesso!', 'info');
+          setTimeout(hideAlert, 2500);
+        } catch (storageErr) {
+          // Se a imagem for muito pesada para o localStorage, ainda aplica na sessão
+          if (bgImg) bgImg.src = dataUrl;
+          if (btnResetBg) btnResetBg.style.display = 'inline-flex';
+          showAlert('Foto aplicada nesta sessão!', 'info');
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  if (btnResetBg) {
+    btnResetBg.addEventListener('click', () => {
+      localStorage.removeItem(STORAGE_KEY);
+      if (bgImg) bgImg.src = DEFAULT_BG;
+      btnResetBg.style.display = 'none';
+      if (bgFileInput) bgFileInput.value = '';
+      showAlert('Foto padrão da atleta restaurada!', 'info');
+      setTimeout(hideAlert, 2000);
+    });
+  }
+
+  let isSignUpMode = false; // Inicia em modo LOGIN para o usuário conseguir logar direto
+
+  // Alternância entre ENTRAR e CRIAR CONTA
   function setAuthMode(signUp) {
     isSignUpMode = signUp;
 
     if (isSignUpMode) {
-      title.textContent = 'Crie sua Conta VnFitness';
+      title.textContent = 'Crie sua Conta';
       submitBtn.textContent = 'CADASTRAR';
       if (toggleQuestion) toggleQuestion.textContent = 'Já possui uma conta?';
       if (toggleLink) toggleLink.textContent = 'Fazer Login';
@@ -72,29 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Preenchimento e login direto com 1 clique para o Admin Mestre
-  if (fillAdminBtn) {
-    fillAdminBtn.addEventListener('click', async () => {
-      setAuthMode(false);
-      emailInput.value = 'fredsoncitty@gmail.com';
-      passwordInput.value = 'SophiA27';
-      showAlert('Autenticando Administrador Mestre com Supabase...', 'info');
-
-      try {
-        const res = await ApiClient.login('fredsoncitty@gmail.com', 'SophiA27');
-        const token = res.session?.access_token || 'admin_token';
-        ApiClient.setSession(token, res.user, res.perfil);
-        showAlert('Admin autenticado com sucesso! Entrando no painel...', 'info');
-        setTimeout(() => {
-          window.location.href = '/admin.html';
-        }, 400);
-      } catch (err) {
-        showAlert('Erro ao entrar como admin: ' + err.message, 'error');
-      }
-    });
-  }
-
-  // Submissão do Formulário para o Supabase
+  // Submissão do Formulário conectado ao Supabase
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const email = emailInput.value.trim();
@@ -115,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const res = await ApiClient.signup(email, password, nome);
         showAlert(res.message, 'info');
 
-        // Se for o admin mestre, muda para login
+        // Se for o admin cadastrando, sugere login
         if (email.toLowerCase() === 'fredsoncitty@gmail.com') {
           setTimeout(() => {
             setAuthMode(false);
@@ -142,14 +180,14 @@ document.addEventListener('DOMContentLoaded', () => {
           if (status === 'pendente') {
             showAlert('Seu cadastro está aguardando aprovação do administrador da VnFitness.', 'info');
             submitBtn.disabled = false;
-            submitBtn.textContent = 'LOGIN';
+            submitBtn.textContent = 'ENTRAR NO VNFITNESS';
             return;
           }
 
           if (status === 'rejeitado' || status === 'inativo') {
             showAlert(`Acesso indisponível: ${res.perfil?.motivo_rejeicao || 'Cadastro inativo'}.`, 'error');
             submitBtn.disabled = false;
-            submitBtn.textContent = 'LOGIN';
+            submitBtn.textContent = 'ENTRAR NO VNFITNESS';
             return;
           }
 
@@ -159,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       showAlert(err.message || 'Erro ao realizar a operação com o Supabase.', 'error');
       submitBtn.disabled = false;
-      submitBtn.textContent = isSignUpMode ? 'SIGN UP' : 'LOGIN';
+      submitBtn.textContent = isSignUpMode ? 'CADASTRAR' : 'ENTRAR NO VNFITNESS';
     }
   });
 

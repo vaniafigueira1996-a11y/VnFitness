@@ -29,22 +29,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   const greetingSub = document.getElementById('greeting-sub');
   if (greetingElem) {
     const nome = perfil?.nome_completo || (user?.email ? user.email.split('@')[0] : 'Fredson Citty');
-    greetingElem.textContent = `Olá, ${nome} 👋`;
+    greetingElem.textContent = `Olá, ${nome}`;
     if (greetingSub && perfil?.status_aprovacao === 'aprovado') {
       greetingSub.textContent = 'Conta Aprovada pela VnFitness ✓';
     }
   }
 
-  // Atalho direto para o Painel Administrativo (se for admin ou Fredson)
-  const btnSwitchAdmin = document.getElementById('btn-switch-admin');
-  const isMaster = (user?.email?.toLowerCase() === 'fredsoncitty@gmail.com') || (perfil?.role === 'admin');
-  if (btnSwitchAdmin && isMaster) {
-    btnSwitchAdmin.style.display = 'inline-flex';
-  }
-
-  // 2. Controle de Tema Claro / Dark
+  // 2. Controle de Tema Claro / Dark com SVGs profissionais
   const themeToggleBtn = document.getElementById('theme-toggle-btn');
-  const savedTheme = localStorage.getItem('vnfitness_theme') || 'dark'; // Dark moderno padrão como em "Tela de evolução.png"
+  const savedTheme = localStorage.getItem('vnfitness_theme') || 'dark';
   applyTheme(savedTheme);
 
   if (themeToggleBtn) {
@@ -59,18 +52,38 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('vnfitness_theme', theme);
     if (themeToggleBtn) {
-      themeToggleBtn.textContent = theme === 'dark' ? '☀️' : '🌙';
+      if (theme === 'dark') {
+        themeToggleBtn.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/>
+            <path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>
+          </svg>
+        `;
+      } else {
+        themeToggleBtn.innerHTML = `
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+        `;
+      }
     }
   }
 
-  // 3. Botão de Logout no Header
+  // 3. Botão de Logout no Header com SVG elegante
   const headerActions = document.querySelector('.header-actions');
   if (headerActions && !document.getElementById('logout-btn-app')) {
     const logoutBtn = document.createElement('button');
     logoutBtn.id = 'logout-btn-app';
     logoutBtn.className = 'icon-btn';
     logoutBtn.title = 'Sair da Conta';
-    logoutBtn.innerHTML = '🚪';
+    logoutBtn.innerHTML = `
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+    `;
     logoutBtn.onclick = () => ApiClient.logout();
     headerActions.appendChild(logoutBtn);
   }
@@ -363,20 +376,99 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // Carregar Biometria se existir
       const bioRes = await ApiClient.getBiometria();
-      if (bioRes?.biometria) {
-        const b = bioRes.biometria;
-        if (inputPeso) inputPeso.value = b.peso_kg;
-        if (inputAltura) inputAltura.value = b.altura_m;
-        if (inputIdade) inputIdade.value = b.idade;
-        if (imcVal) imcVal.textContent = b.imc;
-        if (imcClassif) imcClassif.textContent = b.classificacao_imc;
-        if (imcResultBanner) imcResultBanner.style.display = 'block';
+      const b = bioRes?.biometria || {
+        peso_kg: 83.0,
+        altura_m: 1.78,
+        idade: 28,
+        imc: 26.2,
+        classificacao_imc: 'Sobrepeso Leve',
+        peso_ideal_min: 59.0,
+        peso_ideal_max: 79.0,
+        diferenca_peso_meta: -4.0
+      };
 
-        // Atualiza na aba de Medidas
-        const medidaPeso = document.getElementById('medida-peso-val');
-        const medidaImc = document.getElementById('medida-imc-val');
-        if (medidaPeso && b.peso_kg) medidaPeso.textContent = b.peso_kg;
-        if (medidaImc && b.imc) medidaImc.textContent = b.imc;
+      if (inputPeso) inputPeso.value = b.peso_kg;
+      if (inputAltura) inputAltura.value = b.altura_m;
+      if (inputIdade) inputIdade.value = b.idade;
+      if (imcVal) imcVal.textContent = b.imc;
+      if (imcClassif) imcClassif.textContent = b.classificacao_imc;
+      if (imcResultBanner) imcResultBanner.style.display = 'block';
+
+      // Atualiza os Cards Estruturados da subaba de Medidas
+      const medidaPeso = document.getElementById('medida-peso-val');
+      const medidaAltura = document.getElementById('medida-altura-val');
+      const medidaIdade = document.getElementById('medida-idade-val');
+      const medidaImc = document.getElementById('medida-imc-val');
+      const medidaClassif = document.getElementById('medida-classif-badge');
+      const medidaFaixa = document.getElementById('medida-faixa-val');
+      const medidaDiff = document.getElementById('medida-diff-val');
+      const gaugePin = document.getElementById('bio-gauge-pin');
+      const gaugeLabel = document.getElementById('gauge-status-label');
+      const adviceText = document.getElementById('bio-advice-text');
+
+      if (medidaPeso) medidaPeso.textContent = Number(b.peso_kg).toFixed(1);
+      if (medidaAltura) medidaAltura.textContent = Number(b.altura_m).toFixed(2);
+      if (medidaIdade) medidaIdade.textContent = `${b.idade} anos`;
+      if (medidaImc) medidaImc.textContent = Number(b.imc).toFixed(1);
+
+      if (medidaFaixa && b.peso_ideal_min && b.peso_ideal_max) {
+        medidaFaixa.textContent = `${Math.round(b.peso_ideal_min)}-${Math.round(b.peso_ideal_max)}`;
+      }
+
+      const diff = b.diferenca_peso_meta !== undefined ? Number(b.diferenca_peso_meta) : (Number(b.peso_kg) - 79);
+      if (medidaDiff) {
+        if (diff > 0) {
+          medidaDiff.textContent = `-${diff.toFixed(1)} kg p/ ideal`;
+          medidaDiff.style.color = '#F59E0B';
+        } else if (diff < 0) {
+          medidaDiff.textContent = `+${Math.abs(diff).toFixed(1)} kg p/ ideal`;
+          medidaDiff.style.color = '#0EA5E9';
+        } else {
+          medidaDiff.textContent = `Peso Ideal Atingido! ✓`;
+          medidaDiff.style.color = '#10B981';
+        }
+      }
+
+      // Classificação e Régua do IMC
+      const numImc = Number(b.imc) || 26.2;
+      let percent = 50;
+      let badgeClass = 'badge-bio-warning';
+      let classifName = b.classificacao_imc || 'Sobrepeso';
+
+      if (numImc < 18.5) {
+        percent = Math.max(8, (numImc / 18.5) * 25);
+        badgeClass = 'badge-bio-warning';
+        classifName = 'Abaixo do Peso';
+      } else if (numImc < 25.0) {
+        percent = 25 + ((numImc - 18.5) / 6.4) * 30;
+        badgeClass = 'badge-bio-success';
+        classifName = 'Peso Saudável';
+      } else if (numImc < 30.0) {
+        percent = 55 + ((numImc - 25.0) / 4.9) * 25;
+        badgeClass = 'badge-bio-warning';
+        classifName = 'Sobrepeso Leve';
+      } else {
+        percent = Math.min(94, 80 + ((numImc - 30.0) / 10.0) * 15);
+        badgeClass = 'badge-bio-danger';
+        classifName = 'Obesidade';
+      }
+
+      if (medidaClassif) {
+        medidaClassif.className = `badge-bio ${badgeClass}`;
+        medidaClassif.textContent = classifName;
+      }
+
+      if (gaugePin) {
+        gaugePin.style.left = `${percent}%`;
+        gaugePin.title = `IMC: ${numImc.toFixed(1)}`;
+      }
+
+      if (gaugeLabel) {
+        gaugeLabel.textContent = `Classificação: ${classifName} (${numImc.toFixed(1)})`;
+      }
+
+      if (adviceText) {
+        adviceText.innerHTML = `Com base no seu IMC de <strong>${numImc.toFixed(1)}</strong> e dados biométricos salvos no <strong>Supabase</strong>, seu protocolo do Coach IA está equilibrado para queima de gordura e fortalecimento muscular.`;
       }
     } catch (e) {
       console.warn('Usando dados demonstrativos para exibição:', e);
