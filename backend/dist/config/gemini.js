@@ -7,8 +7,6 @@ const __dirname = path.dirname(__filename);
 dotenv.config();
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 dotenv.config({ path: path.resolve(__dirname, '../../../backend/.env') });
-const apiKey = process.env.GEMINI_API_KEY || '';
-if (!apiKey) {
-    console.warn('⚠️ AVISO: GEMINI_API_KEY não configurada no ambiente/arquivo .env');
-}
-export const genAI = new GoogleGenerativeAI(apiKey || 'placeholder-gemini-key');
+const DEFAULT_GEMINI_KEY = 'AQ.Ab8RN6JkJdy5KdRA4nYdBRmAnP3oHLzwc6I-AnBbMAuk0djUBw';
+const apiKey = process.env.GEMINI_API_KEY || DEFAULT_GEMINI_KEY;
+export const genAI = new GoogleGenerativeAI(apiKey);

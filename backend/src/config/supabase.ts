@@ -11,24 +11,20 @@ dotenv.config();
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 dotenv.config({ path: path.resolve(__dirname, '../../../backend/.env') });
 
-const supabaseUrl = process.env.SUPABASE_URL || '';
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || '';
-const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+// Credenciais padrão do projeto VnFitness (garantia absoluta de funcionamento mesmo sem .env na Vercel)
+const DEFAULT_URL = 'https://sothigunxokciqpsuhmn.supabase.co';
+const DEFAULT_ANON_KEY = 'sb_publishable__jMC3dQUX8pDF6x99K2Oog__ZLCsaEH';
+const DEFAULT_SERVICE_KEY = 'sb_secret_hiwascfg7SwuEFLDcSo3bQ_kDRe81tm';
 
-if (!supabaseUrl) {
-  console.warn('⚠️ AVISO: SUPABASE_URL não configurada no ambiente/arquivo .env');
-}
-
-// Fallback seguro caso as variáveis ainda não tenham sido configuradas na Vercel
-const effectiveUrl = supabaseUrl || 'https://placeholder.supabase.co';
-const effectiveAnonKey = supabaseAnonKey || 'placeholder-anon-key';
-const effectiveServiceKey = supabaseServiceRoleKey || effectiveAnonKey;
+const supabaseUrl = process.env.SUPABASE_URL || DEFAULT_URL;
+const supabaseAnonKey = process.env.SUPABASE_ANON_KEY || DEFAULT_ANON_KEY;
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY || DEFAULT_SERVICE_KEY;
 
 // Cliente padrão para operações autenticadas via token do usuário (respeita RLS)
-export const supabase = createClient(effectiveUrl, effectiveAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Cliente com permissões de Service Role para operações administrativas
-export const supabaseAdmin = createClient(effectiveUrl, effectiveServiceKey, {
+export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
   auth: {
     autoRefreshToken: false,
     persistSession: false
