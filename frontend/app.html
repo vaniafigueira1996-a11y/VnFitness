@@ -17,15 +17,21 @@
           <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Avatar" class="avatar-img" id="user-avatar-top">
         </div>
         <div class="greeting-text">
-          <h2 id="greeting-name">Olá, Alex 👋</h2>
-          <p>Pronto para conquistar suas metas?</p>
+          <h2 id="greeting-name">Olá, Fredson Citty 👋</h2>
+          <p id="greeting-sub">Pronto para conquistar suas metas?</p>
         </div>
       </div>
 
       <div class="header-actions">
+        <!-- Atalho direto para o Painel Administrativo (Para o Administrador Fredson Citty) -->
+        <a href="/admin.html" id="btn-switch-admin" class="btn-switch-admin" title="Abrir Painel Administrativo">
+          <span>📊</span>
+          <span>Painel Admin</span>
+        </a>
+
         <!-- Alternador de Tema Claro / Escuro -->
         <button class="icon-btn" id="theme-toggle-btn" title="Alternar Tema Claro / Escuro">☀️</button>
-        <button class="icon-btn" title="Notificações">🔔</button>
+        <button class="icon-btn" id="notif-toggle-btn" title="Notificações e Mensagens">🔔</button>
       </div>
     </header>
 
@@ -35,95 +41,116 @@
         <h1 style="font-size: 1.6rem; font-weight: 800; text-transform: uppercase;">
           Sua <span style="color: var(--accent-primary);">Evolução</span>
         </h1>
-        <button class="icon-btn" style="width: 36px; height: 36px;" title="Compartilhar">🔗</button>
+        <button class="icon-btn" style="width: 36px; height: 36px;" title="Sincronizar dados Supabase" id="btn-refresh-evolucao">🔄</button>
       </div>
 
       <!-- Abas de Subcategoria -->
       <div class="subtabs-header">
-        <button class="subtab-btn active">Carga</button>
-        <button class="subtab-btn">Frequência</button>
-        <button class="subtab-btn">Medidas</button>
+        <button class="subtab-btn active" data-sub="subtab-carga">Carga</button>
+        <button class="subtab-btn" data-sub="subtab-frequencia">Frequência</button>
+        <button class="subtab-btn" data-sub="subtab-medidas">Medidas</button>
       </div>
 
-      <!-- Card de Evolução de Carga Máxima -->
-      <div class="card-evolution">
-        <div class="evolution-header">
-          <span class="evolution-title">Remada curvada • Carga máxima</span>
-          <span class="badge-trend">+21% em 12 sem</span>
-        </div>
+      <!-- SUBABA A: CARGA -->
+      <div id="subtab-carga" class="subtab-panel" style="display: block;">
+        <!-- Card de Evolução de Carga Máxima -->
+        <div class="card-evolution">
+          <div class="evolution-header">
+            <span class="evolution-title">Remada curvada • Carga máxima</span>
+            <span class="badge-trend">+21% em 12 sem</span>
+          </div>
 
-        <div class="big-metric">
-          58 <span>kg</span>
-        </div>
+          <div class="big-metric">
+            <span id="display-carga-atual">58</span> <span>kg</span>
+          </div>
 
-        <!-- Gráfico de Área Iluminado em SVG -->
-        <div class="chart-area-container">
-          <svg class="chart-svg" viewBox="0 0 360 120" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#FF7300" stop-opacity="0.5"/>
-                <stop offset="100%" stop-color="#FF7300" stop-opacity="0.0"/>
-              </linearGradient>
-            </defs>
-            <!-- Área preenchida -->
-            <path d="M 10 110 Q 90 95, 140 85 T 260 45 T 350 20 L 350 120 L 10 120 Z" fill="url(#areaGradient)"/>
-            <!-- Linha contínua iluminada -->
-            <path id="evolution-svg-path" d="M 10 110 Q 90 95, 140 85 T 260 45" fill="none" stroke="#FF7300" stroke-width="3" stroke-linecap="round"/>
-            <!-- Linha tracejada de previsão futura da IA -->
-            <path d="M 260 45 T 350 20" fill="none" stroke="#38BDF8" stroke-width="2.5" stroke-dasharray="5,5"/>
-            <!-- Ponto atual -->
-            <circle cx="260" cy="45" r="5" fill="#FF7300" stroke="#FFFFFF" stroke-width="2"/>
-            <!-- Ponto previsto IA -->
-            <circle cx="350" cy="20" r="4" fill="#38BDF8"/>
-          </svg>
-        </div>
+          <!-- Gráfico de Área Iluminado em SVG -->
+          <div class="chart-area-container">
+            <svg class="chart-svg" viewBox="0 0 360 120" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#FF7300" stop-opacity="0.5"/>
+                  <stop offset="100%" stop-color="#FF7300" stop-opacity="0.0"/>
+                </linearGradient>
+              </defs>
+              <path d="M 10 110 Q 90 95, 140 85 T 260 45 T 350 20 L 350 120 L 10 120 Z" fill="url(#areaGradient)"/>
+              <path id="evolution-svg-path" d="M 10 110 Q 90 95, 140 85 T 260 45" fill="none" stroke="#FF7300" stroke-width="3" stroke-linecap="round"/>
+              <path d="M 260 45 T 350 20" fill="none" stroke="#38BDF8" stroke-width="2.5" stroke-dasharray="5,5"/>
+              <circle cx="260" cy="45" r="5" fill="#FF7300" stroke="#FFFFFF" stroke-width="2"/>
+              <circle cx="350" cy="20" r="4" fill="#38BDF8"/>
+            </svg>
+          </div>
 
-        <div class="chart-labels">
-          <span>jul</span>
-          <span>ago</span>
-          <span>set</span>
-          <span class="chart-label-prediction">previsão out ✨</span>
-        </div>
-      </div>
-
-      <!-- Conquistas Rápidas (Recorde e Cintura) -->
-      <div class="quick-stats-grid">
-        <div class="quick-stat-card">
-          <div class="stat-icon-box stat-icon-gold">🏆</div>
-          <div class="stat-details">
-            <h4>Recorde supino</h4>
-            <p>40 kg × 8 • ontem</p>
+          <div class="chart-labels">
+            <span>jul</span>
+            <span>ago</span>
+            <span>set</span>
+            <span class="chart-label-prediction">previsão out ✨</span>
           </div>
         </div>
 
-        <div class="quick-stat-card">
-          <div class="stat-icon-box stat-icon-green">📐</div>
-          <div class="stat-details">
-            <h4>Cintura -3 cm</h4>
-            <p>avaliação de 12/09</p>
+        <!-- Conquistas Rápidas (Recorde e Cintura) -->
+        <div class="quick-stats-grid">
+          <div class="quick-stat-card">
+            <div class="stat-icon-box stat-icon-gold">🏆</div>
+            <div class="stat-details">
+              <h4>Recorde supino</h4>
+              <p id="stat-supino-recorde">40 kg × 8 • ontem</p>
+            </div>
+          </div>
+
+          <div class="quick-stat-card">
+            <div class="stat-icon-box stat-icon-green">📐</div>
+            <div class="stat-details">
+              <h4>Cintura -3 cm</h4>
+              <p>avaliação de 12/09</p>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Heatmap de Frequência das Últimas 13 Semanas (Tela de evolução.png) -->
-      <div class="heatmap-card">
-        <div class="heatmap-header">
-          <h3>Últimas 13 semanas</h3>
-          <span>2,9 treinos por semana</span>
+      <!-- SUBABA B: FREQUÊNCIA -->
+      <div id="subtab-frequencia" class="subtab-panel" style="display: none;">
+        <!-- Heatmap de Frequência das Últimas 13 Semanas -->
+        <div class="heatmap-card">
+          <div class="heatmap-header">
+            <h3>Últimas 13 semanas</h3>
+            <span id="display-frequencia-media">2,9 treinos por semana</span>
+          </div>
+
+          <div class="heatmap-grid" id="heatmap-container">
+            <!-- Células geradas via JS -->
+          </div>
         </div>
 
-        <div class="heatmap-grid" id="heatmap-container">
-          <!-- Células geradas via JS -->
+        <!-- Card de Insights do Coach IA -->
+        <div class="card-coach-insight">
+          <div class="insight-icon">✨</div>
+          <div class="insight-content">
+            <p id="display-coach-insight">
+              Melhor mês até aqui! Com <strong>3 treinos por semana</strong>, a carga da remada passa de 60 kg em breve. Mantenha a constância!
+            </p>
+          </div>
         </div>
       </div>
 
-      <!-- Card de Insights do Coach IA -->
-      <div class="card-coach-insight">
-        <div class="insight-icon">✨</div>
-        <div class="insight-content">
-          <p>
-            Melhor mês até aqui. Com <strong>3 treinos por semana</strong>, a remada passa de 60 kg em outubro. Terça é seu ponto fraco: que tal um treino curto de 35 min?
-          </p>
+      <!-- SUBABA C: MEDIDAS -->
+      <div id="subtab-medidas" class="subtab-panel" style="display: none;">
+        <div class="activity-rings-card" style="margin-bottom: 16px;">
+          <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 12px;">Composição Corporal (Supabase)</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div style="background: var(--bg-surface); padding: 14px; border-radius: 14px; border: 1px solid var(--border-subtle);">
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Peso Atual</span>
+              <div style="font-size: 1.4rem; font-weight: 800; color: var(--accent-primary);"><span id="medida-peso-val">74.5</span> kg</div>
+            </div>
+            <div style="background: var(--bg-surface); padding: 14px; border-radius: 14px; border: 1px solid var(--border-subtle);">
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Índice IMC</span>
+              <div style="font-size: 1.4rem; font-weight: 800; color: #10B981;"><span id="medida-imc-val">23.2</span></div>
+            </div>
+          </div>
+          <div style="margin-top: 14px; padding: 12px; background: rgba(56, 189, 248, 0.08); border-radius: 12px; font-size: 0.8rem; color: #0284C7;">
+            🎯 <strong>Meta de Saúde:</strong> Faixa de peso saudável de 59 kg a 79 kg para a sua altura.
+          </div>
         </div>
       </div>
     </section>
@@ -292,6 +319,40 @@
         <span>Coach IA</span>
       </div>
     </nav>
+    <!-- ================= MODAL DE CELEBRAÇÃO DE CHECK-IN (SUPABASE) ================= -->
+    <div id="checkin-modal" class="checkin-toast-overlay">
+      <div class="checkin-toast-card">
+        <div class="checkin-toast-icon">⚡</div>
+        <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 8px;">Check-in Confirmado!</h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+          Sua presença foi salva no <strong>Supabase</strong> e sincronizada imediatamente com o Painel Administrativo VnFitness.
+        </p>
+        <div style="background: rgba(255, 115, 0, 0.1); border-radius: 14px; padding: 14px; margin-bottom: 18px; text-align: left; border: 1px solid rgba(255, 115, 0, 0.25);">
+          <div style="font-size: 0.82rem; margin-bottom: 6px;">📅 Data: <strong id="modal-checkin-data">Hoje</strong></div>
+          <div style="font-size: 0.82rem; margin-bottom: 6px;">⏱️ Duração: <strong id="modal-checkin-duracao">50 min</strong></div>
+          <div style="font-size: 0.82rem; margin-bottom: 6px;">🔥 Intensidade: <strong id="modal-checkin-intensidade">Nível 5/5</strong></div>
+          <div style="font-size: 0.82rem;">🏋️ Exercício Destaque: <strong id="modal-checkin-ex" style="color: var(--accent-primary);">Remada curvada (58 kg)</strong></div>
+        </div>
+        <button id="btn-fechar-checkin-modal" class="btn btn-primary w-full" style="padding: 12px; font-weight: 700; border-radius: 12px;">
+          OK, Continuar Treinando
+        </button>
+      </div>
+    </div>
+
+    <!-- ================= MODAL DE NOTIFICAÇÕES & SUPORTE IA ================= -->
+    <div id="notif-modal" class="notif-modal-overlay">
+      <div class="notif-modal-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h3 style="font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+            <span>🔔</span> Mensagens da Equipe & IA
+          </h3>
+          <button id="btn-fechar-notif" style="background: none; border: none; font-size: 1.3rem; color: var(--text-muted); cursor: pointer;">✕</button>
+        </div>
+        <div id="notif-lista-container">
+          <p style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 20px;">Carregando mensagens do sistema...</p>
+        </div>
+      </div>
+    </div>
   </main>
 
   <script type="module" src="js/app.js"></script>

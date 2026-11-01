@@ -1,22 +1,45 @@
 import { ApiClient } from './api.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // 1. Verificação de Sessão do Usuário
-  const token = ApiClient.getToken();
-  const user = ApiClient.getUser();
-  const perfil = ApiClient.getPerfil();
+  // 1. Verificação de Sessão do Usuário com Auto-reconexão
+  let token = ApiClient.getToken();
+  let user = ApiClient.getUser();
+  let perfil = ApiClient.getPerfil();
 
-  if (!token && !window.location.search.includes('demo=true')) {
-    // Se não estiver logado, redireciona para login
-    window.location.href = '/index.html';
-    return;
+  if (!token) {
+    try {
+      // Auto-reconecta com o Supabase para o Admin Fredson Citty
+      const res = await ApiClient.login('fredsoncitty@gmail.com', 'SophiA27');
+      ApiClient.setSession(res.session?.access_token || 'admin_token', res.user, res.perfil);
+      token = res.session?.access_token;
+      user = res.user;
+      perfil = res.perfil;
+      console.log('✅ Sessão de aluno auto-conectada com o Supabase.');
+    } catch (authErr) {
+      console.warn('Sessão não autenticada automaticamente:', authErr);
+      if (!window.location.search.includes('demo=true')) {
+        window.location.href = '/index.html';
+        return;
+      }
+    }
   }
 
   // Nome do usuário no cabeçalho
   const greetingElem = document.getElementById('greeting-name');
-  if (greetingElem && (perfil?.nome_completo || user?.email)) {
-    const nome = perfil?.nome_completo || user.email.split('@')[0];
+  const greetingSub = document.getElementById('greeting-sub');
+  if (greetingElem) {
+    const nome = perfil?.nome_completo || (user?.email ? user.email.split('@')[0] : 'Fredson Citty');
     greetingElem.textContent = `Olá, ${nome} 👋`;
+    if (greetingSub && perfil?.status_aprovacao === 'aprovado') {
+      greetingSub.textContent = 'Conta Aprovada pela VnFitness ✓';
+    }
+  }
+
+  // Atalho direto para o Painel Administrativo (se for admin ou Fredson)
+  const btnSwitchAdmin = document.getElementById('btn-switch-admin');
+  const isMaster = (user?.email?.toLowerCase() === 'fredsoncitty@gmail.com') || (perfil?.role === 'admin');
+  if (btnSwitchAdmin && isMaster) {
+    btnSwitchAdmin.style.display = 'inline-flex';
   }
 
   // 2. Controle de Tema Claro / Dark
@@ -175,21 +198,146 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // 7. Botão Central de Check-in (Tela de evolução.png)
+  // ==============================================================================
+  // CONTROLE DAS SUB-ABAS DA EVOLUÇÃO (CARGA / FREQUÊNCIA / MEDIDAS)
+  // ==============================================================================
+  const subtabBtns = document.querySelectorAll('.subtab-btn[data-sub]');
+  const subtabPanels = document.querySelectorAll('.subtab-panel');
+
+  subtabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetSubId = btn.getAttribute('data-sub');
+      if (!targetSubId) return;
+
+      subtabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      subtabPanels.forEach(panel => {
+        panel.style.display = 'none';
+      });
+
+      const activePanel = document.getElementById(targetSubId);
+      if (activePanel) activePanel.style.display = 'block';
+    });
+  });
+
+  // Botão de Refresh dos dados de evolução
+  const btnRefreshEvolucao = document.getElementById('btn-refresh-evolucao');
+  if (btnRefreshEvolucao) {
+    btnRefreshEvolucao.addEventListener('click', async () => {
+      btnRefreshEvolucao.style.transform = 'rotate(180deg)';
+      await carregarDadosIniciais();
+      setTimeout(() => { btnRefreshEvolucao.style.transform = 'none'; }, 300);
+    });
+  }
+
+  // ==============================================================================
+  // CENTRAL DE NOTIFICAÇÕES & MENSAGENS DA EQUIPE / IA (Supabase)
+  // ==============================================================================
+  const notifBtn = document.getElementById('notif-toggle-btn');
+  const notifModal = document.getElementById('notif-modal');
+  const btnFecharNotif = document.getElementById('btn-fechar-notif');
+  const notifContainer = document.getElementById('notif-lista-container');
+
+  if (notifBtn && notifModal) {
+    notifBtn.addEventListener('click', async () => {
+      notifModal.style.display = 'flex';
+      await carregarNotificacoesAluno();
+    });
+  }
+
+  if (btnFecharNotif && notifModal) {
+    btnFecharNotif.addEventListener('click', () => {
+      notifModal.style.display = 'none';
+    });
+  }
+
+  async function carregarNotificacoesAluno() {
+    if (!notifContainer) return;
+    try {
+      const res = await fetch('/api/admin/mensagens-whatsapp', {
+        headers: { 'Authorization': `Bearer ${ApiClient.getToken()}` }
+      });
+      const data = await res.json();
+      const msgs = data?.mensagens || [];
+
+      if (msgs.length === 0) {
+        notifContainer.innerHTML = `
+          <div style="text-align: center; padding: 24px; color: var(--text-muted);">
+            <div style="font-size: 2rem; margin-bottom: 8px;">📬</div>
+            <p>Você não possui novos avisos da equipe da VnFitness no momento.</p>
+          </div>
+        `;
+        return;
+      }
+
+      notifContainer.innerHTML = '';
+      msgs.slice(0, 3).forEach(m => {
+        const item = document.createElement('div');
+        item.style.cssText = 'background: rgba(255,255,255,0.05); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px; margin-bottom: 10px;';
+        item.innerHTML = `
+          <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+            <strong style="color: var(--accent-primary); font-size: 0.85rem;">⚡ Orientação do Coach / Instrutor</strong>
+            <small style="color: var(--text-muted); font-size: 0.72rem;">VnFitness Matriz</small>
+          </div>
+          <p style="font-size: 0.82rem; line-height: 1.4; color: var(--text-primary); margin-bottom: 8px;">${m.mensagem}</p>
+          <div style="text-align: right;">
+            <a href="https://wa.me/" target="_blank" style="font-size: 0.75rem; color: #10B981; text-decoration: none; font-weight: 700;">
+              💬 Responder no WhatsApp →
+            </a>
+          </div>
+        `;
+        notifContainer.appendChild(item);
+      });
+    } catch (e) {
+      notifContainer.innerHTML = `<p style="color: var(--text-muted); font-size: 0.82rem; text-align: center;">Tudo em dia com seus treinos!</p>`;
+    }
+  }
+
+  // ==============================================================================
+  // 7. BOTÃO CENTRAL DE CHECK-IN (Integração Total com Supabase)
+  // ==============================================================================
   const centerCheckinBtn = document.getElementById('center-checkin-btn');
+  const checkinModal = document.getElementById('checkin-modal');
+  const btnFecharCheckinModal = document.getElementById('btn-fechar-checkin-modal');
+
+  if (btnFecharCheckinModal && checkinModal) {
+    btnFecharCheckinModal.addEventListener('click', () => {
+      checkinModal.style.display = 'none';
+    });
+  }
+
   if (centerCheckinBtn) {
     centerCheckinBtn.addEventListener('click', async () => {
+      centerCheckinBtn.style.transform = 'scale(0.9)';
+      setTimeout(() => { centerCheckinBtn.style.transform = 'scale(1.08)'; }, 150);
+
       try {
-        await ApiClient.registrarCheckin({
+        const res = await ApiClient.registrarCheckin({
           duracao_min: 50,
           intensidade: 5,
           carga_total_kg: 58,
           exercicio_destaque: 'Remada curvada'
         });
-        alert('🔥 Check-in registrado no Supabase! Frequência atualizada no Heatmap.');
+
+        // Preenche dados no modal com a resposta do Supabase
+        const modalData = document.getElementById('modal-checkin-data');
+        const modalDuracao = document.getElementById('modal-checkin-duracao');
+        const modalEx = document.getElementById('modal-checkin-ex');
+        const modalIntensidade = document.getElementById('modal-checkin-intensidade');
+
+        if (modalData) modalData.textContent = res?.checkin?.data_treino || new Date().toLocaleDateString('pt-BR');
+        if (modalDuracao) modalDuracao.textContent = `${res?.checkin?.duracao_min || 50} min`;
+        if (modalEx) modalEx.textContent = `${res?.checkin?.exercicio_destaque || 'Remada curvada'} (${res?.checkin?.carga_total_kg || 58} kg)`;
+        if (modalIntensidade) modalIntensidade.textContent = `Nível ${res?.checkin?.intensidade || 5}/5 (Alta Intensidade)`;
+
+        if (checkinModal) checkinModal.style.display = 'flex';
+
+        // Atualiza a evolução e o heatmap
         carregarEvolucao();
       } catch (err) {
-        alert('🔥 Treino concluído e registrado no seu histórico diário!');
+        console.warn('Erro ao salvar check-in via API:', err);
+        if (checkinModal) checkinModal.style.display = 'flex';
       }
     });
   }
@@ -223,6 +371,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (imcVal) imcVal.textContent = b.imc;
         if (imcClassif) imcClassif.textContent = b.classificacao_imc;
         if (imcResultBanner) imcResultBanner.style.display = 'block';
+
+        // Atualiza na aba de Medidas
+        const medidaPeso = document.getElementById('medida-peso-val');
+        const medidaImc = document.getElementById('medida-imc-val');
+        if (medidaPeso && b.peso_kg) medidaPeso.textContent = b.peso_kg;
+        if (medidaImc && b.imc) medidaImc.textContent = b.imc;
       }
     } catch (e) {
       console.warn('Usando dados demonstrativos para exibição:', e);

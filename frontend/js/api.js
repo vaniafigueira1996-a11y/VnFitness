@@ -165,6 +165,42 @@ export const ApiClient = {
       method: 'POST',
       body: JSON.stringify({ usuario_id, ...parametros })
     });
+  },
+
+  // Menus Adicionais do Painel VnFitness
+  async getProfessoresAdmin() {
+    return this.request('/admin/professores');
+  },
+
+  async criarProfessorAdmin(dados) {
+    return this.request('/admin/professores', {
+      method: 'POST',
+      body: JSON.stringify(dados)
+    });
+  },
+
+  async excluirProfessorAdmin(id) {
+    return this.request(`/admin/professores/${id}`, { method: 'DELETE' });
+  },
+
+  async getMensagensWhatsAppAdmin() {
+    return this.request('/admin/mensagens-whatsapp');
+  },
+
+  async marcarMensagemWhatsAppEnviadaAdmin(id) {
+    return this.request(`/admin/mensagens-whatsapp/${id}/enviar`, { method: 'PATCH' });
+  },
+
+  async getCheckinsRecentesAdmin() {
+    return this.request('/admin/checkins-recentes');
+  },
+
+  async getTreinosIAAdmin() {
+    return this.request('/admin/treinos-ia');
+  },
+
+  async getDesempenhoAdmin() {
+    return this.request('/admin/desempenho');
   }
 };
 

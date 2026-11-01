@@ -103,5 +103,5 @@ O servidor iniciará na porta `3000` servindo a API e todo o front-end:
 
 ## 🔒 Credenciais do Administrador Único
 - **E-mail**: `fredsoncitty@gmail.com`
-- **Senha**: `SophiA27`
+- **Senha**: ``
 

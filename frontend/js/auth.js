@@ -24,18 +24,18 @@ document.addEventListener('DOMContentLoaded', () => {
     isSignUpMode = signUp;
 
     if (isSignUpMode) {
-      title.textContent = 'Create an Account';
-      submitBtn.textContent = 'SIGN UP';
-      if (toggleQuestion) toggleQuestion.textContent = 'Already have an Account?';
-      if (toggleLink) toggleLink.textContent = 'Login';
+      title.textContent = 'Crie sua Conta VnFitness';
+      submitBtn.textContent = 'CADASTRAR';
+      if (toggleQuestion) toggleQuestion.textContent = 'Já possui uma conta?';
+      if (toggleLink) toggleLink.textContent = 'Fazer Login';
       if (nameGroup) nameGroup.style.display = 'block';
       if (tabSignup) tabSignup.classList.add('active');
       if (tabLogin) tabLogin.classList.remove('active');
     } else {
-      title.textContent = 'Welcome Back';
-      submitBtn.textContent = 'LOGIN';
-      if (toggleQuestion) toggleQuestion.textContent = "Don't have an Account?";
-      if (toggleLink) toggleLink.textContent = 'Sign Up';
+      title.textContent = 'Bem-vindo de volta!';
+      submitBtn.textContent = 'ENTRAR NO VNFITNESS';
+      if (toggleQuestion) toggleQuestion.textContent = 'Não tem uma conta ainda?';
+      if (toggleLink) toggleLink.textContent = 'Cadastre-se aqui';
       if (nameGroup) nameGroup.style.display = 'none';
       if (tabLogin) tabLogin.classList.add('active');
       if (tabSignup) tabSignup.classList.remove('active');
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tabSignup.addEventListener('click', () => setAuthMode(true));
   }
 
-  // Alternar pelo link inferior "Already have an account? Login / Sign Up"
+  // Alternar pelo link inferior
   if (toggleLink) {
     toggleLink.addEventListener('click', (e) => {
       e.preventDefault();
@@ -72,13 +72,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Preenchimento rápido para o Admin Mestre
+  // Preenchimento e login direto com 1 clique para o Admin Mestre
   if (fillAdminBtn) {
-    fillAdminBtn.addEventListener('click', () => {
+    fillAdminBtn.addEventListener('click', async () => {
       setAuthMode(false);
       emailInput.value = 'fredsoncitty@gmail.com';
       passwordInput.value = 'SophiA27';
-      showAlert('Credenciais do Admin inseridas! Clique em LOGIN.', 'info');
+      showAlert('Autenticando Administrador Mestre com Supabase...', 'info');
+
+      try {
+        const res = await ApiClient.login('fredsoncitty@gmail.com', 'SophiA27');
+        const token = res.session?.access_token || 'admin_token';
+        ApiClient.setSession(token, res.user, res.perfil);
+        showAlert('Admin autenticado com sucesso! Entrando no painel...', 'info');
+        setTimeout(() => {
+          window.location.href = '/admin.html';
+        }, 400);
+      } catch (err) {
+        showAlert('Erro ao entrar como admin: ' + err.message, 'error');
+      }
     });
   }
 

@@ -189,6 +189,18 @@ routes.delete('/admin/usuarios/:id', requireAuth, requireAdminOnly, AdminControl
 routes.post('/admin/upload-foto', requireAuth, requireAdminOnly, AdminController.uploadFoto);
 routes.post('/admin/analisar-retencao', requireAuth, requireAdminOnly, AdminController.analisarRetencaoAluno);
 
+// Rotas dos Menus Adicionais (Professores, WhatsApp, Check-ins, Treinos IA, Desempenho)
+routes.get('/admin/professores', requireAuth, requireAdminOnly, AdminController.listarProfessores);
+routes.post('/admin/professores', requireAuth, requireAdminOnly, AdminController.criarProfessor);
+routes.delete('/admin/professores/:id', requireAuth, requireAdminOnly, AdminController.excluirProfessor);
+
+routes.get('/admin/mensagens-whatsapp', requireAuth, requireAdminOnly, AdminController.listarMensagensWhatsApp);
+routes.patch('/admin/mensagens-whatsapp/:id/enviar', requireAuth, requireAdminOnly, AdminController.marcarMensagemWhatsAppEnviada);
+
+routes.get('/admin/checkins-recentes', requireAuth, requireAdminOnly, AdminController.listarCheckinsRecentes);
+routes.get('/admin/treinos-ia', requireAuth, requireAdminOnly, AdminController.listarTreinosIA);
+routes.get('/admin/desempenho', requireAuth, requireAdminOnly, AdminController.obterDesempenho);
+
 function splitEmailName(email: string): string {
   const namePart = email.split('@')[0];
   return namePart.charAt(0).toUpperCase() + namePart.slice(1);

@@ -3,93 +3,94 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VnFitness — Painel Administrativo Forja (Desktop)</title>
+  <title>VnFitness — Painel Administrativo de Gestão & IA</title>
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
 
-  <div class="admin-layout">
-    <!-- ================= 1. SIDEBAR LATERAL ESQUERDA (DashBoard.jpg) ================= -->
+  <div class="admin-layout" id="main-admin-layout">
+    <!-- ================= 1. SIDEBAR LATERAL ESQUERDA ================= -->
     <aside class="admin-sidebar">
       <div class="sidebar-brand">
-        <div class="brand-icon-box">🔥</div>
-        <span>forja</span>
+        <div class="brand-icon-box">⚡</div>
+        <span>VnFitness</span>
       </div>
 
-      <!-- Seletor de Unidade -->
+      <!-- Seletor de Unidade Base -->
       <div class="branch-select-box">
-        <span class="branch-badge">AV</span>
+        <span class="branch-badge">VF</span>
         <div class="branch-info">
-          <h5>Academia Alto Vigor</h5>
-          <p>Unidade Tatuapé • São Paulo</p>
+          <h5>VnFitness Matriz</h5>
+          <p>Unidade Central • Sistema IA</p>
         </div>
       </div>
 
       <!-- Menu Operação -->
       <span class="nav-section-title">OPERAÇÃO</span>
       <nav class="sidebar-nav">
-        <a href="#visao-geral" class="nav-item-btn">
+        <a href="#visao-geral" class="nav-item-btn" data-sec="sec-visao-geral">
           <div class="nav-item-left">
             <span>📊</span>
             <span>Visão geral</span>
           </div>
         </a>
 
-        <a href="#retencao" class="nav-item-btn active">
+        <a href="#retencao" class="nav-item-btn active" data-sec="sec-retencao">
           <div class="nav-item-left">
             <span>🧡</span>
             <span>Retenção</span>
           </div>
-          <span class="nav-badge-pill">14</span>
+          <span class="nav-badge-pill" id="badge-retencao-count">14</span>
         </a>
 
-        <a href="#alunos-crud" class="nav-item-btn">
+        <a href="#alunos" class="nav-item-btn" data-sec="sec-alunos">
           <div class="nav-item-left">
             <span>👥</span>
             <span>Alunos & Aprovações</span>
           </div>
+          <span class="nav-badge-pill" id="badge-pendentes-count" style="background: #F59E0B; display: none;">0</span>
         </a>
 
-        <a href="#treinos" class="nav-item-btn">
+        <a href="#treinos" class="nav-item-btn" data-sec="sec-treinos">
           <div class="nav-item-left">
             <span>🏋️</span>
             <span>Treinos IA</span>
           </div>
         </a>
 
-        <a href="#checkins" class="nav-item-btn">
+        <a href="#checkins" class="nav-item-btn" data-sec="sec-checkins">
           <div class="nav-item-left">
             <span>📲</span>
             <span>Check-ins</span>
           </div>
         </a>
 
-        <a href="#whatsapp" class="nav-item-btn">
+        <a href="#whatsapp" class="nav-item-btn" data-sec="sec-whatsapp">
           <div class="nav-item-left">
             <span>💬</span>
             <span>WhatsApp</span>
           </div>
-          <span style="font-size: 0.72rem; color: #717782;">6</span>
+          <span style="font-size: 0.72rem; color: #717782;" id="badge-whatsapp-count">4</span>
         </a>
       </nav>
 
       <!-- Menu Gestão -->
       <span class="nav-section-title">GESTÃO</span>
       <nav class="sidebar-nav">
-        <a href="#desempenho" class="nav-item-btn">
+        <a href="#desempenho" class="nav-item-btn" data-sec="sec-desempenho">
           <div class="nav-item-left">
             <span>📈</span>
             <span>Desempenho</span>
           </div>
         </a>
-        <a href="#professores" class="nav-item-btn">
+        <a href="#professores" class="nav-item-btn" data-sec="sec-professores">
           <div class="nav-item-left">
             <span>👨‍🏫</span>
             <span>Professores</span>
           </div>
         </a>
-        <a href="#configuracoes" class="nav-item-btn">
+        <a href="#configuracoes" class="nav-item-btn" data-sec="sec-configuracoes">
           <div class="nav-item-left">
             <span>⚙️</span>
             <span>Configurações</span>
@@ -101,7 +102,7 @@
       <div class="sidebar-footer-card">
         <div class="footer-card-header">
           <span>✨</span>
-          <span>Forja IA hoje</span>
+          <span>VnFitness IA hoje</span>
         </div>
         <p>312 treinos ajustados esta semana. 9 professores revisaram as sugestões.</p>
         <div class="progress-ia-bar">
@@ -116,139 +117,327 @@
           <h5 style="font-size: 0.8rem; font-weight: 700; color: #FFFFFF; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">Fredson Citty</h5>
           <p style="font-size: 0.68rem; color: #717782;">Administrador Geral</p>
         </div>
-        <button id="admin-logout-btn" style="color: #EF4444; font-size: 0.8rem; cursor: pointer;" title="Sair do painel">🚪</button>
+        <button id="admin-logout-btn" style="color: #EF4444; font-size: 0.85rem; cursor: pointer;" title="Sair do painel">🚪</button>
       </div>
     </aside>
 
-    <!-- ================= 2. CONTEÚDO PRINCIPAL (DashBoard.jpg) ================= -->
+    <!-- ================= 2. CONTEÚDO PRINCIPAL (MEIO) ================= -->
     <main class="admin-main">
-      <!-- Topbar com Título, Busca com atalho de teclado e Botão de Exportar -->
+      <!-- Topbar Compartilhada com Título Dinâmico, Busca e Exportação -->
       <header class="admin-topbar">
         <div class="topbar-title">
-          <h1>Retenção</h1>
-          <p>Quarta, 30 de setembro • IA atualizou o risco às 06:00 com os check-ins de ontem</p>
+          <h1 id="topbar-main-title">Retenção</h1>
+          <p id="topbar-main-subtitle">IA atualizou o risco às 06:00 com os check-ins de ontem</p>
         </div>
 
         <div class="topbar-controls">
           <div class="search-box-mac">
             <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9CA3AF;">🔍</span>
-            <input type="text" placeholder="Buscar aluno ou matrícula...">
+            <input type="text" id="admin-global-search" placeholder="Buscar aluno, matrícula ou e-mail...">
             <span class="search-shortcut-tag">⌘K</span>
           </div>
 
           <button class="icon-btn" style="border-radius: 8px;" title="Alertas">🔔</button>
-          <button class="btn btn-secondary" style="font-size: 0.82rem; padding: 9px 16px;">
+          <a href="/app.html" class="btn btn-secondary" style="font-size: 0.82rem; padding: 9px 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;" title="Abrir Visão do Aluno">
+            <span>📱</span>
+            <span>App do Aluno</span>
+          </a>
+          <button class="btn btn-secondary" id="btn-exportar-dados" style="font-size: 0.82rem; padding: 9px 16px;">
             <span>📥 Exportar</span>
           </button>
         </div>
       </header>
 
-      <!-- Cards de Métricas e KPIs do Topo (DashBoard.jpg) -->
-      <section class="kpi-row">
-        <!-- 1. Alunos Ativos -->
-        <div class="kpi-card">
-          <div class="kpi-header">
-            <span>👥</span>
-            <span>Alunos ativos</span>
-          </div>
-          <div class="kpi-big-num" id="kpi-alunos-ativos">1.284</div>
-          <div class="kpi-footer-note">+32 no mês 📈</div>
-        </div>
-
-        <!-- 2. Risco Alto de Cancelar (Card com destaque escuro) -->
-        <div class="kpi-card kpi-card-dark">
-          <div class="kpi-header">
-            <span>🛡️</span>
-            <span>Risco alto de cancelar</span>
-          </div>
-          <div class="kpi-big-num" id="kpi-risco-alto" style="color: #FF5252;">14 <span style="font-size: 1rem; font-weight: 500; color: #A0A5B5;">+41 em risco médio</span></div>
-          <div class="kpi-footer-note">6 sem contato ainda</div>
-        </div>
-
-        <!-- 3. Frequência Média -->
-        <div class="kpi-card">
-          <div class="kpi-header">
-            <span>📅</span>
-            <span>Frequência média</span>
-          </div>
-          <div class="kpi-big-num" id="kpi-freq-media">2,7 <span style="font-size: 1rem; font-weight: 500; color: #9CA3AF;">treinos por semana</span></div>
-          <div class="kpi-footer-note">+0,3 desde o app</div>
-        </div>
-
-        <!-- 4. Ajustes da IA na semana -->
-        <div class="kpi-card">
-          <div class="kpi-header">
-            <span>✨</span>
-            <span>Ajustes da IA na semana</span>
-          </div>
-          <div class="kpi-big-num" id="kpi-ajustes-ia">312 <span style="font-size: 1rem; font-weight: 500; color: #9CA3AF;">treinos</span></div>
-          <div class="kpi-footer-note" style="color: #0284C7;">81% aceitos pelos professores</div>
-        </div>
-      </section>
-
-      <!-- Tabela Central: Alunos com Risco de Cancelar -->
-      <section class="table-container-card" style="margin-bottom: 28px;">
-        <div class="table-header-row">
-          <div>
-            <h3 style="font-size: 1.05rem; font-weight: 700; color: #111827;">
-              Alunos com risco de cancelar <span class="badge badge-warning" style="font-size: 0.72rem;">✨ ordenado pela IA</span>
-            </h3>
+      <!-- ================= SEÇÃO A: RETENÇÃO (DashBoard.jpg) ================= -->
+      <div class="admin-section active" id="sec-retencao">
+        <!-- Cards de Métricas e KPIs do Topo -->
+        <section class="kpi-row">
+          <!-- 1. Alunos Ativos -->
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span>👥</span>
+              <span>Alunos ativos</span>
+            </div>
+            <div class="kpi-big-num" id="kpi-alunos-ativos">1.284</div>
+            <div class="kpi-footer-note">+32 no mês 📈</div>
           </div>
 
-          <div class="filter-pills-row">
-            <button class="filter-pill-btn active">Risco alto 14</button>
-            <button class="filter-pill-btn">Risco médio 41</button>
-            <button class="filter-pill-btn">Recuperados 23</button>
-            <button class="filter-pill-btn">⚙️ Filtros</button>
-          </div>
-        </div>
-
-        <table class="retention-table">
-          <thead>
-            <tr>
-              <th>ALUNO</th>
-              <th>ÚLTIMO TREINO</th>
-              <th>MOTIVO APONTADO PELA IA</th>
-              <th>RISCO</th>
-              <th>AÇÃO SUGERIDA</th>
-            </tr>
-          </thead>
-          <tbody id="retention-table-body">
-            <!-- Linhas preenchidas via JavaScript -->
-          </tbody>
-        </table>
-
-        <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid #F3F4F6; font-size: 0.8rem; color: #10B981; display: flex; align-items: center; gap: 8px;">
-          <span>✓</span>
-          <span>23 de 31 alunos contatados em setembro voltaram a treinar em até 7 dias</span>
-        </div>
-      </section>
-
-      <!-- SEÇÃO GESTÃO DE USUÁRIOS (CRUD COMPLETO & APROVAÇÃO) -->
-      <section class="table-container-card" id="alunos-crud">
-        <div class="table-header-row">
-          <div>
-            <h3 style="font-size: 1.05rem; font-weight: 700; color: #111827;">Controle de Acessos & CRUD de Usuários</h3>
-            <p style="font-size: 0.8rem; color: #6B7280;">Aprove ou rejeite cadastros pendentes e gerencie status de alunos</p>
+          <!-- 2. Risco Alto de Cancelar (Card com destaque escuro) -->
+          <div class="kpi-card kpi-card-dark">
+            <div class="kpi-header">
+              <span>🛡️</span>
+              <span>Risco alto de cancelar</span>
+            </div>
+            <div class="kpi-big-num" id="kpi-risco-alto" style="color: #FF5252;">14 <span style="font-size: 1rem; font-weight: 500; color: #A0A5B5;">+41 em risco médio</span></div>
+            <div class="kpi-footer-note">6 sem contato ainda</div>
           </div>
 
-          <!-- Upload de Fotos para Supabase Storage -->
-          <div>
-            <label for="admin-photo-upload" class="btn btn-secondary" style="font-size: 0.8rem; cursor: pointer;">
-              📷 Upload Foto (Supabase Storage)
-            </label>
-            <input type="file" id="admin-photo-upload" accept="image/*" style="display: none;">
+          <!-- 3. Frequência Média -->
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span>📅</span>
+              <span>Frequência média</span>
+            </div>
+            <div class="kpi-big-num" id="kpi-freq-media">2,7 <span style="font-size: 1rem; font-weight: 500; color: #9CA3AF;">treinos por semana</span></div>
+            <div class="kpi-footer-note">+0,3 desde o app</div>
           </div>
-        </div>
 
-        <div id="admin-alunos-crud-list">
-          <!-- Lista dinâmica carregada via Supabase -->
-        </div>
-      </section>
+          <!-- 4. Ajustes da IA na semana -->
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span>✨</span>
+              <span>Ajustes da IA na semana</span>
+            </div>
+            <div class="kpi-big-num" id="kpi-ajustes-ia">312 <span style="font-size: 1rem; font-weight: 500; color: #9CA3AF;">treinos</span></div>
+            <div class="kpi-footer-note" style="color: #0284C7;">81% aceitos pelos professores</div>
+          </div>
+        </section>
+
+        <!-- Tabela Central: Alunos com Risco de Cancelar -->
+        <section class="table-container-card">
+          <div class="table-header-row">
+            <div>
+              <h3 style="font-size: 1.05rem; font-weight: 700; color: #111827;">
+                Alunos com risco de cancelar <span class="badge badge-warning" style="font-size: 0.72rem;">✨ ordenado pela IA</span>
+              </h3>
+            </div>
+
+            <div class="filter-pills-row">
+              <button class="filter-pill-btn active" data-filter="high">Risco alto 14</button>
+              <button class="filter-pill-btn" data-filter="mid">Risco médio 41</button>
+              <button class="filter-pill-btn" data-filter="recovered">Recuperados 23</button>
+              <button class="filter-pill-btn" data-filter="all">Todos</button>
+            </div>
+          </div>
+
+          <table class="retention-table">
+            <thead>
+              <tr>
+                <th>ALUNO</th>
+                <th>ÚLTIMO TREINO</th>
+                <th>MOTIVO APONTADO PELA IA</th>
+                <th>RISCO</th>
+                <th>AÇÃO SUGERIDA</th>
+              </tr>
+            </thead>
+            <tbody id="retention-table-body">
+              <!-- Preenchido via JavaScript -->
+            </tbody>
+          </table>
+
+          <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid #F3F4F6; font-size: 0.8rem; color: #10B981; display: flex; align-items: center; gap: 8px;">
+            <span>✓</span>
+            <span>23 de 31 alunos contatados em setembro voltaram a treinar em até 7 dias</span>
+          </div>
+        </section>
+      </div>
+
+      <!-- ================= SEÇÃO B: VISÃO GERAL ================= -->
+      <div class="admin-section" id="sec-visao-geral">
+        <section class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-header"><span>💰</span><span>Faturamento Mensal</span></div>
+            <div class="kpi-big-num">R$ 142.800</div>
+            <div class="kpi-footer-note">+8.4% vs mês anterior</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-header"><span>🎯</span><span>Taxa de Ocupação</span></div>
+            <div class="kpi-big-num">78%</div>
+            <div class="kpi-footer-note">Pico: 18h às 20h</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-header"><span>🆕</span><span>Novas Matrículas</span></div>
+            <div class="kpi-big-num">48</div>
+            <div class="kpi-footer-note">Neste mês</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-header"><span>⚡</span><span>Check-ins Hoje</span></div>
+            <div class="kpi-big-num">412</div>
+            <div class="kpi-footer-note">Em tempo real</div>
+          </div>
+        </section>
+
+        <section class="table-container-card" style="margin-top: 20px;">
+          <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 14px;">Resumo Operacional VnFitness</h3>
+          <p style="color: #6B7280; font-size: 0.85rem; line-height: 1.6;">
+            A inteligência artificial da VnFitness analisa continuamente os padrões de frequência e biometria dos alunos para antecipar evasões, otimizar a distribuição de máquinas na sala e sugerir treinos mais rápidos em horários de pico.
+          </p>
+        </section>
+      </div>
+
+      <!-- ================= SEÇÃO C: ALUNOS & APROVAÇÕES (CRUD SUPABASE) ================= -->
+      <div class="admin-section" id="sec-alunos">
+        <section class="table-container-card">
+          <div class="table-header-row">
+            <div>
+              <h3 style="font-size: 1.05rem; font-weight: 700; color: #111827;">Gestão de Alunos & Aprovações (Supabase)</h3>
+              <p style="font-size: 0.8rem; color: #6B7280;">Aprove novos cadastros, inative ou gerencie contas salvas no banco</p>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+              <button class="btn btn-primary" id="btn-novo-aluno" style="font-size: 0.8rem; padding: 8px 16px;">
+                ➕ Novo Aluno
+              </button>
+              <label for="admin-photo-upload" class="btn btn-secondary" style="font-size: 0.8rem; cursor: pointer;">
+                📷 Upload Foto Storage
+              </label>
+              <input type="file" id="admin-photo-upload" accept="image/*" style="display: none;">
+            </div>
+          </div>
+
+          <!-- Filtros de Alunos -->
+          <div class="filter-pills-row" style="margin-bottom: 16px;">
+            <button class="filter-pill-btn active" id="filter-alunos-todos">Todos</button>
+            <button class="filter-pill-btn" id="filter-alunos-pendentes">Pendentes</button>
+            <button class="filter-pill-btn" id="filter-alunos-aprovados">Aprovados</button>
+            <button class="filter-pill-btn" id="filter-alunos-inativos">Inativos</button>
+          </div>
+
+          <div id="admin-alunos-crud-list">
+            <!-- Carregado do Supabase -->
+          </div>
+        </section>
+      </div>
+
+      <!-- ================= SEÇÃO D: TREINOS IA ================= -->
+      <div class="admin-section" id="sec-treinos">
+        <section class="table-container-card">
+          <div class="table-header-row">
+            <div>
+              <h3 style="font-size: 1.05rem; font-weight: 700;">Fichas de Treino Geradas pelo Coach IA</h3>
+              <p style="font-size: 0.8rem; color: #6B7280;">Treinos personalizados montados pelo Google Gemini salvos no Supabase</p>
+            </div>
+          </div>
+
+          <div id="admin-treinos-ia-list" class="cards-responsive-grid">
+            <!-- Preenchido via JS -->
+          </div>
+        </section>
+      </div>
+
+      <!-- ================= SEÇÃO E: CHECK-INS ================= -->
+      <div class="admin-section" id="sec-checkins">
+        <section class="table-container-card">
+          <div class="table-header-row">
+            <div>
+              <h3 style="font-size: 1.05rem; font-weight: 700;">Registro de Check-ins em Tempo Real</h3>
+              <p style="font-size: 0.8rem; color: #6B7280;">Histórico de presenças sincronizado com o banco de dados</p>
+            </div>
+          </div>
+
+          <table class="retention-table">
+            <thead>
+              <tr>
+                <th>ALUNO</th>
+                <th>DATA</th>
+                <th>DURAÇÃO</th>
+                <th>INTENSIDADE</th>
+                <th>EXERCÍCIO DESTAQUE</th>
+              </tr>
+            </thead>
+            <tbody id="checkins-table-body">
+              <!-- Preenchido via JS -->
+            </tbody>
+          </table>
+        </section>
+      </div>
+
+      <!-- ================= SEÇÃO F: WHATSAPP ================= -->
+      <div class="admin-section" id="sec-whatsapp">
+        <section class="table-container-card">
+          <div class="table-header-row">
+            <div>
+              <h3 style="font-size: 1.05rem; font-weight: 700;">Fila de Mensagens Automáticas IA • WhatsApp</h3>
+              <p style="font-size: 0.8rem; color: #6B7280;">Envie mensagens empáticas de retenção com 1 clique</p>
+            </div>
+          </div>
+
+          <div id="whatsapp-queue-list">
+            <!-- Preenchido via JS -->
+          </div>
+        </section>
+      </div>
+
+      <!-- ================= SEÇÃO G: DESEMPENHO ================= -->
+      <div class="admin-section" id="sec-desempenho">
+        <section class="kpi-row">
+          <div class="kpi-card">
+            <div class="kpi-header"><span>🏆</span><span>Taxa de Retenção</span></div>
+            <div class="kpi-big-num" style="color: #10B981;">94.2%</div>
+            <div class="kpi-footer-note">Meta: &gt; 92%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-header"><span>📉</span><span>Taxa de Evasão</span></div>
+            <div class="kpi-big-num" style="color: #F59E0B;">5.8%</div>
+            <div class="kpi-footer-note">-1.2% neste trimestre</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-header"><span>🔄</span><span>Alunos Recuperados IA</span></div>
+            <div class="kpi-big-num" style="color: #0284C7;">23</div>
+            <div class="kpi-footer-note">Voltaram a treinar</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-header"><span>⭐</span><span>NPS Alunos</span></div>
+            <div class="kpi-big-num">89</div>
+            <div class="kpi-footer-note">Zona de Excelência</div>
+          </div>
+        </section>
+      </div>
+
+      <!-- ================= SEÇÃO H: PROFESSORES ================= -->
+      <div class="admin-section" id="sec-professores">
+        <section class="table-container-card">
+          <div class="table-header-row">
+            <div>
+              <h3 style="font-size: 1.05rem; font-weight: 700;">Equipe de Professores VnFitness</h3>
+              <p style="font-size: 0.8rem; color: #6B7280;">Gerencie os instrutores e acompanhe a distribuição de alunos</p>
+            </div>
+            <button class="btn btn-primary" id="btn-novo-professor" style="font-size: 0.8rem; padding: 8px 16px;">
+              ➕ Novo Professor
+            </button>
+          </div>
+
+          <div id="professores-cards-grid" class="cards-responsive-grid">
+            <!-- Preenchido via JS -->
+          </div>
+        </section>
+      </div>
+
+      <!-- ================= SEÇÃO I: CONFIGURAÇÕES ================= -->
+      <div class="admin-section" id="sec-configuracoes">
+        <section class="table-container-card">
+          <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 16px;">Configurações do Sistema VnFitness</h3>
+
+          <div class="config-info-row">
+            <span><strong>Administrador Credenciado:</strong></span>
+            <span class="badge badge-success">fredsoncitty@gmail.com (Admin Único)</span>
+          </div>
+
+          <div class="config-info-row">
+            <span><strong>Conexão Supabase:</strong></span>
+            <span style="color: #10B981; font-weight: 700;">● Online (grcdfegtnnsxtsqudhts)</span>
+          </div>
+
+          <div class="config-info-row">
+            <span><strong>Integração IA:</strong></span>
+            <span style="color: #0284C7; font-weight: 700;">● Google Gemini Flash Ativo</span>
+          </div>
+
+          <div class="config-info-row">
+            <span><strong>Aprovação de Alunos:</strong></span>
+            <span>Manual (Segurança estrita pelo painel)</span>
+          </div>
+
+          <div class="config-info-row">
+            <span><strong>Porta do Servidor:</strong></span>
+            <span>3333</span>
+          </div>
+        </section>
+      </div>
     </main>
 
-    <!-- ================= 3. PAINEL LATERAL DIREITO (DashBoard.jpg) ================= -->
-    <aside class="admin-drawer-right">
+    <!-- ================= 3. PAINEL LATERAL DIREITO (DRAWER RETENÇÃO) ================= -->
+    <aside class="admin-drawer-right" id="admin-drawer">
       <div class="drawer-student-header">
         <div class="drawer-student-info">
           <div class="student-avatar-badge" style="width: 44px; height: 44px; font-size: 1rem;">RT</div>
@@ -300,4 +489,3 @@
   <script type="module" src="js/admin.js"></script>
 </body>
 </html>
-

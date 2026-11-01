@@ -85,21 +85,30 @@
         </svg>
       </div>
 
-      <!-- Card Inferior Flutuante com Glassmorphism (login.png) -->
+      <!-- Card Inferior Flutuante com Glassmorphism (VnFitness) -->
       <div class="auth-glass-card">
-        <!-- Abas de Alternância Superior -->
-        <div class="auth-mode-tabs">
-          <button type="button" class="auth-tab-btn" id="tab-btn-login">LOGIN</button>
-          <button type="button" class="auth-tab-btn active" id="tab-btn-signup">CRIAR CONTA</button>
+        <!-- Logo e Título VnFitness no Topo do Card -->
+        <div style="text-align: center; margin-bottom: 16px;">
+          <div style="display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; background: linear-gradient(135deg, #0284C7, #38BDF8); border-radius: 12px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4); margin-bottom: 8px;">
+            <span style="font-size: 1.5rem; color: #FFFFFF;">⚡</span>
+          </div>
+          <h1 style="font-size: 1.45rem; font-weight: 800; color: #0F172A; letter-spacing: -0.5px; margin: 0;">VnFitness</h1>
+          <p style="font-size: 0.78rem; color: #64748B; margin-top: 2px;">Treinos Inteligentes & Gestão com IA</p>
         </div>
 
-        <h2 class="auth-title" id="auth-title">Create an Account</h2>
+        <!-- Abas de Alternância Superior -->
+        <div class="auth-mode-tabs">
+          <button type="button" class="auth-tab-btn active" id="tab-btn-login">ENTRAR</button>
+          <button type="button" class="auth-tab-btn" id="tab-btn-signup">CRIAR CONTA</button>
+        </div>
+
+        <h2 class="auth-title" id="auth-title">Bem-vindo de volta!</h2>
 
         <div id="auth-alert" class="auth-alert"></div>
 
         <form id="auth-form">
-          <!-- Campo Nome (visível no cadastro) -->
-          <div class="auth-input-group" id="name-group">
+          <!-- Campo Nome (visível apenas no cadastro) -->
+          <div class="auth-input-group" id="name-group" style="display: none;">
             <span class="auth-icon-left">👤</span>
             <input type="text" id="name-input" class="auth-input" placeholder="Seu Nome Completo">
           </div>
@@ -107,37 +116,42 @@
           <!-- Campo E-mail -->
           <div class="auth-input-group">
             <span class="auth-icon-left">✉️</span>
-            <input type="email" id="email-input" class="auth-input" placeholder="Email" required autocomplete="email">
+            <input type="email" id="email-input" class="auth-input" placeholder="Seu E-mail" required autocomplete="email">
           </div>
 
           <!-- Campo Senha -->
           <div class="auth-input-group">
             <span class="auth-icon-left">🔒</span>
-            <input type="password" id="password-input" class="auth-input" placeholder="Password" required autocomplete="current-password">
+            <input type="password" id="password-input" class="auth-input" placeholder="Sua Senha" required autocomplete="current-password">
             <span class="auth-icon-right" id="toggle-password" title="Ver senha">👁️</span>
           </div>
 
           <!-- Botão Principal com Supabase -->
-          <button type="submit" id="submit-btn" class="btn btn-auth-action">SIGN UP</button>
+          <button type="submit" id="submit-btn" class="btn btn-auth-action">ENTRAR NO VNFITNESS</button>
 
-          <!-- Alternar Modo Inferior (login.png) -->
+          <!-- Alternar Modo Inferior -->
           <p class="auth-toggle-text">
-            <span id="toggle-question">Already have an Account?</span>
-            <span class="auth-toggle-link" id="toggle-auth-mode">Login</span>
+            <span id="toggle-question">Não tem uma conta ainda?</span>
+            <span class="auth-toggle-link" id="toggle-auth-mode">Cadastre-se aqui</span>
           </p>
 
-          <!-- Preencher Admin com 1 clique para facilidade -->
-          <p class="quick-fill-admin" id="fill-admin-btn">🔑 Entrar como Admin (fredsoncitty@gmail.com)</p>
-
-          <div class="auth-divider">
-            <span>OR</span>
+          <!-- Botão de Acesso Direto como Administrador Mestre -->
+          <div style="margin-top: 14px; padding: 10px; background: rgba(2, 132, 199, 0.08); border: 1px solid rgba(2, 132, 199, 0.2); border-radius: 12px; text-align: center;">
+            <button type="button" id="fill-admin-btn" style="background: transparent; border: none; color: #0284C7; font-weight: 700; font-size: 0.8rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+              <span>🔑</span>
+              <span>Entrar como Administrador (Fredson Citty)</span>
+            </button>
           </div>
 
-          <!-- Botões Sociais Circulares (login.png) -->
+          <div class="auth-divider">
+            <span>OU CONECTE COM</span>
+          </div>
+
+          <!-- Botões Sociais Circulares -->
           <div class="auth-social-row">
             <button type="button" class="social-circle-btn" title="Facebook">f</button>
             <button type="button" class="social-circle-btn" title="Google">G+</button>
-            <button type="button" class="social-circle-btn" title="Twitter">🐦</button>
+            <button type="button" class="social-circle-btn" title="Apple">🍎</button>
           </div>
         </form>
       </div>
