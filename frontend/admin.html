@@ -604,91 +604,280 @@
         </section>
       </div>
 
-      <!-- ================= SEÇÃO I: CONFIGURAÇÕES DO SISTEMA (PERSISTENTES) ================= -->
+      <!-- ================= SEÇÃO I: CONFIGURAÇÕES DO SISTEMA (PERSISTENTES NO SUPABASE) ================= -->
       <div class="admin-section" id="sec-configuracoes">
-        <section class="table-container-card">
-          <div class="table-header-row" style="margin-bottom: 20px;">
-            <div>
-              <h3 style="font-size: 1.1rem; font-weight: 700; color: #111827;">Configurações Globais do Sistema (Supabase)</h3>
-              <p style="font-size: 0.82rem; color: #6B7280;">Todas as alterações ficam salvas no banco de dados e persistem até serem alteradas.</p>
+        <div class="settings-wrapper">
+
+          <!-- Hero Banner Superior com Identificação e Botão de Ação -->
+          <div class="settings-hero-card">
+            <div class="settings-hero-left">
+              <div class="settings-hero-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="3"/>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                </svg>
+              </div>
+              <div class="settings-hero-text">
+                <h2>Configurações Globais do Sistema</h2>
+                <p>Identidade da unidade, parâmetros do algoritmo preditivo e infraestrutura em nuvem Supabase</p>
+              </div>
             </div>
-            <button type="button" class="btn btn-primary" id="btn-salvar-config-sistema" style="font-size: 0.85rem; padding: 10px 20px; display: inline-flex; align-items: center; gap: 6px;">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+
+            <button type="button" class="settings-save-btn" id="btn-salvar-config-sistema">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
                 <polyline points="17 21 17 13 7 13 7 21"/>
                 <polyline points="7 3 7 8 15 8"/>
               </svg>
-              <span>Salvar Configurações</span>
+              <span>Salvar Alterações</span>
             </button>
           </div>
 
-          <div id="alert-config-sistema" style="display: none; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 0.85rem;"></div>
+          <!-- Alerta de Feedback Dinâmico -->
+          <div id="alert-config-sistema" style="display: none; padding: 14px 18px; border-radius: 12px; font-size: 0.86rem; font-weight: 600;"></div>
 
-          <form id="form-config-sistema">
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 20px;">
-              
-              <!-- Nome da Academia / Unidade -->
-              <div>
-                <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #374151; margin-bottom: 6px;">Nome da Academia / Franquia</label>
-                <input type="text" id="cfg-nome-academia" class="auth-input" style="background: #FFF; border: 1px solid #D1D5DB; padding: 10px 14px;" value="VnFitness Matriz" required>
+          <form id="form-config-sistema" style="display: flex; flex-direction: column; gap: 20px;">
+            
+            <!-- CARD 1: Identidade da Academia & Unidade -->
+            <div class="settings-section-card">
+              <div class="settings-card-header">
+                <h3>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 21h18"/><path d="M9 8h1"/><path d="M9 12h1"/><path d="M9 16h1"/><path d="M14 8h1"/><path d="M14 12h1"/><path d="M14 16h1"/><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/>
+                  </svg>
+                  <span>Identidade da Unidade & Contato</span>
+                </h3>
+                <p>Informações comerciais visíveis para os alunos no aplicativo e cabeçalhos de treino</p>
               </div>
 
-              <!-- Subtítulo da Unidade -->
-              <div>
-                <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #374151; margin-bottom: 6px;">Identificação da Unidade</label>
-                <input type="text" id="cfg-subtitulo-unidade" class="auth-input" style="background: #FFF; border: 1px solid #D1D5DB; padding: 10px 14px;" value="Unidade Central • Sistema IA" required>
+              <div class="settings-grid-2col">
+                <!-- Nome da Academia / Franquia -->
+                <div class="settings-form-group">
+                  <label class="settings-form-label" for="cfg-nome-academia">
+                    <span>Nome da Academia / Franquia</span>
+                    <span class="settings-form-label-tag">Obrigatório</span>
+                  </label>
+                  <div class="settings-input-box">
+                    <span class="settings-field-icon">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                      </svg>
+                    </span>
+                    <input type="text" id="cfg-nome-academia" class="settings-field-input" value="VnFitness Matriz" placeholder="Ex: VnFitness Matriz Central" required>
+                  </div>
+                  <span class="settings-field-helper">Exibido na tela de login, barra de status e topo do painel</span>
+                </div>
+
+                <!-- Identificação da Unidade -->
+                <div class="settings-form-group">
+                  <label class="settings-form-label" for="cfg-subtitulo-unidade">
+                    <span>Identificação da Unidade</span>
+                    <span class="settings-form-label-tag">Público</span>
+                  </label>
+                  <div class="settings-input-box">
+                    <span class="settings-field-icon">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                        <circle cx="12" cy="10" r="3"/>
+                      </svg>
+                    </span>
+                    <input type="text" id="cfg-subtitulo-unidade" class="settings-field-input" value="Unidade Central • Sistema IA" placeholder="Ex: Unidade Central • Sistema IA" required>
+                  </div>
+                  <span class="settings-field-helper">Subtítulo que identifica a sala de musculação ou endereço</span>
+                </div>
+
+                <!-- Telefone de Suporte / WhatsApp da Academia -->
+                <div class="settings-form-group settings-grid-span-2">
+                  <label class="settings-form-label" for="cfg-telefone-suporte">
+                    <span>WhatsApp Oficial da Academia (Suporte & IA)</span>
+                    <span class="settings-form-label-tag" style="background: #DCFCE7; color: #15803D;">WhatsApp Web</span>
+                  </label>
+                  <div class="settings-input-box">
+                    <span class="settings-field-icon">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
+                      </svg>
+                    </span>
+                    <input type="text" id="cfg-telefone-suporte" class="settings-field-input" value="(11) 98888-7777" placeholder="(11) 98888-7777">
+                  </div>
+                  <span class="settings-field-helper">Canal que os alunos acionam com 1 toque no app para falar com instrutores</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- CARD 2: Motor de Retenção & Regras do Coach IA -->
+            <div class="settings-section-card">
+              <div class="settings-card-header">
+                <h3>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/>
+                  </svg>
+                  <span>Motor de IA & Regras de Retenção</span>
+                </h3>
+                <p>Políticas de entrada de novos alunos e sensibilidade do cálculo preditivo de churn</p>
               </div>
 
-              <!-- Modo de Aprovação de Novos Alunos -->
-              <div>
-                <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #374151; margin-bottom: 6px;">Modo de Aprovação de Cadastros</label>
-                <select id="cfg-modo-aprovacao" class="auth-input" style="background: #FFF; border: 1px solid #D1D5DB; padding: 10px 14px; cursor: pointer;">
+              <!-- Seleção Visual de Modo de Aprovação -->
+              <div class="settings-form-group" style="margin-bottom: 20px;">
+                <label class="settings-form-label">
+                  <span>Modo de Aprovação de Cadastros</span>
+                  <span class="settings-form-label-tag">Segurança</span>
+                </label>
+
+                <!-- Select nativo invisível mantido para compatibilidade total de envio -->
+                <select id="cfg-modo-aprovacao" style="display: none;">
                   <option value="manual">Manual (Administrador aprova pelo painel)</option>
                   <option value="automatico">Automático (Conta ativa imediatamente)</option>
                 </select>
+
+                <!-- Cards interativos elegantes -->
+                <div class="approval-cards-row">
+                  <div class="approval-card-item selected" id="opt-modo-manual" data-val="manual">
+                    <div class="approval-card-icon">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                      </svg>
+                    </div>
+                    <div class="approval-card-details">
+                      <h4>
+                        <span>Aprovação Manual</span>
+                        <span class="approval-badge-pill badge-rec">Recomendado</span>
+                      </h4>
+                      <p>O administrador avalia e aprova novos cadastros na aba Alunos antes de liberar o acesso.</p>
+                    </div>
+                  </div>
+
+                  <div class="approval-card-item" id="opt-modo-automatico" data-val="automatico">
+                    <div class="approval-card-icon">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                      </svg>
+                    </div>
+                    <div class="approval-card-details">
+                      <h4>
+                        <span>Acesso Automático</span>
+                        <span class="approval-badge-pill badge-auto">Instantâneo</span>
+                      </h4>
+                      <p>O aluno realiza o cadastro e tem o treino e IA liberados no primeiro instante sem filas.</p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <!-- Telefone de Suporte / WhatsApp da Academia -->
-              <div>
-                <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #374151; margin-bottom: 6px;">WhatsApp Oficial da Academia (Suporte & IA)</label>
-                <input type="text" id="cfg-telefone-suporte" class="auth-input" style="background: #FFF; border: 1px solid #D1D5DB; padding: 10px 14px;" value="(11) 98888-7777">
-              </div>
+              <!-- Linha Dupla de Metas Numéricas com visual clean -->
+              <div class="settings-grid-2col">
+                <!-- Meta Geral de Frequência Semanal -->
+                <div class="settings-form-group">
+                  <label class="settings-form-label" for="cfg-meta-semanal">
+                    <span>Meta Padrão de Frequência Semanal</span>
+                    <span class="settings-form-label-tag">Treinos/Sem</span>
+                  </label>
+                  <div class="settings-input-box">
+                    <span class="settings-field-icon">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+                      </svg>
+                    </span>
+                    <input type="number" id="cfg-meta-semanal" class="settings-field-input" min="1" max="7" value="3" required>
+                  </div>
+                  <span class="settings-field-helper">Quantidade padrão de sessões por semana prescrita nos treinos</span>
+                </div>
 
-              <!-- Meta Geral de Frequência Semanal -->
-              <div>
-                <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #374151; margin-bottom: 6px;">Meta de Frequência Semanal (Treinos/Semana)</label>
-                <input type="number" id="cfg-meta-semanal" class="auth-input" style="background: #FFF; border: 1px solid #D1D5DB; padding: 10px 14px;" min="1" max="7" value="3">
-              </div>
-
-              <!-- Dias sem Treino para Alerta de Risco IA -->
-              <div>
-                <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #374151; margin-bottom: 6px;">Alerta de Risco de Evasão IA (Dias de Inatividade)</label>
-                <input type="number" id="cfg-dias-alerta" class="auth-input" style="background: #FFF; border: 1px solid #D1D5DB; padding: 10px 14px;" min="2" max="30" value="7">
+                <!-- Dias sem Treino para Alerta de Risco IA -->
+                <div class="settings-form-group">
+                  <label class="settings-form-label" for="cfg-dias-alerta">
+                    <span>Gatilho de Risco de Evasão IA</span>
+                    <span class="settings-form-label-tag" style="background: #FEE2E2; color: #DC2626;">Alerta Churn</span>
+                  </label>
+                  <div class="settings-input-box">
+                    <span class="settings-field-icon">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                      </svg>
+                    </span>
+                    <input type="number" id="cfg-dias-alerta" class="settings-field-input" min="2" max="30" value="7" required>
+                  </div>
+                  <span class="settings-field-helper">Dias sem check-in para o aluno entrar automaticamente na fila de contato</span>
+                </div>
               </div>
             </div>
 
-            <!-- Parâmetros de Infraestrutura e Conexões (Status) -->
-            <h4 style="font-size: 0.92rem; font-weight: 700; color: #111827; margin: 24px 0 12px 0;">Status de Conexão & Infraestrutura</h4>
-            <div style="background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 12px; padding: 16px;">
-              <div class="config-info-row">
-                <span><strong>Administrador Credenciado Mestre:</strong></span>
-                <span class="badge badge-success">fredsoncitty@gmail.com (Acesso Vitalício)</span>
+            <!-- CARD 3: Infraestrutura, Conexões & Status em Tempo Real -->
+            <div class="settings-section-card">
+              <div class="settings-card-header">
+                <h3>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/>
+                    <line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/>
+                  </svg>
+                  <span>Status de Conexão & Infraestrutura em Nuvem</span>
+                </h3>
+                <p>Monitoramento ativo dos serviços externos conectados ao ecossistema VnFitness</p>
               </div>
-              <div class="config-info-row">
-                <span><strong>Conexão Supabase Database & Auth:</strong></span>
-                <span style="color: #10B981; font-weight: 700;">● Online (sothigunxokciqpsuhmn)</span>
-              </div>
-              <div class="config-info-row">
-                <span><strong>Inteligência Artificial Ativa:</strong></span>
-                <span style="color: #0284C7; font-weight: 700;">● Google Gemini Flash 2.5 Conectado</span>
-              </div>
-              <div class="config-info-row">
-                <span><strong>Porta do Servidor Local:</strong></span>
-                <span>3333</span>
+
+              <div class="cloud-status-grid">
+                <!-- Supabase Cloud -->
+                <div class="cloud-status-box">
+                  <div class="cloud-status-top">
+                    <span class="cloud-service-name">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                      Supabase Cloud
+                    </span>
+                    <span class="cloud-status-pill pill-green">
+                      <span class="pill-pulse-dot"></span>
+                      Online
+                    </span>
+                  </div>
+                  <div class="cloud-status-val" title="sothigunxokciqpsuhmn">sothigunxokciqpsuhmn</div>
+                  <div class="cloud-status-desc">PostgreSQL & Auth Conectados</div>
+                </div>
+
+                <!-- Google Gemini IA -->
+                <div class="cloud-status-box">
+                  <div class="cloud-status-top">
+                    <span class="cloud-service-name">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                      Google Gemini IA
+                    </span>
+                    <span class="cloud-status-pill pill-blue">
+                      <span class="pill-pulse-dot"></span>
+                      Flash 2.5
+                    </span>
+                  </div>
+                  <div class="cloud-status-val">Coach & Churn Engine</div>
+                  <div class="cloud-status-desc">Prescrição e Retenção Ativas</div>
+                </div>
+
+                <!-- Administrador Mestre -->
+                <div class="cloud-status-box">
+                  <div class="cloud-status-top">
+                    <span class="cloud-service-name">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9333EA" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                      Administrador Mestre
+                    </span>
+                    <span class="cloud-status-pill pill-purple">Vitalício</span>
+                  </div>
+                  <div class="cloud-status-val" title="fredsoncitty@gmail.com">fredsoncitty@gmail.com</div>
+                  <div class="cloud-status-desc">Superusuário Credenciado</div>
+                </div>
+
+                <!-- Servidor Local Node.js -->
+                <div class="cloud-status-box">
+                  <div class="cloud-status-top">
+                    <span class="cloud-service-name">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#4B5563" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                      Servidor da API
+                    </span>
+                    <span class="cloud-status-pill pill-gray">Porta 3333</span>
+                  </div>
+                  <div class="cloud-status-val">Node.js + Express + TS</div>
+                  <div class="cloud-status-desc">Latência &lt; 5ms • Operacional</div>
+                </div>
               </div>
             </div>
+
           </form>
-        </section>
+        </div>
       </div>
     </main>
 
