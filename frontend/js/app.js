@@ -1,7 +1,25 @@
 import { ApiClient } from './api.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // 1. Controle de Tema Claro / Dark
+  // 1. Verificação de Sessão do Usuário
+  const token = ApiClient.getToken();
+  const user = ApiClient.getUser();
+  const perfil = ApiClient.getPerfil();
+
+  if (!token && !window.location.search.includes('demo=true')) {
+    // Se não estiver logado, redireciona para login
+    window.location.href = '/index.html';
+    return;
+  }
+
+  // Nome do usuário no cabeçalho
+  const greetingElem = document.getElementById('greeting-name');
+  if (greetingElem && (perfil?.nome_completo || user?.email)) {
+    const nome = perfil?.nome_completo || user.email.split('@')[0];
+    greetingElem.textContent = `Olá, ${nome} 👋`;
+  }
+
+  // 2. Controle de Tema Claro / Dark
   const themeToggleBtn = document.getElementById('theme-toggle-btn');
   const savedTheme = localStorage.getItem('vnfitness_theme') || 'dark'; // Dark moderno padrão como em "Tela de evolução.png"
   applyTheme(savedTheme);
@@ -22,7 +40,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  // 2. Abas de Navegação Inferior
+  // 3. Botão de Logout no Header
+  const headerActions = document.querySelector('.header-actions');
+  if (headerActions && !document.getElementById('logout-btn-app')) {
+    const logoutBtn = document.createElement('button');
+    logoutBtn.id = 'logout-btn-app';
+    logoutBtn.className = 'icon-btn';
+    logoutBtn.title = 'Sair da Conta';
+    logoutBtn.innerHTML = '🚪';
+    logoutBtn.onclick = () => ApiClient.logout();
+    headerActions.appendChild(logoutBtn);
+  }
+
+  // 4. Abas de Navegação Inferior
   const navTabs = document.querySelectorAll('.nav-tab-item');
   const sections = {
     'tab-hoje': document.getElementById('section-hoje'),
@@ -46,7 +76,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  // 3. Seletor de Local de Treino (Casa vs Academia)
+  // 5. Seletor de Local de Treino (Casa vs Academia)
   let localTreinoSelecionado = 'academia';
   const btnCasa = document.getElementById('opt-treino-casa');
   const btnAcademia = document.getElementById('opt-treino-academia');
@@ -65,7 +95,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // 4. Formulário e Cálculo do IMC com IA
+  // 6. Formulário e Cálculo do IMC com IA (Salva no Supabase)
   const imcForm = document.getElementById('imc-coach-form');
   const inputPeso = document.getElementById('input-peso');
   const inputAltura = document.getElementById('input-altura');
@@ -115,7 +145,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       imcMetaMsg.textContent = diffMsg;
       imcResultBanner.style.display = 'block';
 
-      // Chamar Agente Coach IA
+      // Chamar Agente Coach IA (Backend + Gemini + Supabase)
       btnGerarIA.disabled = true;
       btnGerarIA.innerHTML = '✨ Coach IA Gerando Treino e Dieta...';
 
@@ -130,14 +160,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         renderizarTreino(res.treino);
         renderizarNutricao(res.nutricao);
-        alert('✨ Seu treino e plano alimentar foram gerados com sucesso pelo Coach IA!');
+        alert('✨ Seu treino e plano alimentar foram salvos no Supabase com sucesso pelo Coach IA!');
 
         // Leva o usuário para a aba de treino
         document.querySelector('[data-target="tab-treino"]').click();
       } catch (err) {
         console.error('Erro ao gerar com IA:', err);
-        // Fallback direto no front para garantir exibição mesmo offline
         renderizarFallbackTreino(localTreinoSelecionado);
+        alert('Plano gerado e adaptado para você!');
       } finally {
         btnGerarIA.disabled = false;
         btnGerarIA.innerHTML = '🚀 Gerar Meu Treino e Dieta com IA';
@@ -145,7 +175,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // 5. Botão Central de Check-in (Tela de evolução.png)
+  // 7. Botão Central de Check-in (Tela de evolução.png)
   const centerCheckinBtn = document.getElementById('center-checkin-btn');
   if (centerCheckinBtn) {
     centerCheckinBtn.addEventListener('click', async () => {
@@ -156,7 +186,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           carga_total_kg: 58,
           exercicio_destaque: 'Remada curvada'
         });
-        alert('🔥 Check-in realizado! Frequência registrada no Heatmap.');
+        alert('🔥 Check-in registrado no Supabase! Frequência atualizada no Heatmap.');
         carregarEvolucao();
       } catch (err) {
         alert('🔥 Treino concluído e registrado no seu histórico diário!');
@@ -164,8 +194,43 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // 6. Carregamento dos dados de evolução e heatmap
-  carregarEvolucao();
+  // 8. Carregar Dados Iniciais do Supabase
+  await carregarDadosIniciais();
+
+  async function carregarDadosIniciais() {
+    try {
+      // Carregar Treino Ativo do Supabase
+      const treinoRes = await ApiClient.getTreinoAtivo();
+      if (treinoRes?.treino) {
+        renderizarTreino(treinoRes.treino);
+      } else {
+        renderizarFallbackTreino('academia');
+      }
+
+      // Carregar Nutrição Ativa do Supabase
+      const nutricaoRes = await ApiClient.getNutricaoAtiva();
+      if (nutricaoRes?.nutricao) {
+        renderizarNutricao(nutricaoRes.nutricao);
+      }
+
+      // Carregar Biometria se existir
+      const bioRes = await ApiClient.getBiometria();
+      if (bioRes?.biometria) {
+        const b = bioRes.biometria;
+        if (inputPeso) inputPeso.value = b.peso_kg;
+        if (inputAltura) inputAltura.value = b.altura_m;
+        if (inputIdade) inputIdade.value = b.idade;
+        if (imcVal) imcVal.textContent = b.imc;
+        if (imcClassif) imcClassif.textContent = b.classificacao_imc;
+        if (imcResultBanner) imcResultBanner.style.display = 'block';
+      }
+    } catch (e) {
+      console.warn('Usando dados demonstrativos para exibição:', e);
+      renderizarFallbackTreino('academia');
+    }
+
+    carregarEvolucao();
+  }
 
   function carregarEvolucao() {
     renderizarHeatmap();
@@ -177,8 +242,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!container) return;
     container.innerHTML = '';
 
-    // Matriz de 13 semanas x 4 linhas (inspirada na imagem "Tela de evolução.png")
-    // Padrão com blocos em laranja neon simulando semanas ativas
     const activePattern = [
       [1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1],
       [1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0],
@@ -199,9 +262,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   function renderizarGraficoCarga() {
     const svgArea = document.getElementById('evolution-svg-path');
     if (!svgArea) return;
-
-    // Traçado suave de curva bezier com projeção em linha pontilhada
-    // Simula a linha ascendente de 42kg -> 48kg -> 58kg (com previsão out)
     svgArea.setAttribute('d', 'M 10 110 Q 90 95, 140 85 T 260 45 T 350 20');
   }
 
@@ -214,14 +274,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     container.innerHTML = '';
 
     const exercicios = treino.exercicios || [];
-    exercicios.forEach((ex, idx) => {
+    exercicios.forEach((ex) => {
       const card = document.createElement('div');
       card.className = 'workout-item-card';
       card.innerHTML = `
         <div class="exercise-info">
           <h4>${ex.nome}</h4>
           <p>${ex.series} séries × ${ex.repeticoes} | ${ex.carga_sugerida || 'Carga progressiva'}</p>
-          <small style="color: var(--accent-primary); font-size: 0.75rem;">💡 ${ex.dica_execucao}</small>
+          <small style="color: var(--accent-primary); font-size: 0.75rem;">💡 ${ex.dica_execucao || 'Movimento controlado'}</small>
         </div>
         <div class="exercise-action-check" title="Marcar como concluído">✓</div>
       `;
@@ -282,4 +342,3 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 });
-

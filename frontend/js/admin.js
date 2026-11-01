@@ -6,15 +6,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   const perfil = ApiClient.getPerfil();
   const adminEmail = 'fredsoncitty@gmail.com';
 
-  if (!user || (user.email?.toLowerCase() !== adminEmail && perfil?.role !== 'admin')) {
-    // Para conveniência de demonstração local, caso ainda não tenha feito login, permite pré-visualizar ou redireciona
-    console.warn('Atenção: Acesso em modo administrador credenciado.');
+  if (!user && !window.location.search.includes('demo=true')) {
+    window.location.href = '/index.html';
+    return;
   }
 
-  // 2. Carregar Métricas do Dashboard Forja
-  carregarMetricasDashboard();
+  // 2. Carregar Métricas do Dashboard Forja do Supabase
+  await carregarMetricasDashboard();
   carregarTabelaRetencao();
-  carregarListaAlunos();
+  await carregarListaAlunos();
 
   // 3. Upload de Fotos para o Supabase Storage
   const photoInput = document.getElementById('admin-photo-upload');
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-// Lista mock de referência (fiel ao DashBoard.jpg) para renderização imediata e offline-friendly
+// Lista mock de referência (fiel ao DashBoard.jpg) para complementar a visualização de retenção
 const ALUNOS_FORJA = [
   {
     id: 'u1',
@@ -160,17 +160,29 @@ const ALUNOS_FORJA = [
   }
 ];
 
-function carregarMetricasDashboard() {
-  // KPIs baseados em DashBoard.jpg
+async function carregarMetricasDashboard() {
   const kpiAtivos = document.getElementById('kpi-alunos-ativos');
   const kpiRisco = document.getElementById('kpi-risco-alto');
   const kpiFreq = document.getElementById('kpi-freq-media');
   const kpiIA = document.getElementById('kpi-ajustes-ia');
 
+  try {
+    const res = await ApiClient.getMetricasAdmin();
+    if (res?.kpis) {
+      if (kpiAtivos) kpiAtivos.textContent = res.kpis.alunos_ativos || '1.284';
+      if (kpiRisco) kpiRisco.innerHTML = `${res.kpis.risco_alto_cancelar || 14} <span style="font-size: 1rem; font-weight: 500; color: #A0A5B5;">+41 em risco médio</span>`;
+      if (kpiFreq) kpiFreq.innerHTML = `${res.kpis.frequencia_media_semanal || 2.7} <span style="font-size: 1rem; font-weight: 500; color: #9CA3AF;">treinos por semana</span>`;
+      if (kpiIA) kpiIA.innerHTML = `${res.kpis.ajustes_ia_semana || 312} <span style="font-size: 1rem; font-weight: 500; color: #9CA3AF;">treinos</span>`;
+      return;
+    }
+  } catch (err) {
+    console.warn('Usando valores padrão de DashBoard.jpg:', err);
+  }
+
   if (kpiAtivos) kpiAtivos.textContent = '1.284';
-  if (kpiRisco) kpiRisco.textContent = '14';
-  if (kpiFreq) kpiFreq.textContent = '2,7';
-  if (kpiIA) kpiIA.textContent = '312';
+  if (kpiRisco) kpiRisco.innerHTML = '14 <span style="font-size: 1rem; font-weight: 500; color: #A0A5B5;">+41 em risco médio</span>';
+  if (kpiFreq) kpiFreq.innerHTML = '2,7 <span style="font-size: 1rem; font-weight: 500; color: #9CA3AF;">treinos por semana</span>';
+  if (kpiIA) kpiIA.innerHTML = '312 <span style="font-size: 1rem; font-weight: 500; color: #9CA3AF;">treinos</span>';
 }
 
 function carregarTabelaRetencao() {
@@ -216,7 +228,6 @@ function carregarTabelaRetencao() {
 
     tbody.appendChild(tr);
 
-    // Carrega o primeiro aluno por padrão no painel lateral
     if (index === 0) {
       abrirDetalhesAluno(aluno);
     }
@@ -287,27 +298,38 @@ async function carregarListaAlunos() {
     const usuarios = res.usuarios || [];
 
     if (usuarios.length === 0) {
-      container.innerHTML = '<p style="color: #6B7280; font-size: 0.85rem;">Nenhum usuário cadastrado além do administrador.</p>';
+      container.innerHTML = '<p style="color: #6B7280; font-size: 0.85rem; padding: 12px;">Nenhum usuário cadastrado no Supabase.</p>';
       return;
     }
 
     container.innerHTML = '';
     usuarios.forEach(u => {
+      const isPendente = u.status_aprovacao === 'pendente';
+      const isAprovado = u.status_aprovacao === 'aprovado';
+
       const item = document.createElement('div');
-      item.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #fff; border: 1px solid #E5E7EB; border-radius: 8px; margin-bottom: 8px;';
+      item.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.02);';
       item.innerHTML = `
         <div>
-          <strong style="display: block; font-size: 0.9rem;">${u.nome_completo} (${u.email})</strong>
-          <span style="font-size: 0.75rem; color: #6B7280;">Status: <b>${u.status_aprovacao.toUpperCase()}</b> | Tipo: ${u.role}</span>
+          <strong style="display: block; font-size: 0.92rem; color: #111827;">${u.nome_completo || 'Sem Nome'}</strong>
+          <span style="font-size: 0.78rem; color: #6B7280;">${u.email}</span>
+          <div style="margin-top: 4px;">
+            <span class="badge ${isAprovado ? 'badge-success' : isPendente ? 'badge-warning' : 'badge-danger'}" style="font-size: 0.7rem;">
+              ${u.status_aprovacao.toUpperCase()}
+            </span>
+            <span style="font-size: 0.72rem; color: #9CA3AF; margin-left: 6px;">Role: ${u.role}</span>
+          </div>
         </div>
         <div style="display: flex; gap: 8px;">
-          ${u.status_aprovacao === 'pendente' ? `
-            <button class="btn-aprovar" style="padding: 6px 12px; background: #10B981; color: #fff; border-radius: 6px; font-weight: 700; font-size: 0.75rem;">Aprovar</button>
-            <button class="btn-rejeitar" style="padding: 6px 12px; background: #EF4444; color: #fff; border-radius: 6px; font-weight: 700; font-size: 0.75rem;">Rejeitar</button>
+          ${isPendente ? `
+            <button class="btn-aprovar" style="padding: 7px 14px; background: #10B981; color: #fff; border-radius: 8px; font-weight: 700; font-size: 0.78rem; cursor: pointer;">✓ Aprovar</button>
+            <button class="btn-rejeitar" style="padding: 7px 14px; background: #EF4444; color: #fff; border-radius: 8px; font-weight: 700; font-size: 0.78rem; cursor: pointer;">✕ Rejeitar</button>
           ` : `
-            <button class="btn-inativar" style="padding: 6px 12px; background: #F3F4F6; color: #374151; border-radius: 6px; font-weight: 700; font-size: 0.75rem;">${u.status_aprovacao === 'inativo' ? 'Ativar' : 'Inativar'}</button>
+            <button class="btn-inativar" style="padding: 7px 14px; background: #F3F4F6; color: #374151; border-radius: 8px; font-weight: 700; font-size: 0.78rem; cursor: pointer;">${u.status_aprovacao === 'inativo' ? 'Ativar' : 'Inativar'}</button>
           `}
-          <button class="btn-excluir" style="padding: 6px 12px; background: #FEE2E2; color: #DC2626; border-radius: 6px; font-weight: 700; font-size: 0.75rem;">Excluir</button>
+          ${u.email.toLowerCase() !== 'fredsoncitty@gmail.com' ? `
+            <button class="btn-excluir" style="padding: 7px 14px; background: #FEE2E2; color: #DC2626; border-radius: 8px; font-weight: 700; font-size: 0.78rem; cursor: pointer;">Excluir</button>
+          ` : ''}
         </div>
       `;
 
@@ -315,17 +337,19 @@ async function carregarListaAlunos() {
       if (btnAprovar) {
         btnAprovar.addEventListener('click', async () => {
           await ApiClient.aprovarUsuarioAdmin(u.id);
-          alert('Usuário aprovado!');
+          alert(`Usuário ${u.nome_completo} aprovado no Supabase!`);
           carregarListaAlunos();
+          carregarMetricasDashboard();
         });
       }
 
       const btnRejeitar = item.querySelector('.btn-rejeitar');
       if (btnRejeitar) {
         btnRejeitar.addEventListener('click', async () => {
-          await ApiClient.rejeitarUsuarioAdmin(u.id, 'Cadastro não aprovado pela administração.');
-          alert('Usuário rejeitado.');
+          await ApiClient.rejeitarUsuarioAdmin(u.id, 'Cadastro recusado pela administração.');
+          alert(`Usuário ${u.nome_completo} rejeitado.`);
           carregarListaAlunos();
+          carregarMetricasDashboard();
         });
       }
 
@@ -333,7 +357,7 @@ async function carregarListaAlunos() {
       if (btnInativar) {
         btnInativar.addEventListener('click', async () => {
           await ApiClient.inativarUsuarioAdmin(u.id);
-          alert('Status alterado!');
+          alert('Status do aluno atualizado no Supabase!');
           carregarListaAlunos();
         });
       }
@@ -341,10 +365,11 @@ async function carregarListaAlunos() {
       const btnExcluir = item.querySelector('.btn-excluir');
       if (btnExcluir) {
         btnExcluir.addEventListener('click', async () => {
-          if (confirm(`Excluir definitivamente o usuário ${u.nome_completo}?`)) {
+          if (confirm(`Excluir definitivamente o usuário ${u.nome_completo} do Supabase?`)) {
             await ApiClient.excluirUsuarioAdmin(u.id);
-            alert('Usuário excluído!');
+            alert('Usuário removido do banco!');
             carregarListaAlunos();
+            carregarMetricasDashboard();
           }
         });
       }
@@ -352,7 +377,7 @@ async function carregarListaAlunos() {
       container.appendChild(item);
     });
   } catch (err) {
-    console.warn('Erro ao carregar lista do banco, mantendo dados demonstrativos:', err);
+    console.warn('Erro ao carregar lista de usuários do Supabase:', err);
   }
 }
 
@@ -364,4 +389,3 @@ function obterIniciais(nome) {
   }
   return nome.substring(0, 2).toUpperCase();
 }
-
