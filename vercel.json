@@ -24,6 +24,18 @@
       "destination": "/frontend/app.html"
     },
     {
+      "source": "/css/(.*)",
+      "destination": "/frontend/css/$1"
+    },
+    {
+      "source": "/js/(.*)",
+      "destination": "/frontend/js/$1"
+    },
+    {
+      "source": "/img/(.*)",
+      "destination": "/frontend/img/$1"
+    },
+    {
       "source": "/((?!api/).*)",
       "destination": "/frontend/$1"
     }

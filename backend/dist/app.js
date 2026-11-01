@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { routes } from './routes/index.js';
 dotenv.config();
@@ -35,31 +36,29 @@ app.get(['/api', '/api/info', '/api/index'], (req, res) => {
         documentation: 'API REST do sistema VnFitness com Supabase e Google Gemini'
     });
 });
-// Rotas da API montadas em múltiplos prefixos para suportar qualquer proxy ou rewrite
+// Rotas da API montadas em múltiplos prefixos para tolerância a qualquer proxy
 app.use('/api', routes);
 app.use('/api/index', routes);
 app.use('/api/index.js', routes);
-// Servir arquivos estáticos do frontend (CSS, JS, Imagens)
-app.use(express.static(frontendPath));
-// Rotas amigáveis para as telas do sistema
-app.get('/admin', (req, res) => {
-    res.sendFile(path.join(frontendPath, 'admin.html'));
-});
-app.get('/app', (req, res) => {
-    res.sendFile(path.join(frontendPath, 'app.html'));
-});
-app.get('/', (req, res) => {
-    res.sendFile(path.join(frontendPath, 'index.html'));
-});
-// Handler 404 em JSON específico para chamadas de API inválidas
+app.use('/', routes);
+// Servir arquivos estáticos caso a pasta frontend esteja acessível localmente
+if (fs.existsSync(frontendPath)) {
+    app.use(express.static(frontendPath));
+    app.get('/admin', (req, res) => {
+        res.sendFile(path.join(frontendPath, 'admin.html'));
+    });
+    app.get('/app', (req, res) => {
+        res.sendFile(path.join(frontendPath, 'app.html'));
+    });
+    app.get('/', (req, res) => {
+        res.sendFile(path.join(frontendPath, 'index.html'));
+    });
+}
+// Handler para rotas de API não encontradas (sempre responde JSON)
 app.all('/api/*', (req, res) => {
     res.status(404).json({
-        error: `Endpoint não encontrado: ${req.method} ${req.originalUrl || req.url}`,
+        error: `Endpoint de API não encontrado: ${req.method} ${req.originalUrl || req.url}`,
         status: 404
     });
-});
-// Fallback para SPA (qualquer rota desconhecida abre a tela inicial)
-app.get('*', (req, res) => {
-    res.sendFile(path.join(frontendPath, 'index.html'));
 });
 export default app;
