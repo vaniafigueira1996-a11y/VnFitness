@@ -18,7 +18,7 @@ app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 
 // Health Check disponível em /api/health e /health
-app.get('/api/health', (req, res) => {
+app.get(['/api/health', '/health'], (req, res) => {
   res.status(200).json({
     status: 'online',
     app: 'VnFitness Backend API',
@@ -26,11 +26,13 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-app.get('/health', (req, res) => {
+// Rota informativa da API
+app.get(['/api', '/api/info'], (req, res) => {
   res.status(200).json({
     status: 'online',
     app: 'VnFitness Backend API',
-    timestamp: new Date().toISOString()
+    version: '1.0.0',
+    documentation: 'API REST do sistema VnFitness com Supabase e Google Gemini'
   });
 });
 
@@ -39,4 +41,3 @@ app.use('/api', routes);
 app.use('/', routes);
 
 export default app;
-
