@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VnFitness — Login & Cadastro com IA</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <style>
+    /* Abas de alternância de modo (Cadastro / Login) no topo do card */
+    .auth-mode-tabs {
+      display: flex;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: var(--radius-pill);
+      padding: 4px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+    .auth-tab-btn {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #334155;
+      border-radius: var(--radius-pill);
+      transition: var(--transition-normal);
+      text-align: center;
+      cursor: pointer;
+    }
+    .auth-tab-btn.active {
+      background: #FFFFFF;
+      color: #0284C7;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    .quick-fill-admin {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.85);
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-viewport">
+    <div class="auth-bg-art"></div>
+
+    <!-- Frame do Mobile Phone simulando login.png -->
+    <div class="auth-phone-frame">
+      <!-- Barra de status superior -->
+      <div class="auth-phone-header">
+        <span>9:41</span>
+        <div class="phone-island"></div>
+        <div style="display: flex; gap: 4px; align-items: center;">
+          <span>📶</span>
+          <span>🔋</span>
+        </div>
+      </div>
+
+      <!-- Ilustração atlética estilizada com neon (como em login.png) -->
+      <div class="auth-illustration-container">
+        <svg viewBox="0 0 400 480" class="auth-silhueta" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#38BDF8" stop-opacity="0.8"/>
+              <stop offset="50%" stop-color="#C084FC" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#F43F5E" stop-opacity="0.9"/>
+            </linearGradient>
+            <filter id="neonBlur" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="8" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          <circle cx="200" cy="120" r="42" fill="url(#glowGrad)" filter="url(#neonBlur)"/>
+          <path d="M 160 170 Q 200 155 240 170 L 260 260 Q 200 280 140 260 Z" fill="url(#glowGrad)" filter="url(#neonBlur)"/>
+          <path d="M 140 260 L 110 390 Q 150 410 180 390 L 195 280 Z" fill="url(#glowGrad)"/>
+          <path d="M 260 260 L 290 390 Q 250 410 220 390 L 205 280 Z" fill="url(#glowGrad)"/>
+          <path d="M 160 175 L 100 230 Q 120 250 145 220 Z" fill="url(#glowGrad)"/>
+          <path d="M 240 175 L 300 230 Q 280 250 255 220 Z" fill="url(#glowGrad)"/>
+        </svg>
+      </div>
+
+      <!-- Card Inferior Flutuante com Glassmorphism (login.png) -->
+      <div class="auth-glass-card">
+        <!-- Abas de Alternância Superior -->
+        <div class="auth-mode-tabs">
+          <button type="button" class="auth-tab-btn" id="tab-btn-login">LOGIN</button>
+          <button type="button" class="auth-tab-btn active" id="tab-btn-signup">CRIAR CONTA</button>
+        </div>
+
+        <h2 class="auth-title" id="auth-title">Create an Account</h2>
+
+        <div id="auth-alert" class="auth-alert"></div>
+
+        <form id="auth-form">
+          <!-- Campo Nome (visível no cadastro) -->
+          <div class="auth-input-group" id="name-group">
+            <span class="auth-icon-left">👤</span>
+            <input type="text" id="name-input" class="auth-input" placeholder="Seu Nome Completo">
+          </div>
+
+          <!-- Campo E-mail -->
+          <div class="auth-input-group">
+            <span class="auth-icon-left">✉️</span>
+            <input type="email" id="email-input" class="auth-input" placeholder="Email" required autocomplete="email">
+          </div>
+
+          <!-- Campo Senha -->
+          <div class="auth-input-group">
+            <span class="auth-icon-left">🔒</span>
+            <input type="password" id="password-input" class="auth-input" placeholder="Password" required autocomplete="current-password">
+            <span class="auth-icon-right" id="toggle-password" title="Ver senha">👁️</span>
+          </div>
+
+          <!-- Botão Principal com Supabase -->
+          <button type="submit" id="submit-btn" class="btn btn-auth-action">SIGN UP</button>
+
+          <!-- Alternar Modo Inferior (login.png) -->
+          <p class="auth-toggle-text">
+            <span id="toggle-question">Already have an Account?</span>
+            <span class="auth-toggle-link" id="toggle-auth-mode">Login</span>
+          </p>
+
+          <!-- Preencher Admin com 1 clique para facilidade -->
+          <p class="quick-fill-admin" id="fill-admin-btn">🔑 Entrar como Admin (fredsoncitty@gmail.com)</p>
+
+          <div class="auth-divider">
+            <span>OR</span>
+          </div>
+
+          <!-- Botões Sociais Circulares (login.png) -->
+          <div class="auth-social-row">
+            <button type="button" class="social-circle-btn" title="Facebook">f</button>
+            <button type="button" class="social-circle-btn" title="Google">G+</button>
+            <button type="button" class="social-circle-btn" title="Twitter">🐦</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/auth.js"></script>
+</body>
+</html>

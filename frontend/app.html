@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>VnFitness — Coach IA & Evolução</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+  <main class="app-container">
+    <!-- ================= CABEÇALHO DO APP ================= -->
+    <header class="app-header">
+      <div class="user-greeting">
+        <div class="avatar-wrapper">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Avatar" class="avatar-img" id="user-avatar-top">
+        </div>
+        <div class="greeting-text">
+          <h2 id="greeting-name">Olá, Alex 👋</h2>
+          <p>Pronto para conquistar suas metas?</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Alternador de Tema Claro / Escuro -->
+        <button class="icon-btn" id="theme-toggle-btn" title="Alternar Tema Claro / Escuro">☀️</button>
+        <button class="icon-btn" title="Notificações">🔔</button>
+      </div>
+    </header>
+
+    <!-- ================= SEÇÃO 1: EVOLUÇÃO (Tela de evolução.png) ================= -->
+    <section id="section-evolucao" style="display: block;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h1 style="font-size: 1.6rem; font-weight: 800; text-transform: uppercase;">
+          Sua <span style="color: var(--accent-primary);">Evolução</span>
+        </h1>
+        <button class="icon-btn" style="width: 36px; height: 36px;" title="Compartilhar">🔗</button>
+      </div>
+
+      <!-- Abas de Subcategoria -->
+      <div class="subtabs-header">
+        <button class="subtab-btn active">Carga</button>
+        <button class="subtab-btn">Frequência</button>
+        <button class="subtab-btn">Medidas</button>
+      </div>
+
+      <!-- Card de Evolução de Carga Máxima -->
+      <div class="card-evolution">
+        <div class="evolution-header">
+          <span class="evolution-title">Remada curvada • Carga máxima</span>
+          <span class="badge-trend">+21% em 12 sem</span>
+        </div>
+
+        <div class="big-metric">
+          58 <span>kg</span>
+        </div>
+
+        <!-- Gráfico de Área Iluminado em SVG -->
+        <div class="chart-area-container">
+          <svg class="chart-svg" viewBox="0 0 360 120" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#FF7300" stop-opacity="0.5"/>
+                <stop offset="100%" stop-color="#FF7300" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <!-- Área preenchida -->
+            <path d="M 10 110 Q 90 95, 140 85 T 260 45 T 350 20 L 350 120 L 10 120 Z" fill="url(#areaGradient)"/>
+            <!-- Linha contínua iluminada -->
+            <path id="evolution-svg-path" d="M 10 110 Q 90 95, 140 85 T 260 45" fill="none" stroke="#FF7300" stroke-width="3" stroke-linecap="round"/>
+            <!-- Linha tracejada de previsão futura da IA -->
+            <path d="M 260 45 T 350 20" fill="none" stroke="#38BDF8" stroke-width="2.5" stroke-dasharray="5,5"/>
+            <!-- Ponto atual -->
+            <circle cx="260" cy="45" r="5" fill="#FF7300" stroke="#FFFFFF" stroke-width="2"/>
+            <!-- Ponto previsto IA -->
+            <circle cx="350" cy="20" r="4" fill="#38BDF8"/>
+          </svg>
+        </div>
+
+        <div class="chart-labels">
+          <span>jul</span>
+          <span>ago</span>
+          <span>set</span>
+          <span class="chart-label-prediction">previsão out ✨</span>
+        </div>
+      </div>
+
+      <!-- Conquistas Rápidas (Recorde e Cintura) -->
+      <div class="quick-stats-grid">
+        <div class="quick-stat-card">
+          <div class="stat-icon-box stat-icon-gold">🏆</div>
+          <div class="stat-details">
+            <h4>Recorde supino</h4>
+            <p>40 kg × 8 • ontem</p>
+          </div>
+        </div>
+
+        <div class="quick-stat-card">
+          <div class="stat-icon-box stat-icon-green">📐</div>
+          <div class="stat-details">
+            <h4>Cintura -3 cm</h4>
+            <p>avaliação de 12/09</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Heatmap de Frequência das Últimas 13 Semanas (Tela de evolução.png) -->
+      <div class="heatmap-card">
+        <div class="heatmap-header">
+          <h3>Últimas 13 semanas</h3>
+          <span>2,9 treinos por semana</span>
+        </div>
+
+        <div class="heatmap-grid" id="heatmap-container">
+          <!-- Células geradas via JS -->
+        </div>
+      </div>
+
+      <!-- Card de Insights do Coach IA -->
+      <div class="card-coach-insight">
+        <div class="insight-icon">✨</div>
+        <div class="insight-content">
+          <p>
+            Melhor mês até aqui. Com <strong>3 treinos por semana</strong>, a remada passa de 60 kg em outubro. Terça é seu ponto fraco: que tal um treino curto de 35 min?
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SEÇÃO 2: HOJE & CALCULADORA IMC COM IA ================= -->
+    <section id="section-hoje" style="display: none;">
+      <!-- Anéis de Atividade Concêntricos (telas.jpg) -->
+      <div class="activity-rings-card">
+        <div class="rings-svg-wrapper">
+          <svg class="rings-svg" viewBox="0 0 100 100">
+            <!-- Anel Calorias -->
+            <circle class="ring-bg" cx="50" cy="50" r="40" stroke-width="8" fill="none"/>
+            <circle cx="50" cy="50" r="40" stroke="#FF5500" stroke-width="8" stroke-dasharray="251.2" stroke-dashoffset="60" stroke-linecap="round" fill="none"/>
+            <!-- Anel Minutos -->
+            <circle class="ring-bg" cx="50" cy="50" r="30" stroke-width="8" fill="none"/>
+            <circle cx="50" cy="50" r="30" stroke="#10B981" stroke-width="8" stroke-dasharray="188.4" stroke-dashoffset="40" stroke-linecap="round" fill="none"/>
+            <!-- Anel Passos -->
+            <circle class="ring-bg" cx="50" cy="50" r="20" stroke-width="8" fill="none"/>
+            <circle cx="50" cy="50" r="20" stroke="#0EA5E9" stroke-width="8" stroke-dasharray="125.6" stroke-dashoffset="25" stroke-linecap="round" fill="none"/>
+          </svg>
+          <div class="ring-center-stat">
+            <span class="ring-percent">75%</span>
+          </div>
+        </div>
+
+        <div class="rings-legend">
+          <div class="legend-item">
+            <span class="legend-dot" style="background: #FF5500;"></span>
+            <span><b>520</b> / 600 kcal</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot" style="background: #10B981;"></span>
+            <span><b>45</b> / 50 min</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot" style="background: #0EA5E9;"></span>
+            <span><b>8.752</b> passos</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulário de Entrada do Usuário: Peso, Altura e Idade (Requisito 3) -->
+      <div class="imc-calculator-card">
+        <h3>🎯 Avaliação Biométrica & Coach IA</h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 14px;">
+          Informe seus dados para a IA calcular seu IMC, peso ideal e montar sua rotina sob medida.
+        </p>
+
+        <form id="imc-coach-form">
+          <div class="inputs-row">
+            <div class="input-box">
+              <label for="input-peso">PESO (KG)</label>
+              <input type="number" step="0.1" id="input-peso" placeholder="78.5" required value="78.5">
+            </div>
+            <div class="input-box">
+              <label for="input-altura">ALTURA (M)</label>
+              <input type="number" step="0.01" id="input-altura" placeholder="1.75" required value="1.75">
+            </div>
+            <div class="input-box">
+              <label for="input-idade">IDADE</label>
+              <input type="number" id="input-idade" placeholder="26" required value="26">
+            </div>
+          </div>
+
+          <!-- Seleção de Onde Treinar (Casa vs Academia) -->
+          <label class="form-label" style="display: block; margin-bottom: 8px;">ONDE VOCÊ VAI TREINAR?</label>
+          <div class="training-location-selector">
+            <div class="location-radio-btn" id="opt-treino-casa">
+              <span>🏠 Em Casa</span>
+              <small>Sem equipamentos (peso corporal)</small>
+            </div>
+            <div class="location-radio-btn selected" id="opt-treino-academia">
+              <span>🏋️‍♂️ Na Academia</span>
+              <small>Com aparelhos, pesos e máquinas</small>
+            </div>
+          </div>
+
+          <button type="submit" id="btn-gerar-ia" class="btn btn-primary w-full">
+            🚀 Gerar Meu Treino e Dieta com IA
+          </button>
+        </form>
+
+        <!-- Banner com Resultado do IMC e Cálculo da Meta -->
+        <div id="imc-result-banner" class="imc-result-banner" style="display: none;">
+          <div class="imc-result-header">
+            <div>
+              <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted);">SEU IMC CALCULADO:</span>
+              <div class="imc-val" id="imc-val">25.63</div>
+            </div>
+            <span class="badge badge-warning" id="imc-classif">Sobrepeso</span>
+          </div>
+          <p class="imc-goal-advice" id="imc-meta-msg">
+            Você precisa perder aproximadamente 2.3 kg para atingir uma faixa de peso saudável.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SEÇÃO 3: TREINO INTERATIVO ================= -->
+    <section id="section-treino" style="display: none;">
+      <div style="margin-bottom: 16px;">
+        <h2 id="workout-title-display">Treino Hipertrofia & Força</h2>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">Montado pelo Agente Coach IA especialmente para você</p>
+      </div>
+
+      <div class="workout-list" id="workout-exercises-container">
+        <!-- Exercícios carregados dinamicamente -->
+      </div>
+    </section>
+
+    <!-- ================= SEÇÃO 4: COACH IA & NUTRIÇÃO (telas.jpg) ================= -->
+    <section id="section-coach" style="display: none;">
+      <div style="margin-bottom: 16px;">
+        <h2>Metas Nutricionais & Dieta IA</h2>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">Distribuição de macronutrientes calculada para o seu objetivo</p>
+      </div>
+
+      <div class="nutrition-macros-row">
+        <div class="macro-card">
+          <span>Carboidratos</span>
+          <strong id="macro-carb-val">180g</strong>
+          <small style="color: #10B981;">45%</small>
+        </div>
+        <div class="macro-card">
+          <span>Proteínas</span>
+          <strong id="macro-prot-val">140g</strong>
+          <small style="color: #0EA5E9;">30%</small>
+        </div>
+        <div class="macro-card">
+          <span>Gorduras</span>
+          <strong id="macro-gord-val">60g</strong>
+          <small style="color: #FB923C;">25%</small>
+        </div>
+      </div>
+
+      <h3 style="font-size: 1rem; margin-bottom: 10px;">Refeições Sugeridas pelo Coach IA</h3>
+      <div id="meals-list-container">
+        <!-- Refeições inseridas pelo JS -->
+      </div>
+    </section>
+
+    <!-- ================= BARRA DE NAVEGAÇÃO INFERIOR ================= -->
+    <nav class="bottom-nav">
+      <div class="nav-tab-item" data-target="tab-hoje">
+        <span style="font-size: 1.2rem;">🏠</span>
+        <span>Hoje</span>
+      </div>
+
+      <div class="nav-tab-item" data-target="tab-treino">
+        <span style="font-size: 1.2rem;">🏋️</span>
+        <span>Treino</span>
+      </div>
+
+      <!-- Botão Central de Check-in em Destaque Laranja Neon (Tela de evolução.png) -->
+      <div class="nav-tab-center-btn" id="center-checkin-btn" title="Fazer Check-in de Treino">
+        <span>⚡</span>
+      </div>
+
+      <div class="nav-tab-item active" data-target="tab-evolucao">
+        <span style="font-size: 1.2rem;">📈</span>
+        <span>Evolução</span>
+      </div>
+
+      <div class="nav-tab-item" data-target="tab-coach">
+        <span style="font-size: 1.2rem;">✨</span>
+        <span>Coach IA</span>
+      </div>
+    </nav>
+  </main>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
+

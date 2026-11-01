@@ -1,0 +1,284 @@
+/* ==============================================================================
+   VnFitness - Auth CSS (Login & Cadastro)
+   Inspirado rigorosamente no arquivo "login.png"
+   Glassmorphism translúcido, gradientes vibrantes neon e campos arredondados
+   ============================================================================== */
+
+.auth-viewport {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: linear-gradient(135deg, #18192A 0%, #291C3E 50%, #0F172A 100%);
+  padding: 20px;
+}
+
+/* Fundo com aura de iluminação neon (magenta e ciano) como em login.png */
+.auth-bg-art {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 75% 20%, rgba(236, 72, 153, 0.45) 0%, transparent 45%),
+    radial-gradient(circle at 25% 60%, rgba(14, 165, 233, 0.45) 0%, transparent 50%),
+    radial-gradient(circle at 80% 85%, rgba(139, 92, 246, 0.35) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Ilustração fitness estilizada com silhueta neon de alta performance */
+.auth-illustration-container {
+  position: absolute;
+  top: 2%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 320px;
+  height: 380px;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.auth-silhueta {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-xl);
+  opacity: 0.9;
+  filter: drop-shadow(0 0 25px rgba(236, 72, 153, 0.5));
+}
+
+/* Container do Mockup Mobile */
+.auth-phone-frame {
+  position: relative;
+  width: 100%;
+  max-width: 414px;
+  min-height: 840px;
+  border-radius: 44px;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 8px rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  z-index: 10;
+  background: linear-gradient(180deg, #7FA7E8 0%, #D8B4E2 35%, #9BC5F1 100%);
+}
+
+.auth-phone-header {
+  position: absolute;
+  top: 14px;
+  left: 0;
+  width: 100%;
+  padding: 0 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1F2937;
+  z-index: 15;
+}
+
+.phone-island {
+  width: 110px;
+  height: 26px;
+  background: #000000;
+  border-radius: 20px;
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  transform: translateX(-50%);
+}
+
+/* Card Inferior Flutuante com Efeito Glassmorphism (login.png) */
+.auth-glass-card {
+  position: relative;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border-top-left-radius: 40px;
+  border-top-right-radius: 40px;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.5);
+  border-left: 1.5px solid rgba(255, 255, 255, 0.3);
+  border-right: 1.5px solid rgba(255, 255, 255, 0.3);
+  padding: 36px 30px 32px 30px;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.12);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-title {
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.auth-input-group {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 16px 48px 16px 46px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: var(--radius-pill);
+  font-size: 0.95rem;
+  color: #334155;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.05);
+  outline: none;
+  transition: var(--transition-normal);
+}
+
+.auth-input:focus {
+  background: #FFFFFF;
+  border-color: #38BDF8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.35);
+}
+
+.auth-icon-left {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748B;
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.auth-icon-right {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94A3B8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+/* Botão de Ação Primário em Gradiente Ciano/Azul */
+.btn-auth-action {
+  width: 100%;
+  padding: 16px;
+  margin-top: 8px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(135deg, #38BDF8 0%, #0284C7 100%);
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  box-shadow: 0 8px 24px rgba(2, 132, 199, 0.45);
+  transition: var(--transition-spring);
+}
+
+.btn-auth-action:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(2, 132, 199, 0.55);
+}
+
+.btn-auth-action:active {
+  transform: translateY(1px);
+}
+
+/* Link de alternância */
+.auth-toggle-text {
+  text-align: center;
+  font-size: 0.88rem;
+  color: rgba(255, 255, 255, 0.95);
+  margin-top: 18px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.auth-toggle-link {
+  color: #EF4444;
+  font-weight: 700;
+  cursor: pointer;
+  margin-left: 4px;
+  text-decoration: underline;
+}
+
+/* Divisor OR */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 18px 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.auth-divider span {
+  padding: 0 12px;
+}
+
+/* Botões Sociais Circulares */
+.auth-social-row {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.social-circle-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  color: #0284C7;
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: var(--transition-spring);
+}
+
+.social-circle-btn:hover {
+  transform: translateY(-3px);
+  background: #FFFFFF;
+}
+
+/* Caixa de aviso / feedback */
+.auth-alert {
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  margin-bottom: 14px;
+  display: none;
+  line-height: 1.4;
+}
+
+.auth-alert-error {
+  background: rgba(239, 68, 68, 0.9);
+  color: #FFFFFF;
+}
+
+.auth-alert-info {
+  background: rgba(14, 165, 233, 0.9);
+  color: #FFFFFF;
+}
+

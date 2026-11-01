@@ -1,0 +1,585 @@
+/* ==============================================================================
+   VnFitness - Painel Administrativo "Forja"
+   Inspirado estritamente no arquivo "DashBoard.jpg"
+   Layout Desktop-First exclusivo com CSS Grid e Flexbox
+   ============================================================================== */
+
+.admin-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr 340px;
+  min-height: 100vh;
+  background-color: #F8F9FA;
+  color: #1A1D20;
+}
+
+/* ================= 1. SIDEBAR LATERAL ESQUERDA ================= */
+.admin-sidebar {
+  background-color: #111217;
+  color: #8C929D;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 18px;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #FFFFFF;
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin-bottom: 24px;
+}
+
+.brand-icon-box {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #FF6B00, #FF3D00);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-size: 1.1rem;
+}
+
+.branch-select-box {
+  background: #1C1E24;
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.branch-badge {
+  background: #FF9800;
+  color: #111;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.branch-info h5 {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.branch-info p {
+  font-size: 0.7rem;
+  color: #717782;
+}
+
+.nav-section-title {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #555A64;
+  margin: 18px 0 10px 10px;
+}
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nav-item-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  color: #8C929D;
+  font-size: 0.88rem;
+  font-weight: 600;
+  transition: var(--transition-normal);
+}
+
+.nav-item-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #FFFFFF;
+}
+
+.nav-item-btn.active {
+  background: #20232B;
+  color: #FFFFFF;
+  border-left: 3px solid #FF7300;
+}
+
+.nav-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-badge-pill {
+  background: #FF5252;
+  color: #FFFFFF;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+}
+
+/* Card IA Hoje no rodapé da Sidebar */
+.sidebar-footer-card {
+  margin-top: auto;
+  background: #181A20;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 16px;
+}
+
+.footer-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #38BDF8;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.sidebar-footer-card p {
+  font-size: 0.72rem;
+  color: #8C929D;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.progress-ia-bar {
+  width: 100%;
+  height: 4px;
+  background: #252834;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-ia-fill {
+  width: 81%;
+  height: 100%;
+  background: #38BDF8;
+}
+
+.admin-user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.admin-avatar-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #E11D48;
+  color: #FFFFFF;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+}
+
+/* ================= 2. CONTEÚDO PRINCIPAL (MEIO) ================= */
+.admin-main {
+  padding: 28px 32px;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+.admin-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.topbar-title h1 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #111827;
+}
+
+.topbar-title p {
+  font-size: 0.8rem;
+  color: #6B7280;
+}
+
+.topbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.search-box-mac {
+  position: relative;
+  width: 320px;
+}
+
+.search-box-mac input {
+  width: 100%;
+  padding: 10px 54px 10px 38px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: var(--radius-pill);
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.search-shortcut-tag {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: #F3F4F6;
+  color: #6B7280;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #E5E7EB;
+}
+
+/* CARDS DE KPI NO TOPO (DashBoard.jpg) */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.kpi-card {
+  background: #FFFFFF;
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  position: relative;
+}
+
+.kpi-card.kpi-card-dark {
+  background: #111217;
+  color: #FFFFFF;
+  border-color: #20232B;
+}
+
+.kpi-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #6B7280;
+  margin-bottom: 8px;
+}
+
+.kpi-card-dark .kpi-header {
+  color: #FF8A00;
+}
+
+.kpi-card-dark .kpi-header span {
+  color: #A0A5B5;
+}
+
+.kpi-big-num {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.kpi-footer-note {
+  font-size: 0.75rem;
+  color: #10B981;
+  font-weight: 600;
+}
+
+.kpi-card-dark .kpi-footer-note {
+  color: #FF5252;
+}
+
+/* SEÇÃO DA TABELA DE RETENÇÃO */
+.table-container-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.table-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.filter-pills-row {
+  display: flex;
+  gap: 8px;
+}
+
+.filter-pill-btn {
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #F3F4F6;
+  color: #4B5563;
+}
+
+.filter-pill-btn.active {
+  background: #111827;
+  color: #FFFFFF;
+}
+
+/* TABELA HTML CUSTOMIZADA */
+.retention-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.retention-table th {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #9CA3AF;
+  padding: 12px 14px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.retention-table td {
+  padding: 14px;
+  border-bottom: 1px solid #F3F4F6;
+  font-size: 0.86rem;
+  vertical-align: middle;
+}
+
+.retention-table tr:hover {
+  background-color: #F9FAFB;
+}
+
+.student-col {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.student-avatar-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #E0F2FE;
+  color: #0284C7;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+}
+
+.student-name-box h5 {
+  font-weight: 700;
+  color: #111827;
+}
+
+.student-name-box span {
+  font-size: 0.72rem;
+  color: #9CA3AF;
+}
+
+.risk-num-badge {
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+
+.risk-high { color: #EF4444; }
+.risk-mid { color: #F59E0B; }
+.risk-low { color: #10B981; }
+
+.action-btn-pill {
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.action-btn-pill.action-msg {
+  background: #ECFDF5;
+  color: #059669;
+}
+
+.action-btn-pill.action-call {
+  background: #FEF3C7;
+  color: #D97706;
+}
+
+/* ================= 3. PAINEL LATERAL DIREITO (DETALHES & WHATSAPP) ================= */
+.admin-drawer-right {
+  background-color: #FFFFFF;
+  border-left: 1px solid #E5E7EB;
+  padding: 24px 20px;
+  overflow-y: auto;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.drawer-student-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.drawer-student-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.drawer-score-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3px solid #EF4444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  color: #EF4444;
+}
+
+/* Razões da IA (Barras) */
+.drawer-ia-reasons {
+  background: #F9FAFB;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.reason-header {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #0284C7;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reason-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.78rem;
+  color: #4B5563;
+  margin-bottom: 8px;
+}
+
+.reason-score-tag {
+  font-weight: 700;
+  color: #EF4444;
+}
+
+/* Caixa Verde de Mensagem Sugerida (WhatsApp) */
+.whatsapp-draft-box {
+  background: #DCFCE7;
+  border: 1px solid #BBF7D0;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.draft-header {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #166534;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.whatsapp-text-content {
+  font-size: 0.82rem;
+  color: #14532D;
+  line-height: 1.45;
+  background: #FFFFFF;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px dashed #86EFAC;
+}
+
+.btn-whatsapp-send {
+  width: 100%;
+  background: #22C55E;
+  color: #FFFFFF;
+  font-weight: 700;
+  padding: 14px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 0.92rem;
+  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.35);
+  margin-top: 10px;
+  cursor: pointer;
+  transition: var(--transition-spring);
+}
+
+.btn-whatsapp-send:hover {
+  background: #16A34A;
+}
+
+/* TIMELINE HISTÓRICO */
+.timeline-card {
+  margin-top: 16px;
+}
+
+.timeline-title {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #9CA3AF;
+  margin-bottom: 12px;
+}
+
+.timeline-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.78rem;
+  color: #4B5563;
+  margin-bottom: 10px;
+}
+
+.timeline-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #EF4444;
+  margin-top: 4px;
+}
+
+.timeline-dot.dot-green {
+  background: #10B981;
+}
+

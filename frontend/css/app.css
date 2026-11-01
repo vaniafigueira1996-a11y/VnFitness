@@ -1,0 +1,667 @@
+/* ==============================================================================
+   VnFitness - App Mobile do Aluno
+   Inspirado nas referências:
+   - "telas.jpg" (Tema Claro, tons pastéis, anéis de atividade, cards de nutrição)
+   - "Tela de evolução.png" (Tema Dark Moderno, neon laranja, heatmap, gráfico de carga)
+   ============================================================================== */
+
+.app-container {
+  max-width: 440px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background-color: var(--bg-page);
+  padding: 18px 20px 100px 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ================= CABEÇALHO DO APP ================= */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.user-greeting {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-wrapper {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--accent-primary);
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.greeting-text h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.greeting-text p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-normal);
+}
+
+.icon-btn:hover {
+  background: var(--bg-subtle);
+}
+
+/* ================= ABAS DO TOPO (CARGA / FREQUÊNCIA / MEDIDAS) ================= */
+.subtabs-header {
+  display: flex;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  padding: 4px;
+  margin-bottom: 20px;
+}
+
+.subtab-btn {
+  flex: 1;
+  padding: 9px 0;
+  text-align: center;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-radius: var(--radius-pill);
+  transition: var(--transition-normal);
+}
+
+.subtab-btn.active {
+  background: var(--bg-surface-elevated);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] .subtab-btn.active {
+  background: #252836;
+  color: #FFFFFF;
+}
+
+/* ================= CARD DE EVOLUÇÃO DE CARGA (Tela de evolução.png) ================= */
+.card-evolution {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.evolution-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.evolution-title {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.badge-trend {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10B981;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+[data-theme="dark"] .badge-trend {
+  color: #34D399;
+}
+
+.big-metric {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 14px;
+}
+
+.big-metric span {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+
+/* Gráfico de Área Iluminado em SVG */
+.chart-area-container {
+  width: 100%;
+  height: 140px;
+  position: relative;
+  margin-bottom: 6px;
+}
+
+.chart-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.chart-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  padding-top: 6px;
+}
+
+.chart-label-prediction {
+  color: var(--accent-blue);
+  font-weight: 600;
+}
+
+/* ================= CONQUISTAS RÁPIDAS (Recorde e Cintura) ================= */
+.quick-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.quick-stat-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-icon-box {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+}
+
+.stat-icon-gold {
+  background: rgba(245, 158, 11, 0.15);
+  color: #F59E0B;
+}
+
+.stat-icon-green {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10B981;
+}
+
+.stat-details h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.stat-details p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* ================= HEATMAP DE FREQUÊNCIA (Tela de evolução.png) ================= */
+.heatmap-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-md);
+}
+
+.heatmap-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.heatmap-header h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.heatmap-header span {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(13, 1fr);
+  grid-template-rows: repeat(4, 14px);
+  gap: 6px;
+  width: 100%;
+}
+
+.heatmap-cell {
+  border-radius: 4px;
+  background-color: var(--bg-subtle);
+  transition: transform 0.2s ease;
+}
+
+.heatmap-cell:hover {
+  transform: scale(1.2);
+}
+
+.heatmap-cell.level-1 { background-color: rgba(255, 115, 0, 0.35); }
+.heatmap-cell.level-2 { background-color: rgba(255, 115, 0, 0.65); }
+.heatmap-cell.level-3 { background-color: #FF7300; box-shadow: 0 0 8px rgba(255, 115, 0, 0.5); }
+
+/* ================= CARD DE INSIGHT DO COACH IA ================= */
+.card-coach-insight {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.card-coach-insight::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--accent-primary), var(--accent-blue));
+}
+
+.insight-icon {
+  font-size: 1.3rem;
+  color: var(--accent-primary);
+  margin-top: 2px;
+}
+
+.insight-content p {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.insight-content strong {
+  color: var(--text-primary);
+}
+
+/* ================= ANÉIS DE ATIVIDADE & PROGRESSO (telas.jpg) ================= */
+.activity-rings-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-md);
+}
+
+.rings-svg-wrapper {
+  position: relative;
+  width: 110px;
+  height: 110px;
+}
+
+.rings-svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.ring-bg {
+  stroke: var(--bg-subtle);
+}
+
+.ring-center-stat {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.ring-percent {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.rings-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* ================= CARD CALCULADORA IMC & COACH IA ================= */
+.imc-calculator-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-md);
+}
+
+.imc-calculator-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 14px;
+  color: var(--text-primary);
+}
+
+.inputs-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.input-box label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.input-box input {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+  outline: none;
+}
+
+.training-location-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.location-radio-btn {
+  border: 1.5px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition-normal);
+  background: var(--bg-page);
+}
+
+.location-radio-btn.selected {
+  border-color: var(--accent-primary);
+  background: var(--accent-primary-subtle);
+}
+
+.location-radio-btn span {
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: block;
+  color: var(--text-primary);
+}
+
+.location-radio-btn small {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* Resultado do IMC */
+.imc-result-banner {
+  background: var(--bg-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-top: 14px;
+  border-left: 4px solid var(--accent-primary);
+}
+
+.imc-result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.imc-val {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--accent-primary);
+}
+
+.imc-classification {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.imc-goal-advice {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* ================= LISTA DE TREINOS & EXERCÍCIOS ================= */
+.workout-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.workout-item-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-spring);
+}
+
+.workout-item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.exercise-info h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.exercise-info p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.exercise-action-check {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: transparent;
+  transition: var(--transition-normal);
+}
+
+.exercise-action-check.completed {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #FFFFFF;
+}
+
+/* ================= LISTA DE NUTRIÇÃO & MACROS (telas.jpg) ================= */
+.nutrition-macros-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.macro-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px 10px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.macro-card span {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  display: block;
+}
+
+.macro-card strong {
+  font-size: 1.15rem;
+  color: var(--text-primary);
+  display: block;
+  margin: 4px 0;
+}
+
+.meal-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ================= BARRA DE NAVEGAÇÃO INFERIOR ================= */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 440px;
+  height: 74px;
+  background: var(--bg-surface);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 0 10px;
+  z-index: 100;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.nav-tab-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-normal);
+}
+
+.nav-tab-item.active {
+  color: var(--accent-primary);
+}
+
+[data-theme="dark"] .nav-tab-item.active {
+  color: #FF7300;
+}
+
+/* Botão de Check-in em Destaque Central (Tela de evolução.png) */
+.nav-tab-center-btn {
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #FF9800, #FF5500);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 8px 20px rgba(255, 85, 0, 0.45);
+  margin-top: -24px;
+  border: 3px solid var(--bg-page);
+  cursor: pointer;
+  transition: var(--transition-spring);
+}
+
+.nav-tab-center-btn:hover {
+  transform: scale(1.08);
+}
+
