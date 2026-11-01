@@ -391,6 +391,45 @@ body.sidebar-open .admin-sidebar,
   line-height: 1.35;
 }
 
+.topbar-controls .btn-secondary {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  color: #374151;
+  border-radius: 10px;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  transition: all 0.15s ease;
+}
+
+.topbar-controls .btn-secondary:hover {
+  background: #F9FAFB;
+  border-color: #D1D5DB;
+  color: #111827;
+  transform: translateY(-1px);
+}
+
+.topbar-controls .icon-btn {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  color: #4B5563;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.topbar-controls .icon-btn:hover {
+  background: #F9FAFB;
+  border-color: #D1D5DB;
+  color: #0284C7;
+  transform: translateY(-1px);
+}
+
 .topbar-controls {
   display: flex;
   flex-wrap: wrap;
