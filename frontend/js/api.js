@@ -100,6 +100,24 @@ export const ApiClient = {
     return this.request('/user/evolucao');
   },
 
+  async getConfiguracoesAluno() {
+    return this.request('/user/configuracoes');
+  },
+
+  async salvarConfiguracoesAluno(dados) {
+    return this.request('/user/configuracoes', {
+      method: 'PUT',
+      body: JSON.stringify(dados)
+    });
+  },
+
+  async salvarBiometriaAluno(dados) {
+    return this.request('/user/biometria', {
+      method: 'POST',
+      body: JSON.stringify(dados)
+    });
+  },
+
   async registrarCheckin(dados) {
     return this.request('/user/checkin', {
       method: 'POST',
@@ -201,6 +219,17 @@ export const ApiClient = {
 
   async getDesempenhoAdmin() {
     return this.request('/admin/desempenho');
+  },
+
+  async getConfiguracoesAdmin() {
+    return this.request('/admin/configuracoes');
+  },
+
+  async salvarConfiguracoesAdmin(dados) {
+    return this.request('/admin/configuracoes', {
+      method: 'PUT',
+      body: JSON.stringify(dados)
+    });
   }
 };
 

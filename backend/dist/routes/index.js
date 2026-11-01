@@ -50,6 +50,23 @@ routes.post('/auth/signup', async (req, res) => {
             return res.status(500).json({ error: 'Falha ao obter identificador do usuário.' });
         }
         // 2. GARANTIA ABSOLUTA: Gravação direta na tabela 'public.usuarios'
+        // Verifica o modo de aprovação configurado no sistema
+        let statusInicial = isMasterAdmin ? 'aprovado' : 'pendente';
+        if (!isMasterAdmin) {
+            try {
+                const { data: configData } = await supabaseAdmin
+                    .from('configuracoes_sistema')
+                    .select('valor')
+                    .eq('chave', 'geral')
+                    .maybeSingle();
+                if (configData?.valor?.modo_aprovacao === 'automatico') {
+                    statusInicial = 'aprovado';
+                }
+            }
+            catch (confErr) {
+                console.warn('Usando status padrão pendente:', confErr);
+            }
+        }
         const { data: userProfile, error: profileErr } = await supabaseAdmin
             .from('usuarios')
             .upsert({
@@ -57,7 +74,7 @@ routes.post('/auth/signup', async (req, res) => {
             email: cleanEmail,
             nome_completo: fullName,
             role: isMasterAdmin ? 'admin' : 'aluno',
-            status_aprovacao: isMasterAdmin ? 'aprovado' : 'pendente',
+            status_aprovacao: statusInicial,
             atualizado_em: new Date().toISOString()
         }, { onConflict: 'id' })
             .select()
@@ -68,7 +85,9 @@ routes.post('/auth/signup', async (req, res) => {
         return res.status(201).json({
             message: isMasterAdmin
                 ? 'Conta de Administrador Mestre registrada e sincronizada com sucesso!'
-                : 'Cadastro realizado com sucesso! Aguarde a aprovação do administrador para acessar o aplicativo.',
+                : statusInicial === 'aprovado'
+                    ? 'Cadastro realizado com sucesso! Sua conta foi aprovada automaticamente.'
+                    : 'Cadastro realizado com sucesso! Aguarde a aprovação do administrador para acessar o aplicativo.',
             user: authUser,
             session: authSession,
             perfil: userProfile || {
@@ -76,9 +95,9 @@ routes.post('/auth/signup', async (req, res) => {
                 email: cleanEmail,
                 nome_completo: fullName,
                 role: isMasterAdmin ? 'admin' : 'aluno',
-                status_aprovacao: isMasterAdmin ? 'aprovado' : 'pendente'
+                status_aprovacao: statusInicial
             },
-            aguarda_aprovacao: !isMasterAdmin
+            aguarda_aprovacao: statusInicial === 'pendente'
         });
     }
     catch (err) {
@@ -145,7 +164,10 @@ routes.post('/auth/login', async (req, res) => {
 // 2. ROTAS DO ALUNO (Coach IA, Biometria, Treinos, Nutrição e Evolução)
 // ==============================================================================
 routes.get('/user/perfil', requireAuth, UserController.obterMeuPerfil);
+routes.get('/user/configuracoes', requireAuth, UserController.obterConfiguracoes);
+routes.put('/user/configuracoes', requireAuth, UserController.salvarConfiguracoes);
 routes.get('/user/biometria', requireAuth, requireApprovedUser, UserController.obterBiometria);
+routes.post('/user/biometria', requireAuth, requireApprovedUser, UserController.salvarBiometria);
 routes.get('/user/treino-ativo', requireAuth, requireApprovedUser, UserController.obterTreinoAtivo);
 routes.get('/user/nutricao-ativa', requireAuth, requireApprovedUser, UserController.obterNutricaoAtiva);
 routes.post('/user/checkin', requireAuth, requireApprovedUser, UserController.registrarCheckin);
@@ -165,6 +187,9 @@ routes.put('/admin/usuarios/:id/editar', requireAuth, requireAdminOnly, AdminCon
 routes.delete('/admin/usuarios/:id', requireAuth, requireAdminOnly, AdminController.excluirUsuario);
 routes.post('/admin/upload-foto', requireAuth, requireAdminOnly, AdminController.uploadFoto);
 routes.post('/admin/analisar-retencao', requireAuth, requireAdminOnly, AdminController.analisarRetencaoAluno);
+// Rotas de Configurações Persistentes do Sistema
+routes.get('/admin/configuracoes', requireAuth, requireAdminOnly, AdminController.obterConfiguracoes);
+routes.put('/admin/configuracoes', requireAuth, requireAdminOnly, AdminController.salvarConfiguracoes);
 // Rotas dos Menus Adicionais (Professores, WhatsApp, Check-ins, Treinos IA, Desempenho)
 routes.get('/admin/professores', requireAuth, requireAdminOnly, AdminController.listarProfessores);
 routes.post('/admin/professores', requireAuth, requireAdminOnly, AdminController.criarProfessor);

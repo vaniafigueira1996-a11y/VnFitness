@@ -112,22 +112,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  // 5. Seletor de Local de Treino (Casa vs Academia)
-  let localTreinoSelecionado = 'academia';
+  // 5. Seletor de Local de Treino Persistente (Casa vs Academia)
+  let localTreinoSelecionado = localStorage.getItem('vnfitness_local_treino') || 'academia';
   const btnCasa = document.getElementById('opt-treino-casa');
   const btnAcademia = document.getElementById('opt-treino-academia');
 
   if (btnCasa && btnAcademia) {
+    if (localTreinoSelecionado === 'casa') {
+      btnCasa.classList.add('selected');
+      btnAcademia.classList.remove('selected');
+    } else {
+      btnAcademia.classList.add('selected');
+      btnCasa.classList.remove('selected');
+    }
+
     btnCasa.addEventListener('click', () => {
       localTreinoSelecionado = 'casa';
       btnCasa.classList.add('selected');
       btnAcademia.classList.remove('selected');
+      localStorage.setItem('vnfitness_local_treino', 'casa');
+      ApiClient.salvarConfiguracoesAluno({ local_treino: 'casa' }).catch(() => {});
     });
 
     btnAcademia.addEventListener('click', () => {
       localTreinoSelecionado = 'academia';
       btnAcademia.classList.add('selected');
       btnCasa.classList.remove('selected');
+      localStorage.setItem('vnfitness_local_treino', 'academia');
+      ApiClient.salvarConfiguracoesAluno({ local_treino: 'academia' }).catch(() => {});
     });
   }
 
@@ -168,12 +180,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       if (peso > maxPeso) {
         const p = (peso - maxPeso).toFixed(1);
-        diffMsg = `🎯 Meta recomendada: Perder aproximadamente ${p} kg para atingir a faixa de peso saudável.`;
+        diffMsg = `Meta recomendada: Perder aproximadamente ${p} kg para atingir a faixa de peso saudável.`;
       } else if (peso < minPeso) {
         const g = (minPeso - peso).toFixed(1);
-        diffMsg = `🎯 Meta recomendada: Ganhar aproximadamente ${g} kg para atingir a faixa de peso saudável.`;
+        diffMsg = `Meta recomendada: Ganhar aproximadamente ${g} kg para atingir a faixa de peso saudável.`;
       } else {
-        diffMsg = `🎉 Seu peso está dentro da faixa saudável ideal! O foco agora é recomposição corporal.`;
+        diffMsg = `Seu peso está dentro da faixa saudável ideal! O foco agora é recomposição corporal.`;
       }
 
       imcVal.textContent = imc;
@@ -181,9 +193,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       imcMetaMsg.textContent = diffMsg;
       imcResultBanner.style.display = 'block';
 
+      // Salva os dados biométricos persistentemente no Supabase
+      ApiClient.salvarBiometriaAluno({
+        peso_kg: peso,
+        altura_m: altura,
+        idade: idade
+      }).catch(errBio => console.warn('Aviso ao persistir biometria:', errBio));
+
       // Chamar Agente Coach IA (Backend + Gemini + Supabase)
       btnGerarIA.disabled = true;
-      btnGerarIA.innerHTML = '✨ Coach IA Gerando Treino e Dieta...';
+      btnGerarIA.innerHTML = '<span style="display: flex; align-items: center; justify-content: center; gap: 8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/></svg> Coach IA Gerando Treino e Dieta...</span>';
 
       try {
         const res = await ApiClient.gerarPlanoCoach({
@@ -196,7 +215,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         renderizarTreino(res.treino);
         renderizarNutricao(res.nutricao);
-        alert('✨ Seu treino e plano alimentar foram salvos no Supabase com sucesso pelo Coach IA!');
+        alert('Seu treino e plano alimentar foram salvos no Supabase com sucesso pelo Coach IA!');
 
         // Leva o usuário para a aba de treino
         document.querySelector('[data-target="tab-treino"]').click();
@@ -206,7 +225,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         alert('Plano gerado e adaptado para você!');
       } finally {
         btnGerarIA.disabled = false;
-        btnGerarIA.innerHTML = '🚀 Gerar Meu Treino e Dieta com IA';
+        btnGerarIA.innerHTML = '<span style="display: flex; align-items: center; justify-content: center; gap: 8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg> Gerar Meu Treino e Dieta com IA</span>';
       }
     });
   }
@@ -277,7 +296,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (msgs.length === 0) {
         notifContainer.innerHTML = `
           <div style="text-align: center; padding: 24px; color: var(--text-muted);">
-            <div style="font-size: 2rem; margin-bottom: 8px;">📬</div>
+            <div style="display: flex; justify-content: center; margin-bottom: 10px;">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="16" x="2" y="4" rx="2"/>
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+              </svg>
+            </div>
             <p>Você não possui novos avisos da equipe da VnFitness no momento.</p>
           </div>
         `;
@@ -290,13 +314,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         item.style.cssText = 'background: rgba(255,255,255,0.05); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px; margin-bottom: 10px;';
         item.innerHTML = `
           <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-            <strong style="color: var(--accent-primary); font-size: 0.85rem;">⚡ Orientação do Coach / Instrutor</strong>
+            <strong style="color: var(--accent-primary); font-size: 0.85rem; display: inline-flex; align-items: center; gap: 5px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              Orientação do Coach / Instrutor
+            </strong>
             <small style="color: var(--text-muted); font-size: 0.72rem;">VnFitness Matriz</small>
           </div>
           <p style="font-size: 0.82rem; line-height: 1.4; color: var(--text-primary); margin-bottom: 8px;">${m.mensagem}</p>
           <div style="text-align: right;">
             <a href="https://wa.me/" target="_blank" style="font-size: 0.75rem; color: #10B981; text-decoration: none; font-weight: 700;">
-              💬 Responder no WhatsApp →
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> <span>Responder no WhatsApp &rarr;</span>
             </a>
           </div>
         `;
@@ -527,14 +554,29 @@ document.addEventListener('DOMContentLoaded', async () => {
         <div class="exercise-info">
           <h4>${ex.nome}</h4>
           <p>${ex.series} séries × ${ex.repeticoes} | ${ex.carga_sugerida || 'Carga progressiva'}</p>
-          <small style="color: var(--accent-primary); font-size: 0.75rem;">💡 ${ex.dica_execucao || 'Movimento controlado'}</small>
+          <small style="color: var(--accent-primary); font-size: 0.75rem; display: inline-flex; align-items: center; gap: 4px;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+            <span>${ex.dica_execucao || 'Movimento controlado'}</span>
+          </small>
         </div>
-        <div class="exercise-action-check" title="Marcar como concluído">✓</div>
+        <div class="exercise-action-check" title="Marcar como concluído" style="display: flex; align-items: center; justify-content: center;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
       `;
 
       const check = card.querySelector('.exercise-action-check');
+      const checkKey = 'vnfitness_workout_checks_' + (user?.id || 'guest');
+      const savedChecks = JSON.parse(localStorage.getItem(checkKey) || '{}');
+      if (savedChecks[ex.nome]) {
+        check.classList.add('completed');
+      }
+
       check.addEventListener('click', () => {
         check.classList.toggle('completed');
+        const done = check.classList.contains('completed');
+        const checks = JSON.parse(localStorage.getItem(checkKey) || '{}');
+        checks[ex.nome] = done;
+        localStorage.setItem(checkKey, JSON.stringify(checks));
       });
 
       container.appendChild(card);
@@ -585,6 +627,144 @@ document.addEventListener('DOMContentLoaded', async () => {
         { nome: 'Leg Press 45º', series: 4, repeticoes: '12 a 15 reps', carga_sugerida: 'Moderada/Pesada', dica_execucao: 'Evite travar os joelhos na extensão total.' },
         { nome: 'Puxador Alto Frente', series: 3, repeticoes: '12 reps', carga_sugerida: 'Moderada', dica_execucao: 'Foque na contração do grande dorsal.' }
       ]
+    });
+  }
+
+  // ==============================================================================
+  // 9. MODAL DE CONFIGURAÇÕES & PREFERÊNCIAS DO ALUNO (PERSISTENTE NO SUPABASE)
+  // ==============================================================================
+  const btnOpenConfigAluno = document.getElementById('btn-open-config-aluno');
+  const modalConfigAluno = document.getElementById('modal-config-aluno');
+  const btnFecharConfigAluno = document.getElementById('btn-fechar-config-aluno');
+  const formConfigAluno = document.getElementById('form-config-aluno');
+  const alertConfigAluno = document.getElementById('alert-config-aluno');
+
+  const cfgAlunoNome = document.getElementById('cfg-aluno-nome');
+  const cfgAlunoTel = document.getElementById('cfg-aluno-tel');
+  const cfgAlunoLocal = document.getElementById('cfg-aluno-local');
+  const cfgAlunoObjetivo = document.getElementById('cfg-aluno-objetivo');
+  const cfgAlunoMeta = document.getElementById('cfg-aluno-meta');
+  const cfgAlunoNotif = document.getElementById('cfg-aluno-notif');
+
+  async function carregarConfiguracoesAluno() {
+    try {
+      const res = await ApiClient.getConfiguracoesAluno();
+      const cfg = res?.configuracoes;
+      if (!cfg) return;
+
+      if (cfgAlunoNome && cfg.nome_completo) cfgAlunoNome.value = cfg.nome_completo;
+      if (cfgAlunoTel && cfg.telefone) cfgAlunoTel.value = cfg.telefone;
+      if (cfgAlunoLocal && cfg.local_treino) {
+        cfgAlunoLocal.value = cfg.local_treino;
+        localTreinoSelecionado = cfg.local_treino;
+        if (btnCasa && btnAcademia) {
+          if (cfg.local_treino === 'casa') {
+            btnCasa.classList.add('selected');
+            btnAcademia.classList.remove('selected');
+          } else {
+            btnAcademia.classList.add('selected');
+            btnCasa.classList.remove('selected');
+          }
+        }
+      }
+      if (cfgAlunoObjetivo && cfg.objetivo) cfgAlunoObjetivo.value = cfg.objetivo;
+      if (cfgAlunoMeta && cfg.meta_semanal) cfgAlunoMeta.value = cfg.meta_semanal;
+      if (cfgAlunoNotif && cfg.notificacoes !== undefined) cfgAlunoNotif.value = String(cfg.notificacoes);
+
+      if (greetingElem && cfg.nome_completo) {
+        greetingElem.textContent = `Olá, ${cfg.nome_completo}`;
+      }
+    } catch (e) {
+      console.warn('Configurações padrão em uso:', e);
+    }
+  }
+
+  // Carrega ao iniciar
+  carregarConfiguracoesAluno();
+
+  if (btnOpenConfigAluno && modalConfigAluno) {
+    btnOpenConfigAluno.addEventListener('click', async () => {
+      modalConfigAluno.style.display = 'flex';
+      await carregarConfiguracoesAluno();
+    });
+  }
+
+  if (btnFecharConfigAluno && modalConfigAluno) {
+    btnFecharConfigAluno.addEventListener('click', () => {
+      modalConfigAluno.style.display = 'none';
+    });
+  }
+
+  if (formConfigAluno) {
+    formConfigAluno.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = document.getElementById('btn-salvar-config-aluno');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Salvando no Supabase...';
+      }
+
+      const nome = cfgAlunoNome?.value;
+      const tel = cfgAlunoTel?.value;
+      const local = cfgAlunoLocal?.value;
+      const obj = cfgAlunoObjetivo?.value;
+      const meta = cfgAlunoMeta?.value;
+      const notif = cfgAlunoNotif?.value === 'true';
+
+      try {
+        const res = await ApiClient.salvarConfiguracoesAluno({
+          nome_completo: nome,
+          telefone: tel,
+          local_treino: local,
+          objetivo: obj,
+          meta_semanal: meta,
+          notificacoes: notif
+        });
+
+        if (greetingElem && nome) {
+          greetingElem.textContent = `Olá, ${nome}`;
+        }
+
+        if (res?.perfil) {
+          localStorage.setItem('vnfitness_perfil', JSON.stringify(res.perfil));
+        }
+        localStorage.setItem('vnfitness_local_treino', local);
+
+        if (local === 'casa' && btnCasa && btnAcademia) {
+          btnCasa.classList.add('selected');
+          btnAcademia.classList.remove('selected');
+          localTreinoSelecionado = 'casa';
+        } else if (btnCasa && btnAcademia) {
+          btnAcademia.classList.add('selected');
+          btnCasa.classList.remove('selected');
+          localTreinoSelecionado = 'academia';
+        }
+
+        if (alertConfigAluno) {
+          alertConfigAluno.style.display = 'block';
+          alertConfigAluno.style.background = '#ECFDF5';
+          alertConfigAluno.style.color = '#065F46';
+          alertConfigAluno.style.border = '1px solid #A7F3D0';
+          alertConfigAluno.innerHTML = '<span style="display: inline-flex; align-items: center; gap: 6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Suas configurações foram salvas e persistem no Supabase!</span>';
+          setTimeout(() => {
+            alertConfigAluno.style.display = 'none';
+            if (modalConfigAluno) modalConfigAluno.style.display = 'none';
+          }, 1500);
+        }
+      } catch (err) {
+        if (alertConfigAluno) {
+          alertConfigAluno.style.display = 'block';
+          alertConfigAluno.style.background = '#FEE2E2';
+          alertConfigAluno.style.color = '#991B1B';
+          alertConfigAluno.style.border = '1px solid #FECACA';
+          alertConfigAluno.innerHTML = '<span style="display: inline-flex; align-items: center; gap: 6px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Erro ao salvar: ' + err.message + '</span>';
+        }
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> <span>Salvar Configurações</span>';
+        }
+      }
     });
   }
 });

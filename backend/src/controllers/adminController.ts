@@ -455,7 +455,7 @@ export class AdminController {
     }
   }
 
-  // 15. DESEMPENHO & CONFIGURAÇÕES (Menu Desempenho e Configurações)
+  // 15. DESEMPENHO (Menu Desempenho)
   static async obterDesempenho(req: AuthenticatedRequest, res: Response) {
     try {
       return res.status(200).json({
@@ -470,6 +470,89 @@ export class AdminController {
       });
     } catch (error) {
       return res.status(500).json({ error: 'Erro ao obter desempenho', details: error });
+    }
+  }
+
+  // 16. CONFIGURAÇÕES PERSISTENTES DO SISTEMA
+  static async obterConfiguracoes(req: AuthenticatedRequest, res: Response) {
+    try {
+      const { data, error } = await supabaseAdmin
+        .from('configuracoes_sistema')
+        .select('*');
+
+      if (error) throw error;
+
+      const configsMap: Record<string, any> = {};
+      data?.forEach(item => {
+        configsMap[item.chave] = item.valor;
+      });
+
+      const configGeral = configsMap['geral'] || {
+        nome_academia: 'VnFitness Matriz',
+        subtitulo_unidade: 'Unidade Central • Sistema IA',
+        telefone_suporte: '(11) 98888-7777',
+        admin_email: 'fredsoncitty@gmail.com',
+        modo_aprovacao: 'manual',
+        frequencia_meta_semanal: 3,
+        dias_alerta_retencao: 7,
+        notificacoes_ia_ativas: true
+      };
+
+      return res.status(200).json({
+        configuracoes: {
+          ...configGeral,
+          ia_modelo: configsMap['ia']?.modelo || 'Google Gemini Flash 2.5',
+          ia_status: configsMap['ia']?.status || 'ativo',
+          porta: 3333,
+          database_online: true
+        }
+      });
+    } catch (error) {
+      return res.status(500).json({ error: 'Erro ao obter configurações do sistema', details: error });
+    }
+  }
+
+  static async salvarConfiguracoes(req: AuthenticatedRequest, res: Response) {
+    try {
+      const {
+        nome_academia,
+        subtitulo_unidade,
+        telefone_suporte,
+        modo_aprovacao,
+        frequencia_meta_semanal,
+        dias_alerta_retencao,
+        notificacoes_ia_ativas
+      } = req.body;
+
+      const novosValores = {
+        nome_academia: nome_academia || 'VnFitness Matriz',
+        subtitulo_unidade: subtitulo_unidade || 'Unidade Central • Sistema IA',
+        telefone_suporte: telefone_suporte || '(11) 98888-7777',
+        admin_email: 'fredsoncitty@gmail.com',
+        modo_aprovacao: modo_aprovacao || 'manual',
+        frequencia_meta_semanal: Number(frequencia_meta_semanal) || 3,
+        dias_alerta_retencao: Number(dias_alerta_retencao) || 7,
+        notificacoes_ia_ativas: Boolean(notificacoes_ia_ativas)
+      };
+
+      const { data, error } = await supabaseAdmin
+        .from('configuracoes_sistema')
+        .upsert({
+          chave: 'geral',
+          valor: novosValores,
+          atualizado_em: new Date().toISOString()
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      return res.status(200).json({
+        message: 'Configurações do sistema salvas com sucesso no Supabase!',
+        configuracoes: data?.valor
+      });
+    } catch (error) {
+      return res.status(500).json({ error: 'Erro ao salvar configurações do sistema', details: error });
     }
   }
 }

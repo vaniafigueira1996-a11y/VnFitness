@@ -149,4 +149,124 @@ export class UserController {
             return res.status(500).json({ error: 'Erro ao obter dados de evolução', details: error });
         }
     }
+    // Obter configurações/preferências salvas do aluno
+    static async obterConfiguracoes(req, res) {
+        try {
+            const usuarioId = req.user?.id;
+            const { data, error } = await supabaseAdmin
+                .from('usuarios')
+                .select('id, email, nome_completo, telefone, foto_url, preferencias')
+                .eq('id', usuarioId)
+                .single();
+            if (error)
+                throw error;
+            const prefs = data?.preferencias || {
+                tema: 'dark',
+                local_treino: 'academia',
+                objetivo: 'Hipertrofia e Força',
+                meta_semanal: 3,
+                notificacoes: true
+            };
+            return res.status(200).json({
+                configuracoes: {
+                    nome_completo: data?.nome_completo,
+                    email: data?.email,
+                    telefone: data?.telefone || '',
+                    foto_url: data?.foto_url,
+                    ...prefs
+                }
+            });
+        }
+        catch (error) {
+            return res.status(500).json({ error: 'Erro ao buscar configurações do aluno', details: error });
+        }
+    }
+    // Salvar configurações/preferências do aluno
+    static async salvarConfiguracoes(req, res) {
+        try {
+            const usuarioId = req.user?.id;
+            const { nome_completo, telefone, tema = 'dark', local_treino = 'academia', objetivo = 'Hipertrofia e Força', meta_semanal = 3, notificacoes = true } = req.body;
+            const novasPrefs = {
+                tema,
+                local_treino,
+                objetivo,
+                meta_semanal: Number(meta_semanal) || 3,
+                notificacoes: Boolean(notificacoes)
+            };
+            const updateData = {
+                preferencias: novasPrefs,
+                atualizado_em: new Date().toISOString()
+            };
+            if (nome_completo)
+                updateData.nome_completo = nome_completo.trim();
+            if (telefone !== undefined)
+                updateData.telefone = telefone.trim();
+            const { data, error } = await supabaseAdmin
+                .from('usuarios')
+                .update(updateData)
+                .eq('id', usuarioId)
+                .select()
+                .single();
+            if (error)
+                throw error;
+            return res.status(200).json({
+                message: 'Preferências salvas com sucesso no Supabase!',
+                perfil: data
+            });
+        }
+        catch (error) {
+            return res.status(500).json({ error: 'Erro ao salvar configurações do aluno', details: error });
+        }
+    }
+    // Salvar/atualizar biometria do aluno
+    static async salvarBiometria(req, res) {
+        try {
+            const usuarioId = req.user?.id;
+            const { peso_kg, altura_m, idade } = req.body;
+            if (!peso_kg || !altura_m || !idade) {
+                return res.status(400).json({ error: 'Peso, altura e idade são obrigatórios.' });
+            }
+            const peso = Number(peso_kg);
+            const altura = Number(altura_m);
+            const id = Number(idade);
+            const imc = parseFloat((peso / (altura * altura)).toFixed(2));
+            let classificacao = '';
+            if (imc < 18.5)
+                classificacao = 'Abaixo do peso';
+            else if (imc < 25.0)
+                classificacao = 'Peso saudável';
+            else if (imc < 30.0)
+                classificacao = 'Sobrepeso';
+            else
+                classificacao = 'Obesidade';
+            const pesoMin = parseFloat((18.5 * altura * altura).toFixed(1));
+            const pesoMax = parseFloat((24.9 * altura * altura).toFixed(1));
+            const diffMeta = peso > pesoMax ? -(peso - pesoMax) : (peso < pesoMin ? (pesoMin - peso) : 0);
+            const { data, error } = await supabaseAdmin
+                .from('dados_biometricos')
+                .insert({
+                usuario_id: usuarioId,
+                peso_kg: peso,
+                altura_m: altura,
+                idade: id,
+                imc,
+                classificacao_imc: classificacao,
+                peso_ideal_min: pesoMin,
+                peso_ideal_max: pesoMax,
+                diferenca_peso_meta: diffMeta,
+                observacoes: `Biometria registrada pelo Aluno via App`
+            })
+                .select()
+                .single();
+            if (error)
+                throw error;
+            return res.status(201).json({
+                message: 'Biometria salva no Supabase com sucesso!',
+                biometria: data
+            });
+        }
+        catch (error) {
+            return res.status(500).json({ error: 'Erro ao salvar biometria', details: error });
+        }
+    }
 }

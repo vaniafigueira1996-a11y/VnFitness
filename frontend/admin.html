@@ -2,19 +2,37 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>VnFitness — Painel Administrativo de Gestão & IA</title>
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
 
+  <!-- Backdrop para Sidebar e Drawer no Mobile/Tablet -->
+  <div id="sidebar-backdrop" class="admin-backdrop"></div>
+  <div id="drawer-backdrop" class="admin-backdrop"></div>
+
   <div class="admin-layout" id="main-admin-layout">
+    
     <!-- ================= 1. SIDEBAR LATERAL ESQUERDA ================= -->
-    <aside class="admin-sidebar">
-      <div class="sidebar-brand">
-        <div class="brand-icon-box">⚡</div>
-        <span>VnFitness</span>
+    <aside class="admin-sidebar" id="admin-sidebar">
+      
+      <!-- Topo da Sidebar com Botão Fechar no Mobile -->
+      <div class="sidebar-header-row">
+        <div class="sidebar-brand">
+          <div class="brand-icon-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+          </div>
+          <span>VnFitness</span>
+        </div>
+        <button id="btn-close-sidebar" class="sidebar-close-btn" title="Fechar menu">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
       </div>
 
       <!-- Seletor de Unidade Base -->
@@ -31,14 +49,22 @@
       <nav class="sidebar-nav">
         <a href="#visao-geral" class="nav-item-btn" data-sec="sec-visao-geral">
           <div class="nav-item-left">
-            <span>📊</span>
+            <span class="nav-item-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>
+              </svg>
+            </span>
             <span>Visão geral</span>
           </div>
         </a>
 
         <a href="#retencao" class="nav-item-btn active" data-sec="sec-retencao">
           <div class="nav-item-left">
-            <span>🧡</span>
+            <span class="nav-item-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </span>
             <span>Retenção</span>
           </div>
           <span class="nav-badge-pill" id="badge-retencao-count">14</span>
@@ -46,7 +72,11 @@
 
         <a href="#alunos" class="nav-item-btn" data-sec="sec-alunos">
           <div class="nav-item-left">
-            <span>👥</span>
+            <span class="nav-item-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </span>
             <span>Alunos & Aprovações</span>
           </div>
           <span class="nav-badge-pill" id="badge-pendentes-count" style="background: #F59E0B; display: none;">0</span>
@@ -54,21 +84,33 @@
 
         <a href="#treinos" class="nav-item-btn" data-sec="sec-treinos">
           <div class="nav-item-left">
-            <span>🏋️</span>
+            <span class="nav-item-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m6.5 6.5 11 11"/><path d="m21 21-1-1a2.83 2.83 0 0 0 0-4l-1-1 4-4-1-1a2.83 2.83 0 0 0-4 0l-1 1-4-4 1-1a2.83 2.83 0 0 0 0-4l-1-1-4 4 1 1a2.83 2.83 0 0 0 0 4l1 1-4 4-1-1a2.83 2.83 0 0 0-4 0l-1 1 4 4 1 1a2.83 2.83 0 0 0 4 0l1-1 4 4-1 1a2.83 2.83 0 0 0 0 4Z"/>
+              </svg>
+            </span>
             <span>Treinos IA</span>
           </div>
         </a>
 
         <a href="#checkins" class="nav-item-btn" data-sec="sec-checkins">
           <div class="nav-item-left">
-            <span>📲</span>
+            <span class="nav-item-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/><path d="m9 10 2 2 4-4"/>
+              </svg>
+            </span>
             <span>Check-ins</span>
           </div>
         </a>
 
         <a href="#whatsapp" class="nav-item-btn" data-sec="sec-whatsapp">
           <div class="nav-item-left">
-            <span>💬</span>
+            <span class="nav-item-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
+              </svg>
+            </span>
             <span>WhatsApp</span>
           </div>
           <span style="font-size: 0.72rem; color: #717782;" id="badge-whatsapp-count">4</span>
@@ -80,19 +122,31 @@
       <nav class="sidebar-nav">
         <a href="#desempenho" class="nav-item-btn" data-sec="sec-desempenho">
           <div class="nav-item-left">
-            <span>📈</span>
+            <span class="nav-item-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>
+              </svg>
+            </span>
             <span>Desempenho</span>
           </div>
         </a>
         <a href="#professores" class="nav-item-btn" data-sec="sec-professores">
           <div class="nav-item-left">
-            <span>👨‍🏫</span>
+            <span class="nav-item-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+              </svg>
+            </span>
             <span>Professores</span>
           </div>
         </a>
         <a href="#configuracoes" class="nav-item-btn" data-sec="sec-configuracoes">
           <div class="nav-item-left">
-            <span>⚙️</span>
+            <span class="nav-item-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+            </span>
             <span>Configurações</span>
           </div>
         </a>
@@ -101,7 +155,9 @@
       <!-- Card IA Hoje no rodapé da Sidebar -->
       <div class="sidebar-footer-card">
         <div class="footer-card-header">
-          <span>✨</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/>
+          </svg>
           <span>VnFitness IA hoje</span>
         </div>
         <p>312 treinos ajustados esta semana. 9 professores revisaram as sugestões.</p>
@@ -117,12 +173,46 @@
           <h5 style="font-size: 0.8rem; font-weight: 700; color: #FFFFFF; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">Fredson Citty</h5>
           <p style="font-size: 0.68rem; color: #717782;">Administrador Geral</p>
         </div>
-        <button id="admin-logout-btn" style="color: #EF4444; font-size: 0.85rem; cursor: pointer;" title="Sair do painel">🚪</button>
+        <button id="admin-logout-btn" style="color: #EF4444; font-size: 0.85rem; cursor: pointer; background: transparent; border: none; display: flex; align-items: center; justify-content: center; padding: 4px;" title="Sair do painel">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+        </button>
       </div>
     </aside>
 
     <!-- ================= 2. CONTEÚDO PRINCIPAL (MEIO) ================= -->
     <main class="admin-main">
+      
+      <!-- Topbar Exclusiva Mobile (Oculta no Desktop) -->
+      <div class="mobile-top-header">
+        <button id="btn-open-sidebar" class="mobile-hamburger-btn" title="Abrir menu de navegação">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>
+          </svg>
+        </button>
+        <div class="mobile-brand-title">
+          <span class="mobile-brand-bolt">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+            </svg>
+          </span>
+          <span>VnFitness Matriz</span>
+        </div>
+        <div class="mobile-header-actions">
+          <a href="/app.html" class="mobile-header-link" title="App do Aluno">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>
+            </svg>
+          </a>
+          <button id="mobile-logout-btn" class="mobile-header-link" title="Sair">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
       <!-- Topbar Compartilhada com Título Dinâmico, Busca e Exportação -->
       <header class="admin-topbar">
         <div class="topbar-title">
@@ -132,18 +222,32 @@
 
         <div class="topbar-controls">
           <div class="search-box-mac">
-            <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9CA3AF;">🔍</span>
+            <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9CA3AF; display: flex; align-items: center;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+              </svg>
+            </span>
             <input type="text" id="admin-global-search" placeholder="Buscar aluno, matrícula ou e-mail...">
             <span class="search-shortcut-tag">⌘K</span>
           </div>
 
-          <button class="icon-btn" style="border-radius: 8px;" title="Alertas">🔔</button>
-          <a href="/app.html" class="btn btn-secondary" style="font-size: 0.82rem; padding: 9px 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;" title="Abrir Visão do Aluno">
-            <span>📱</span>
+          <button class="icon-btn" style="border-radius: 8px;" title="Alertas">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+              <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+            </svg>
+          </button>
+          <a href="/app.html" class="btn btn-secondary topbar-app-link" style="font-size: 0.82rem; padding: 9px 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;" title="Abrir Visão do Aluno">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/>
+            </svg>
             <span>App do Aluno</span>
           </a>
-          <button class="btn btn-secondary" id="btn-exportar-dados" style="font-size: 0.82rem; padding: 9px 16px;">
-            <span>📥 Exportar</span>
+          <button class="btn btn-secondary" id="btn-exportar-dados" style="font-size: 0.82rem; padding: 9px 16px; display: inline-flex; align-items: center; gap: 6px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <span>Exportar</span>
           </button>
         </div>
       </header>
@@ -155,41 +259,52 @@
           <!-- 1. Alunos Ativos -->
           <div class="kpi-card">
             <div class="kpi-header">
-              <span>👥</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
               <span>Alunos ativos</span>
             </div>
             <div class="kpi-big-num" id="kpi-alunos-ativos">1.284</div>
-            <div class="kpi-footer-note">+32 no mês 📈</div>
+            <div class="kpi-footer-note" style="display: flex; align-items: center; gap: 4px;">
+              <span>+32 no mês</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+            </div>
           </div>
 
           <!-- 2. Risco Alto de Cancelar (Card com destaque escuro) -->
           <div class="kpi-card kpi-card-dark">
             <div class="kpi-header">
-              <span>🛡️</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FF5252" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
               <span>Risco alto de cancelar</span>
             </div>
-            <div class="kpi-big-num" id="kpi-risco-alto" style="color: #FF5252;">14 <span style="font-size: 1rem; font-weight: 500; color: #A0A5B5;">+41 em risco médio</span></div>
+            <div class="kpi-big-num" id="kpi-risco-alto" style="color: #FF5252;">14 <span class="kpi-sub-label">+41 em risco médio</span></div>
             <div class="kpi-footer-note">6 sem contato ainda</div>
           </div>
 
           <!-- 3. Frequência Média -->
           <div class="kpi-card">
             <div class="kpi-header">
-              <span>📅</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/>
+              </svg>
               <span>Frequência média</span>
             </div>
-            <div class="kpi-big-num" id="kpi-freq-media">2,7 <span style="font-size: 1rem; font-weight: 500; color: #9CA3AF;">treinos por semana</span></div>
+            <div class="kpi-big-num" id="kpi-freq-media">2,7 <span class="kpi-sub-label">treinos/sem</span></div>
             <div class="kpi-footer-note">+0,3 desde o app</div>
           </div>
 
           <!-- 4. Ajustes da IA na semana -->
           <div class="kpi-card">
             <div class="kpi-header">
-              <span>✨</span>
-              <span>Ajustes da IA na semana</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/>
+              </svg>
+              <span>Ajustes da IA</span>
             </div>
-            <div class="kpi-big-num" id="kpi-ajustes-ia">312 <span style="font-size: 1rem; font-weight: 500; color: #9CA3AF;">treinos</span></div>
-            <div class="kpi-footer-note" style="color: #0284C7;">81% aceitos pelos professores</div>
+            <div class="kpi-big-num" id="kpi-ajustes-ia">312 <span class="kpi-sub-label">treinos</span></div>
+            <div class="kpi-footer-note" style="color: #0284C7;">81% aceitos</div>
           </div>
         </section>
 
@@ -197,8 +312,12 @@
         <section class="table-container-card">
           <div class="table-header-row">
             <div>
-              <h3 style="font-size: 1.05rem; font-weight: 700; color: #111827;">
-                Alunos com risco de cancelar <span class="badge badge-warning" style="font-size: 0.72rem;">✨ ordenado pela IA</span>
+              <h3 style="font-size: 1.05rem; font-weight: 700; color: #111827; display: flex; align-items: center; gap: 8px;">
+                <span>Alunos com risco de cancelar</span>
+                <span class="badge badge-warning" style="font-size: 0.72rem; display: inline-flex; align-items: center; gap: 4px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/></svg>
+                  ordenado pela IA
+                </span>
               </h3>
             </div>
 
@@ -210,23 +329,27 @@
             </div>
           </div>
 
-          <table class="retention-table">
-            <thead>
-              <tr>
-                <th>ALUNO</th>
-                <th>ÚLTIMO TREINO</th>
-                <th>MOTIVO APONTADO PELA IA</th>
-                <th>RISCO</th>
-                <th>AÇÃO SUGERIDA</th>
-              </tr>
-            </thead>
-            <tbody id="retention-table-body">
-              <!-- Preenchido via JavaScript -->
-            </tbody>
-          </table>
+          <div class="table-scroll-hint">↔ Arraste horizontalmente para ver todos os detalhes</div>
+
+          <div class="table-responsive-wrapper">
+            <table class="retention-table">
+              <thead>
+                <tr>
+                  <th>ALUNO</th>
+                  <th>ÚLTIMO TREINO</th>
+                  <th>MOTIVO APONTADO PELA IA</th>
+                  <th>RISCO</th>
+                  <th>AÇÃO SUGERIDA</th>
+                </tr>
+              </thead>
+              <tbody id="retention-table-body">
+                <!-- Preenchido via JavaScript -->
+              </tbody>
+            </table>
+          </div>
 
           <div style="margin-top: 16px; padding-top: 14px; border-top: 1px solid #F3F4F6; font-size: 0.8rem; color: #10B981; display: flex; align-items: center; gap: 8px;">
-            <span>✓</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             <span>23 de 31 alunos contatados em setembro voltaram a treinar em até 7 dias</span>
           </div>
         </section>
@@ -236,22 +359,42 @@
       <div class="admin-section" id="sec-visao-geral">
         <section class="kpi-row">
           <div class="kpi-card">
-            <div class="kpi-header"><span>💰</span><span>Faturamento Mensal</span></div>
+            <div class="kpi-header">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+              <span>Faturamento Mensal</span>
+            </div>
             <div class="kpi-big-num">R$ 142.800</div>
             <div class="kpi-footer-note">+8.4% vs mês anterior</div>
           </div>
           <div class="kpi-card">
-            <div class="kpi-header"><span>🎯</span><span>Taxa de Ocupação</span></div>
+            <div class="kpi-header">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+              </svg>
+              <span>Taxa de Ocupação</span>
+            </div>
             <div class="kpi-big-num">78%</div>
             <div class="kpi-footer-note">Pico: 18h às 20h</div>
           </div>
           <div class="kpi-card">
-            <div class="kpi-header"><span>🆕</span><span>Novas Matrículas</span></div>
+            <div class="kpi-header">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/>
+              </svg>
+              <span>Novas Matrículas</span>
+            </div>
             <div class="kpi-big-num">48</div>
             <div class="kpi-footer-note">Neste mês</div>
           </div>
           <div class="kpi-card">
-            <div class="kpi-header"><span>⚡</span><span>Check-ins Hoje</span></div>
+            <div class="kpi-header">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FF7300" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+              <span>Check-ins Hoje</span>
+            </div>
             <div class="kpi-big-num">412</div>
             <div class="kpi-footer-note">Em tempo real</div>
           </div>
@@ -274,12 +417,19 @@
               <p style="font-size: 0.8rem; color: #6B7280;">Aprove novos cadastros, inative ou gerencie contas salvas no banco</p>
             </div>
 
-            <div style="display: flex; gap: 10px;">
-              <button class="btn btn-primary" id="btn-novo-aluno" style="font-size: 0.8rem; padding: 8px 16px;">
-                ➕ Novo Aluno
+            <div class="section-actions-wrap">
+              <button class="btn btn-primary" id="btn-novo-aluno" style="font-size: 0.8rem; padding: 8px 16px; display: inline-flex; align-items: center; gap: 6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/>
+                </svg>
+                <span>Novo Aluno</span>
               </button>
-              <label for="admin-photo-upload" class="btn btn-secondary" style="font-size: 0.8rem; cursor: pointer;">
-                📷 Upload Foto Storage
+              <label for="admin-photo-upload" class="btn btn-secondary" style="font-size: 0.8rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
+                </svg>
+                <span>Foto Storage</span>
               </label>
               <input type="file" id="admin-photo-upload" accept="image/*" style="display: none;">
             </div>
@@ -325,34 +475,56 @@
             </div>
           </div>
 
-          <table class="retention-table">
-            <thead>
-              <tr>
-                <th>ALUNO</th>
-                <th>DATA</th>
-                <th>DURAÇÃO</th>
-                <th>INTENSIDADE</th>
-                <th>EXERCÍCIO DESTAQUE</th>
-              </tr>
-            </thead>
-            <tbody id="checkins-table-body">
-              <!-- Preenchido via JS -->
-            </tbody>
-          </table>
+          <div class="table-scroll-hint">↔ Arraste horizontalmente para ver todos os dados</div>
+
+          <div class="table-responsive-wrapper">
+            <table class="retention-table">
+              <thead>
+                <tr>
+                  <th>ALUNO</th>
+                  <th>DATA</th>
+                  <th>DURAÇÃO</th>
+                  <th>INTENSIDADE</th>
+                  <th>EXERCÍCIO DESTAQUE</th>
+                </tr>
+              </thead>
+              <tbody id="checkins-table-body">
+                <!-- Preenchido via JS -->
+              </tbody>
+            </table>
+          </div>
         </section>
       </div>
 
       <!-- ================= SEÇÃO F: WHATSAPP ================= -->
       <div class="admin-section" id="sec-whatsapp">
         <section class="table-container-card">
-          <div class="table-header-row">
+          <div class="table-header-row wa-header-toolbar">
             <div>
-              <h3 style="font-size: 1.05rem; font-weight: 700;">Fila de Mensagens Automáticas IA • WhatsApp</h3>
-              <p style="font-size: 0.8rem; color: #6B7280;">Envie mensagens empáticas de retenção com 1 clique</p>
+              <h3 style="font-size: 1.1rem; font-weight: 700; color: #111827; display: flex; align-items: center; gap: 8px;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
+                </svg>
+                <span>Fila de Mensagens Automáticas IA • WhatsApp</span>
+              </h3>
+              <p style="font-size: 0.82rem; color: #6B7280; margin-top: 2px;">Envie mensagens empáticas de retenção com 1 clique</p>
+            </div>
+
+            <!-- Filtros Rápidos de Status -->
+            <div class="wa-filter-tabs" id="wa-filter-tabs">
+              <button class="wa-filter-btn active" data-filter="todos" type="button">
+                Todas <span class="wa-filter-count" id="wa-count-todos">0</span>
+              </button>
+              <button class="wa-filter-btn" data-filter="pendente" type="button">
+                Pendentes <span class="wa-filter-count count-pending" id="wa-count-pendentes">0</span>
+              </button>
+              <button class="wa-filter-btn" data-filter="enviada" type="button">
+                Enviadas <span class="wa-filter-count count-sent" id="wa-count-enviadas">0</span>
+              </button>
             </div>
           </div>
 
-          <div id="whatsapp-queue-list">
+          <div id="whatsapp-queue-list" class="wa-cards-grid">
             <!-- Preenchido via JS -->
           </div>
         </section>
@@ -362,22 +534,48 @@
       <div class="admin-section" id="sec-desempenho">
         <section class="kpi-row">
           <div class="kpi-card">
-            <div class="kpi-header"><span>🏆</span><span>Taxa de Retenção</span></div>
+            <div class="kpi-header">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+                <path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>
+              </svg>
+              <span>Taxa de Retenção</span>
+            </div>
             <div class="kpi-big-num" style="color: #10B981;">94.2%</div>
             <div class="kpi-footer-note">Meta: &gt; 92%</div>
           </div>
           <div class="kpi-card">
-            <div class="kpi-header"><span>📉</span><span>Taxa de Evasão</span></div>
+            <div class="kpi-header">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/>
+              </svg>
+              <span>Taxa de Evasão</span>
+            </div>
             <div class="kpi-big-num" style="color: #F59E0B;">5.8%</div>
             <div class="kpi-footer-note">-1.2% neste trimestre</div>
           </div>
           <div class="kpi-card">
-            <div class="kpi-header"><span>🔄</span><span>Alunos Recuperados IA</span></div>
+            <div class="kpi-header">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                <path d="M3 3v5h5"/>
+                <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+                <path d="M16 21h5v-5"/>
+              </svg>
+              <span>Alunos Recuperados IA</span>
+            </div>
             <div class="kpi-big-num" style="color: #0284C7;">23</div>
             <div class="kpi-footer-note">Voltaram a treinar</div>
           </div>
           <div class="kpi-card">
-            <div class="kpi-header"><span>⭐</span><span>NPS Alunos</span></div>
+            <div class="kpi-header">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+              <span>NPS Alunos</span>
+            </div>
             <div class="kpi-big-num">89</div>
             <div class="kpi-footer-note">Zona de Excelência</div>
           </div>
@@ -392,8 +590,11 @@
               <h3 style="font-size: 1.05rem; font-weight: 700;">Equipe de Professores VnFitness</h3>
               <p style="font-size: 0.8rem; color: #6B7280;">Gerencie os instrutores e acompanhe a distribuição de alunos</p>
             </div>
-            <button class="btn btn-primary" id="btn-novo-professor" style="font-size: 0.8rem; padding: 8px 16px;">
-              ➕ Novo Professor
+            <button class="btn btn-primary" id="btn-novo-professor" style="font-size: 0.8rem; padding: 8px 16px; display: inline-flex; align-items: center; gap: 6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" x2="12" y1="5" y2="19"/><line x1="5" x2="19" y1="12" y2="12"/>
+              </svg>
+              <span>Novo Professor</span>
             </button>
           </div>
 
@@ -403,41 +604,111 @@
         </section>
       </div>
 
-      <!-- ================= SEÇÃO I: CONFIGURAÇÕES ================= -->
+      <!-- ================= SEÇÃO I: CONFIGURAÇÕES DO SISTEMA (PERSISTENTES) ================= -->
       <div class="admin-section" id="sec-configuracoes">
         <section class="table-container-card">
-          <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 16px;">Configurações do Sistema VnFitness</h3>
-
-          <div class="config-info-row">
-            <span><strong>Administrador Credenciado:</strong></span>
-            <span class="badge badge-success">fredsoncitty@gmail.com (Admin Único)</span>
+          <div class="table-header-row" style="margin-bottom: 20px;">
+            <div>
+              <h3 style="font-size: 1.1rem; font-weight: 700; color: #111827;">Configurações Globais do Sistema (Supabase)</h3>
+              <p style="font-size: 0.82rem; color: #6B7280;">Todas as alterações ficam salvas no banco de dados e persistem até serem alteradas.</p>
+            </div>
+            <button type="button" class="btn btn-primary" id="btn-salvar-config-sistema" style="font-size: 0.85rem; padding: 10px 20px; display: inline-flex; align-items: center; gap: 6px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                <polyline points="17 21 17 13 7 13 7 21"/>
+                <polyline points="7 3 7 8 15 8"/>
+              </svg>
+              <span>Salvar Configurações</span>
+            </button>
           </div>
 
-          <div class="config-info-row">
-            <span><strong>Conexão Supabase:</strong></span>
-            <span style="color: #10B981; font-weight: 700;">● Online (sothigunxokciqpsuhmn)</span>
-          </div>
+          <div id="alert-config-sistema" style="display: none; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 0.85rem;"></div>
 
-          <div class="config-info-row">
-            <span><strong>Integração IA:</strong></span>
-            <span style="color: #0284C7; font-weight: 700;">● Google Gemini Flash Ativo</span>
-          </div>
+          <form id="form-config-sistema">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 20px;">
+              
+              <!-- Nome da Academia / Unidade -->
+              <div>
+                <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #374151; margin-bottom: 6px;">Nome da Academia / Franquia</label>
+                <input type="text" id="cfg-nome-academia" class="auth-input" style="background: #FFF; border: 1px solid #D1D5DB; padding: 10px 14px;" value="VnFitness Matriz" required>
+              </div>
 
-          <div class="config-info-row">
-            <span><strong>Aprovação de Alunos:</strong></span>
-            <span>Manual (Segurança estrita pelo painel)</span>
-          </div>
+              <!-- Subtítulo da Unidade -->
+              <div>
+                <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #374151; margin-bottom: 6px;">Identificação da Unidade</label>
+                <input type="text" id="cfg-subtitulo-unidade" class="auth-input" style="background: #FFF; border: 1px solid #D1D5DB; padding: 10px 14px;" value="Unidade Central • Sistema IA" required>
+              </div>
 
-          <div class="config-info-row">
-            <span><strong>Porta do Servidor:</strong></span>
-            <span>3333</span>
-          </div>
+              <!-- Modo de Aprovação de Novos Alunos -->
+              <div>
+                <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #374151; margin-bottom: 6px;">Modo de Aprovação de Cadastros</label>
+                <select id="cfg-modo-aprovacao" class="auth-input" style="background: #FFF; border: 1px solid #D1D5DB; padding: 10px 14px; cursor: pointer;">
+                  <option value="manual">Manual (Administrador aprova pelo painel)</option>
+                  <option value="automatico">Automático (Conta ativa imediatamente)</option>
+                </select>
+              </div>
+
+              <!-- Telefone de Suporte / WhatsApp da Academia -->
+              <div>
+                <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #374151; margin-bottom: 6px;">WhatsApp Oficial da Academia (Suporte & IA)</label>
+                <input type="text" id="cfg-telefone-suporte" class="auth-input" style="background: #FFF; border: 1px solid #D1D5DB; padding: 10px 14px;" value="(11) 98888-7777">
+              </div>
+
+              <!-- Meta Geral de Frequência Semanal -->
+              <div>
+                <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #374151; margin-bottom: 6px;">Meta de Frequência Semanal (Treinos/Semana)</label>
+                <input type="number" id="cfg-meta-semanal" class="auth-input" style="background: #FFF; border: 1px solid #D1D5DB; padding: 10px 14px;" min="1" max="7" value="3">
+              </div>
+
+              <!-- Dias sem Treino para Alerta de Risco IA -->
+              <div>
+                <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #374151; margin-bottom: 6px;">Alerta de Risco de Evasão IA (Dias de Inatividade)</label>
+                <input type="number" id="cfg-dias-alerta" class="auth-input" style="background: #FFF; border: 1px solid #D1D5DB; padding: 10px 14px;" min="2" max="30" value="7">
+              </div>
+            </div>
+
+            <!-- Parâmetros de Infraestrutura e Conexões (Status) -->
+            <h4 style="font-size: 0.92rem; font-weight: 700; color: #111827; margin: 24px 0 12px 0;">Status de Conexão & Infraestrutura</h4>
+            <div style="background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 12px; padding: 16px;">
+              <div class="config-info-row">
+                <span><strong>Administrador Credenciado Mestre:</strong></span>
+                <span class="badge badge-success">fredsoncitty@gmail.com (Acesso Vitalício)</span>
+              </div>
+              <div class="config-info-row">
+                <span><strong>Conexão Supabase Database & Auth:</strong></span>
+                <span style="color: #10B981; font-weight: 700;">● Online (sothigunxokciqpsuhmn)</span>
+              </div>
+              <div class="config-info-row">
+                <span><strong>Inteligência Artificial Ativa:</strong></span>
+                <span style="color: #0284C7; font-weight: 700;">● Google Gemini Flash 2.5 Conectado</span>
+              </div>
+              <div class="config-info-row">
+                <span><strong>Porta do Servidor Local:</strong></span>
+                <span>3333</span>
+              </div>
+            </div>
+          </form>
         </section>
       </div>
     </main>
 
     <!-- ================= 3. PAINEL LATERAL DIREITO (DRAWER RETENÇÃO) ================= -->
     <aside class="admin-drawer-right" id="admin-drawer">
+      
+      <!-- Cabeçalho do Drawer com Botão Fechar no Mobile/Tablet -->
+      <div class="drawer-top-actions">
+        <span class="drawer-top-badge" style="display: inline-flex; align-items: center; gap: 4px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span>DETALHES DO ALUNO</span>
+        </span>
+        <button id="btn-close-drawer" class="drawer-close-btn" title="Fechar painel" style="display: inline-flex; align-items: center; gap: 4px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+          <span>Fechar</span>
+        </button>
+      </div>
+
       <div class="drawer-student-header">
         <div class="drawer-student-info">
           <div class="student-avatar-badge" style="width: 44px; height: 44px; font-size: 1rem;">RT</div>
@@ -452,8 +723,10 @@
 
       <!-- Motivos da IA com Barras de Peso -->
       <div class="drawer-ia-reasons">
-        <div class="reason-header">
-          <span>✨</span>
+        <div class="reason-header" style="display: flex; align-items: center; gap: 6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/>
+          </svg>
           <span>POR QUE A IA ACHA</span>
         </div>
         <div id="drawer-reasons-list">
@@ -463,16 +736,21 @@
 
       <!-- Caixa de Mensagem Sugerida para WhatsApp -->
       <div class="whatsapp-draft-box">
-        <div class="draft-header">
-          <span>💬</span>
+        <div class="draft-header" style="display: flex; align-items: center; gap: 6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
+          </svg>
           <span>MENSAGEM SUGERIDA • REVISE ANTES</span>
         </div>
         <div class="whatsapp-text-content" id="drawer-whatsapp-text">
           Carregando sugestão da IA...
         </div>
 
-        <button class="btn-whatsapp-send" id="drawer-whatsapp-btn">
-          <span>📱 Enviar pelo WhatsApp</span>
+        <button class="btn-whatsapp-send" id="drawer-whatsapp-btn" type="button">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+          <span>Enviar pelo WhatsApp</span>
         </button>
       </div>
 
@@ -484,6 +762,51 @@
         </div>
       </div>
     </aside>
+
+    <!-- ================= 4. BOTTOM NAVIGATION BAR MOBILE ================= -->
+    <nav class="mobile-bottom-nav" id="admin-mobile-nav">
+      <button class="bottom-nav-item active" data-sec="sec-retencao">
+        <span class="bottom-nav-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </span>
+        <span class="bottom-nav-label">Retenção</span>
+      </button>
+      <button class="bottom-nav-item" data-sec="sec-alunos">
+        <span class="bottom-nav-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </span>
+        <span class="bottom-nav-label">Alunos</span>
+      </button>
+      <button class="bottom-nav-item" data-sec="sec-treinos">
+        <span class="bottom-nav-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m6.5 6.5 11 11"/><path d="m21 21-1-1a2.83 2.83 0 0 0 0-4l-1-1 4-4-1-1a2.83 2.83 0 0 0-4 0l-1 1-4-4 1-1a2.83 2.83 0 0 0 0-4l-1-1-4 4 1 1a2.83 2.83 0 0 0 0 4l1 1-4 4-1-1a2.83 2.83 0 0 0-4 0l-1 1 4 4 1 1a2.83 2.83 0 0 0 4 0l1-1 4 4-1 1a2.83 2.83 0 0 0 0 4Z"/>
+          </svg>
+        </span>
+        <span class="bottom-nav-label">Treinos</span>
+      </button>
+      <button class="bottom-nav-item" data-sec="sec-visao-geral">
+        <span class="bottom-nav-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>
+          </svg>
+        </span>
+        <span class="bottom-nav-label">Visão</span>
+      </button>
+      <button class="bottom-nav-item" id="bottom-nav-toggle-sidebar">
+        <span class="bottom-nav-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>
+          </svg>
+        </span>
+        <span class="bottom-nav-label">Mais</span>
+      </button>
+    </nav>
+
   </div>
 
   <script type="module" src="js/admin.js"></script>
