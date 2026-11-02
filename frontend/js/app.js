@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     headerActions.appendChild(logoutBtn);
   }
 
-  // 4. Abas de Navegação Inferior
+  // 4. Abas de Navegação Inferior Persistentes
   const navTabs = document.querySelectorAll('.nav-tab-item');
   const sections = {
     'tab-hoje': document.getElementById('section-hoje'),
@@ -97,53 +97,136 @@ document.addEventListener('DOMContentLoaded', async () => {
     'tab-coach': document.getElementById('section-coach')
   };
 
+  function ativarAbaPrincipal(targetId) {
+    if (!targetId || !sections[targetId]) return;
+
+    navTabs.forEach(t => {
+      if (t.getAttribute('data-target') === targetId) t.classList.add('active');
+      else t.classList.remove('active');
+    });
+
+    Object.values(sections).forEach(sec => {
+      if (sec) sec.style.display = 'none';
+    });
+    sections[targetId].style.display = 'block';
+    localStorage.setItem('vnfitness_active_tab', targetId);
+  }
+
   navTabs.forEach(tab => {
     tab.addEventListener('click', () => {
       const targetId = tab.getAttribute('data-target');
-      if (!targetId || !sections[targetId]) return;
-
-      navTabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-
-      Object.values(sections).forEach(sec => {
-        if (sec) sec.style.display = 'none';
-      });
-      sections[targetId].style.display = 'block';
+      ativarAbaPrincipal(targetId);
     });
   });
+
+  // Restaura a aba salva onde o aluno estava (padrão 'tab-hoje')
+  const savedActiveTab = localStorage.getItem('vnfitness_active_tab') || 'tab-hoje';
+  ativarAbaPrincipal(savedActiveTab);
 
   // 5. Seletor de Local de Treino Persistente (Casa vs Academia)
   let localTreinoSelecionado = localStorage.getItem('vnfitness_local_treino') || 'academia';
   const btnCasa = document.getElementById('opt-treino-casa');
   const btnAcademia = document.getElementById('opt-treino-academia');
 
-  if (btnCasa && btnAcademia) {
-    if (localTreinoSelecionado === 'casa') {
-      btnCasa.classList.add('selected');
-      btnAcademia.classList.remove('selected');
-    } else {
-      btnAcademia.classList.add('selected');
-      btnCasa.classList.remove('selected');
-    }
+  function aplicarLocalTreino(local) {
+    localTreinoSelecionado = local;
+    localStorage.setItem('vnfitness_local_treino', local);
 
+    if (btnCasa && btnAcademia) {
+      if (local === 'casa') {
+        btnCasa.classList.add('selected');
+        btnAcademia.classList.remove('selected');
+      } else {
+        btnAcademia.classList.add('selected');
+        btnCasa.classList.remove('selected');
+      }
+    }
+  }
+
+  aplicarLocalTreino(localTreinoSelecionado);
+
+  if (btnCasa) {
     btnCasa.addEventListener('click', () => {
-      localTreinoSelecionado = 'casa';
-      btnCasa.classList.add('selected');
-      btnAcademia.classList.remove('selected');
-      localStorage.setItem('vnfitness_local_treino', 'casa');
+      aplicarLocalTreino('casa');
       ApiClient.salvarConfiguracoesAluno({ local_treino: 'casa' }).catch(() => {});
     });
+  }
 
+  if (btnAcademia) {
     btnAcademia.addEventListener('click', () => {
-      localTreinoSelecionado = 'academia';
-      btnAcademia.classList.add('selected');
-      btnCasa.classList.remove('selected');
-      localStorage.setItem('vnfitness_local_treino', 'academia');
+      aplicarLocalTreino('academia');
       ApiClient.salvarConfiguracoesAluno({ local_treino: 'academia' }).catch(() => {});
     });
   }
 
-  // 6. Formulário e Cálculo do IMC com IA (Salva no Supabase)
+  // ==============================================================================
+  // CONTROLE E PERSISTÊNCIA DOS ANÉIS DE ATIVIDADE DIÁRIA
+  // ==============================================================================
+  const ringPercentDisplay = document.getElementById('ring-percent-display');
+  const ringCalAtual = document.getElementById('ring-cal-atual');
+  const ringCalMeta = document.getElementById('ring-cal-meta');
+  const ringMinAtual = document.getElementById('ring-min-atual');
+  const ringMinMeta = document.getElementById('ring-min-meta');
+  const ringPassosAtual = document.getElementById('ring-passos-atual');
+  const ringCircleCal = document.getElementById('ring-circle-cal');
+  const ringCircleMin = document.getElementById('ring-circle-min');
+  const ringCirclePassos = document.getElementById('ring-circle-passos');
+
+  let atividadeDiaria = {
+    calorias: 520,
+    meta_calorias: 600,
+    minutos: 45,
+    meta_minutos: 50,
+    passos: 8752,
+    porcentagem: 75
+  };
+
+  function carregarAtividadeDiaria() {
+    try {
+      const saved = localStorage.getItem('vnfitness_atividade_diaria');
+      if (saved) {
+        atividadeDiaria = { ...atividadeDiaria, ...JSON.parse(saved) };
+      }
+    } catch (e) {}
+    atualizarAtividadeDiariaUI();
+  }
+
+  function atualizarAtividadeDiariaUI() {
+    const { calorias, meta_calorias, minutos, meta_minutos, passos } = atividadeDiaria;
+
+    const pctCal = Math.min(1, calorias / (meta_calorias || 600));
+    const pctMin = Math.min(1, minutos / (meta_minutos || 50));
+    const pctPassos = Math.min(1, passos / 10000);
+    const mediaGeral = Math.round(((pctCal + pctMin + pctPassos) / 3) * 100);
+
+    atividadeDiaria.porcentagem = mediaGeral;
+
+    if (ringPercentDisplay) ringPercentDisplay.textContent = `${mediaGeral}%`;
+    if (ringCalAtual) ringCalAtual.textContent = calorias;
+    if (ringCalMeta) ringCalMeta.textContent = meta_calorias;
+    if (ringMinAtual) ringMinAtual.textContent = minutos;
+    if (ringMinMeta) ringMinMeta.textContent = meta_minutos;
+    if (ringPassosAtual) ringPassosAtual.textContent = passos.toLocaleString('pt-BR');
+
+    // Circunferências: Cal=251.2, Min=188.4, Passos=125.6
+    if (ringCircleCal) ringCircleCal.style.strokeDashoffset = String(Math.max(0, 251.2 * (1 - pctCal)));
+    if (ringCircleMin) ringCircleMin.style.strokeDashoffset = String(Math.max(0, 188.4 * (1 - pctMin)));
+    if (ringCirclePassos) ringCirclePassos.style.strokeDashoffset = String(Math.max(0, 125.6 * (1 - pctPassos)));
+
+    localStorage.setItem('vnfitness_atividade_diaria', JSON.stringify(atividadeDiaria));
+  }
+
+  function incrementarAtividadeCheckin(duracaoMin = 50, caloriasQueimadas = 520) {
+    atividadeDiaria.minutos = Math.min(atividadeDiaria.meta_minutos, atividadeDiaria.minutos + duracaoMin);
+    atividadeDiaria.calorias = Math.min(atividadeDiaria.meta_calorias, atividadeDiaria.calorias + caloriasQueimadas);
+    atividadeDiaria.passos = atividadeDiaria.passos + 1500;
+    atualizarAtividadeDiariaUI();
+    ApiClient.salvarConfiguracoesAluno({ atividade_diaria: atividadeDiaria }).catch(() => {});
+  }
+
+  carregarAtividadeDiaria();
+
+  // 6. Formulário e Cálculo do IMC com Persistência em Tempo Real
   const imcForm = document.getElementById('imc-coach-form');
   const inputPeso = document.getElementById('input-peso');
   const inputAltura = document.getElementById('input-altura');
@@ -153,6 +236,133 @@ document.addEventListener('DOMContentLoaded', async () => {
   const imcClassif = document.getElementById('imc-classif');
   const imcMetaMsg = document.getElementById('imc-meta-msg');
   const btnGerarIA = document.getElementById('btn-gerar-ia');
+
+  // Restaura dados digitados do cache local imediatamente
+  const cachedPeso = localStorage.getItem('vnfitness_input_peso');
+  const cachedAltura = localStorage.getItem('vnfitness_input_altura');
+  const cachedIdade = localStorage.getItem('vnfitness_input_idade');
+  if (cachedPeso && inputPeso) inputPeso.value = cachedPeso;
+  if (cachedAltura && inputAltura) inputAltura.value = cachedAltura;
+  if (cachedIdade && inputIdade) inputIdade.value = cachedIdade;
+
+  function calcularEAtualizarIMC(persistirNoSupabase = false) {
+    const peso = parseFloat(inputPeso?.value) || 0;
+    const altura = parseFloat(inputAltura?.value) || 0;
+    const idade = parseInt(inputIdade?.value, 10) || 0;
+
+    if (peso <= 0 || altura <= 0) return null;
+
+    localStorage.setItem('vnfitness_input_peso', String(peso));
+    localStorage.setItem('vnfitness_input_altura', String(altura));
+    if (idade > 0) localStorage.setItem('vnfitness_input_idade', String(idade));
+
+    const imc = parseFloat((peso / (altura * altura)).toFixed(2));
+    let classificacao = '';
+    if (imc < 18.5) classificacao = 'Abaixo do peso';
+    else if (imc < 25.0) classificacao = 'Peso saudável';
+    else if (imc < 30.0) classificacao = 'Sobrepeso';
+    else classificacao = 'Obesidade';
+
+    const minPeso = 18.5 * (altura * altura);
+    const maxPeso = 24.9 * (altura * altura);
+    let diffMsg = '';
+
+    if (peso > maxPeso) {
+      const p = (peso - maxPeso).toFixed(1);
+      diffMsg = `Meta recomendada: Perder aproximadamente ${p} kg para atingir a faixa de peso saudável.`;
+    } else if (peso < minPeso) {
+      const g = (minPeso - peso).toFixed(1);
+      diffMsg = `Meta recomendada: Ganhar aproximadamente ${g} kg para atingir a faixa de peso saudável.`;
+    } else {
+      diffMsg = `Seu peso está dentro da faixa saudável ideal! O foco agora é recomposição corporal.`;
+    }
+
+    if (imcVal) imcVal.textContent = imc;
+    if (imcClassif) imcClassif.textContent = classificacao;
+    if (imcMetaMsg) imcMetaMsg.textContent = diffMsg;
+    if (imcResultBanner) imcResultBanner.style.display = 'block';
+
+    // Atualiza também os cards da subaba Medidas
+    const medidaPeso = document.getElementById('medida-peso-val');
+    const medidaAltura = document.getElementById('medida-altura-val');
+    const medidaIdade = document.getElementById('medida-idade-val');
+    const medidaImc = document.getElementById('medida-imc-val');
+    const medidaClassif = document.getElementById('medida-classif-badge');
+    const medidaFaixa = document.getElementById('medida-faixa-val');
+    const medidaDiff = document.getElementById('medida-diff-val');
+    const gaugePin = document.getElementById('bio-gauge-pin');
+    const gaugeLabel = document.getElementById('gauge-status-label');
+
+    if (medidaPeso) medidaPeso.textContent = peso.toFixed(1);
+    if (medidaAltura) medidaAltura.textContent = altura.toFixed(2);
+    if (medidaIdade && idade > 0) medidaIdade.textContent = `${idade} anos`;
+    if (medidaImc) medidaImc.textContent = imc.toFixed(1);
+    if (medidaFaixa) medidaFaixa.textContent = `${Math.round(minPeso)}-${Math.round(maxPeso)}`;
+
+    const diff = (peso - maxPeso);
+    if (medidaDiff) {
+      if (diff > 0) {
+        medidaDiff.textContent = `-${diff.toFixed(1)} kg p/ ideal`;
+        medidaDiff.style.color = '#F59E0B';
+      } else if (peso < minPeso) {
+        medidaDiff.textContent = `+${(minPeso - peso).toFixed(1)} kg p/ ideal`;
+        medidaDiff.style.color = '#0EA5E9';
+      } else {
+        medidaDiff.textContent = `Peso Ideal Atingido! ✓`;
+        medidaDiff.style.color = '#10B981';
+      }
+    }
+
+    let percent = 50;
+    let badgeClass = 'badge-bio-warning';
+    if (imc < 18.5) {
+      percent = Math.max(8, (imc / 18.5) * 25);
+      badgeClass = 'badge-bio-warning';
+    } else if (imc < 25.0) {
+      percent = 25 + ((imc - 18.5) / 6.4) * 30;
+      badgeClass = 'badge-bio-success';
+    } else if (imc < 30.0) {
+      percent = 55 + ((imc - 25.0) / 4.9) * 25;
+      badgeClass = 'badge-bio-warning';
+    } else {
+      percent = Math.min(94, 80 + ((imc - 30.0) / 10.0) * 15);
+      badgeClass = 'badge-bio-danger';
+    }
+
+    if (medidaClassif) {
+      medidaClassif.className = `badge-bio ${badgeClass}`;
+      medidaClassif.textContent = classificacao;
+    }
+    if (gaugePin) gaugePin.style.left = `${percent}%`;
+    if (gaugeLabel) gaugeLabel.textContent = `Classificação: ${classificacao} (${imc.toFixed(1)})`;
+
+    if (persistirNoSupabase && idade > 0) {
+      ApiClient.salvarBiometriaAluno({
+        peso_kg: peso,
+        altura_m: altura,
+        idade: idade
+      }).catch(() => {});
+    }
+
+    return { imc, classificacao, minPeso, maxPeso, diff };
+  }
+
+  // Atualização em tempo real conforme o aluno digita
+  let debounceTimerBio = null;
+  [inputPeso, inputAltura, inputIdade].forEach(inp => {
+    if (inp) {
+      inp.addEventListener('input', () => {
+        calcularEAtualizarIMC(false);
+        clearTimeout(debounceTimerBio);
+        debounceTimerBio = setTimeout(() => {
+          calcularEAtualizarIMC(true);
+        }, 800);
+      });
+    }
+  });
+
+  // Calcula imediatamente com os dados disponíveis
+  calcularEAtualizarIMC(false);
 
   if (imcForm) {
     imcForm.addEventListener('submit', async (e) => {
@@ -166,45 +376,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
 
-      // Cálculo local do IMC
-      const imc = parseFloat((peso / (altura * altura)).toFixed(2));
-      let classificacao = '';
-      if (imc < 18.5) classificacao = 'Abaixo do peso';
-      else if (imc < 25.0) classificacao = 'Peso saudável';
-      else if (imc < 30.0) classificacao = 'Sobrepeso';
-      else classificacao = 'Obesidade';
-
-      const minPeso = 18.5 * (altura * altura);
-      const maxPeso = 24.9 * (altura * altura);
-      let diffMsg = '';
-
-      if (peso > maxPeso) {
-        const p = (peso - maxPeso).toFixed(1);
-        diffMsg = `Meta recomendada: Perder aproximadamente ${p} kg para atingir a faixa de peso saudável.`;
-      } else if (peso < minPeso) {
-        const g = (minPeso - peso).toFixed(1);
-        diffMsg = `Meta recomendada: Ganhar aproximadamente ${g} kg para atingir a faixa de peso saudável.`;
-      } else {
-        diffMsg = `Seu peso está dentro da faixa saudável ideal! O foco agora é recomposição corporal.`;
-      }
-
-      imcVal.textContent = imc;
-      imcClassif.textContent = classificacao;
-      imcMetaMsg.textContent = diffMsg;
-      imcResultBanner.style.display = 'block';
-
-      // Salva os dados biométricos persistentemente no Supabase
-      ApiClient.salvarBiometriaAluno({
-        peso_kg: peso,
-        altura_m: altura,
-        idade: idade
-      }).catch(errBio => console.warn('Aviso ao persistir biometria:', errBio));
+      calcularEAtualizarIMC(true);
 
       // Chamar Agente Coach IA (Backend + Gemini + Supabase)
       btnGerarIA.disabled = true;
       btnGerarIA.innerHTML = '<span style="display: flex; align-items: center; justify-content: center; gap: 8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/></svg> Coach IA Gerando Treino, Dieta & Evolução...</span>';
 
       try {
+        const maxPeso = 24.9 * (altura * altura);
         const res = await ApiClient.gerarPlanoCoach({
           peso_kg: peso,
           altura_m: altura,
@@ -224,13 +403,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         mostrarNotificacaoToast({
           titulo: '✨ Treino, Dieta & Evolução Prontos!',
           mensagem: `Seu plano para ${localTreinoSelecionado === 'casa' ? 'Em Casa' : 'Na Academia'} foi gerado pela IA e salvo no Supabase.`,
-          acaoTreino: () => document.querySelector('[data-target="tab-treino"]').click(),
-          acaoEvolucao: () => document.querySelector('[data-target="tab-evolucao"]').click()
+          acaoTreino: () => ativarAbaPrincipal('tab-treino'),
+          acaoEvolucao: () => ativarAbaPrincipal('tab-evolucao')
         });
 
         // Alterna suavemente para a aba de treino
         setTimeout(() => {
-          document.querySelector('[data-target="tab-treino"]').click();
+          ativarAbaPrincipal('tab-treino');
         }, 1200);
 
       } catch (err) {
@@ -245,7 +424,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // ==============================================================================
-  // CONTROLE DAS SUB-ABAS DA EVOLUÇÃO (CARGA / FREQUÊNCIA / MEDIDAS)
+  // CONTROLE DAS SUB-ABAS DA EVOLUÇÃO (CARGA / FREQUÊNCIA / MEDIDAS) PERSISTENTE
   // ==============================================================================
   const subtabBtns = document.querySelectorAll('.subtab-btn[data-sub]');
   const subtabPanels = document.querySelectorAll('.subtab-panel');
@@ -264,8 +443,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const activePanel = document.getElementById(targetSubId);
       if (activePanel) activePanel.style.display = 'block';
+      localStorage.setItem('vnfitness_active_subtab', targetSubId);
     });
   });
+
+  // Restaura sub-aba de evolução salva
+  const savedSubtab = localStorage.getItem('vnfitness_active_subtab');
+  if (savedSubtab) {
+    const targetSubBtn = document.querySelector(`.subtab-btn[data-sub="${savedSubtab}"]`);
+    if (targetSubBtn) targetSubBtn.click();
+  }
 
   // Botão de Refresh dos dados de evolução
   const btnRefreshEvolucao = document.getElementById('btn-refresh-evolucao');
@@ -386,6 +573,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (modalIntensidade) modalIntensidade.textContent = `Nível ${res?.checkin?.intensidade || 5}/5 (Alta Intensidade)`;
 
         if (checkinModal) checkinModal.style.display = 'flex';
+
+        // Incrementa e salva os anéis de atividade diária
+        incrementarAtividadeCheckin(res?.checkin?.duracao_min || 50, 520);
 
         // Atualiza a evolução e o heatmap
         carregarEvolucao();
@@ -955,13 +1145,44 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   // ==============================================================================
-  // 9. CHAT CONVERSACIONAL INTELIGENTE DO COACH IA (GEMINI & MCP SUPABASE)
+  // 9. CHAT CONVERSACIONAL INTELIGENTE DO COACH IA (MENSAGENS PERSISTENTES)
   // ==============================================================================
   const chatForm = document.getElementById('coach-chat-form');
   const chatInput = document.getElementById('coach-chat-input');
   const chatMessages = document.getElementById('coach-chat-messages');
   const chatSendBtn = document.getElementById('coach-chat-send');
   const chipButtons = document.querySelectorAll('.chat-chip-btn');
+  const chatHistoryKey = 'vnfitness_coach_chat_' + (user?.id || 'guest');
+
+  function carregarHistoricoChat() {
+    if (!chatMessages) return;
+    try {
+      const historico = JSON.parse(localStorage.getItem(chatHistoryKey) || '[]');
+      if (historico.length > 0) {
+        chatMessages.innerHTML = '';
+        historico.forEach(item => {
+          const msgDiv = document.createElement('div');
+          msgDiv.className = `chat-msg ${item.tipo === 'user' ? 'chat-msg-user' : 'chat-msg-coach'}`;
+          msgDiv.innerHTML = item.tipo === 'user' ? `<p>${escapeHtml(item.texto)}</p>` : formatMarkdown(item.texto);
+          chatMessages.appendChild(msgDiv);
+        });
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+    } catch (e) {
+      console.warn('Erro ao carregar histórico de chat:', e);
+    }
+  }
+
+  function salvarMensagemNoHistorico(tipo, texto) {
+    try {
+      const historico = JSON.parse(localStorage.getItem(chatHistoryKey) || '[]');
+      historico.push({ tipo, texto, timestamp: new Date().toISOString() });
+      if (historico.length > 50) historico.shift();
+      localStorage.setItem(chatHistoryKey, JSON.stringify(historico));
+    } catch (e) {}
+  }
+
+  carregarHistoricoChat();
 
   chipButtons.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -985,6 +1206,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   async function enviarMensagemCoach(texto) {
     if (!chatMessages) return;
+
+    // Salva a mensagem do usuário no histórico permanente
+    salvarMensagemNoHistorico('user', texto);
 
     // Adiciona a mensagem do usuário
     const userMsgElem = document.createElement('div');
@@ -1014,6 +1238,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       typingElem.remove();
 
+      salvarMensagemNoHistorico('coach', respostaIA);
+
       const coachMsgElem = document.createElement('div');
       coachMsgElem.className = 'chat-msg chat-msg-coach';
       coachMsgElem.innerHTML = formatMarkdown(respostaIA);
@@ -1021,6 +1247,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       chatMessages.scrollTop = chatMessages.scrollHeight;
     } catch (err) {
       typingElem.remove();
+      const fallbackTxt = `Analisando seus dados: sua consistência na **Remada curvada (58 kg)** e histórico no Supabase apontam para uma ótima adaptação neuromuscular. Para a próxima sessão, busque 1 repetição a mais antes de aumentar a carga!`;
+
+      salvarMensagemNoHistorico('coach', fallbackTxt);
+
       const errElem = document.createElement('div');
       errElem.className = 'chat-msg chat-msg-coach';
       errElem.innerHTML = `

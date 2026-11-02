@@ -254,26 +254,44 @@ export class UserController {
             return res.status(500).json({ error: 'Erro ao buscar configurações do aluno', details: error });
         }
     }
-    // Salvar configurações/preferências do aluno
+    // Salvar configurações/preferências do aluno com mesclagem inteligente
     static async salvarConfiguracoes(req, res) {
         try {
             const usuarioId = req.user?.id;
-            const { nome_completo, telefone, tema = 'dark', local_treino = 'academia', objetivo = 'Hipertrofia e Força', meta_semanal = 3, notificacoes = true } = req.body;
+            if (!usuarioId) {
+                return res.status(401).json({ error: 'Usuário não autenticado' });
+            }
+            // Busca preferências existentes para não sobrescrever dados não alterados
+            const { data: usuarioAtual } = await supabaseAdmin
+                .from('usuarios')
+                .select('preferencias, nome_completo, telefone')
+                .eq('id', usuarioId)
+                .single();
+            const prefsExistentes = usuarioAtual?.preferencias || {};
             const novasPrefs = {
-                tema,
-                local_treino,
-                objetivo,
-                meta_semanal: Number(meta_semanal) || 3,
-                notificacoes: Boolean(notificacoes)
+                tema: 'dark',
+                local_treino: 'academia',
+                objetivo: 'Hipertrofia e Força',
+                meta_semanal: 3,
+                notificacoes: true,
+                ...prefsExistentes,
+                ...(req.body.tema !== undefined ? { tema: req.body.tema } : {}),
+                ...(req.body.local_treino !== undefined ? { local_treino: req.body.local_treino } : {}),
+                ...(req.body.objetivo !== undefined ? { objetivo: req.body.objetivo } : {}),
+                ...(req.body.meta_semanal !== undefined ? { meta_semanal: Number(req.body.meta_semanal) } : {}),
+                ...(req.body.notificacoes !== undefined ? { notificacoes: Boolean(req.body.notificacoes) } : {}),
+                ...(req.body.atividade_diaria !== undefined ? { atividade_diaria: req.body.atividade_diaria } : {})
             };
             const updateData = {
                 preferencias: novasPrefs,
                 atualizado_em: new Date().toISOString()
             };
-            if (nome_completo)
-                updateData.nome_completo = nome_completo.trim();
-            if (telefone !== undefined)
-                updateData.telefone = telefone.trim();
+            if (req.body.nome_completo !== undefined && req.body.nome_completo.trim()) {
+                updateData.nome_completo = req.body.nome_completo.trim();
+            }
+            if (req.body.telefone !== undefined) {
+                updateData.telefone = req.body.telefone.trim();
+            }
             const { data, error } = await supabaseAdmin
                 .from('usuarios')
                 .update(updateData)

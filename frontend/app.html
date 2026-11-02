@@ -369,31 +369,31 @@
           <svg class="rings-svg" viewBox="0 0 100 100">
             <!-- Anel Calorias -->
             <circle class="ring-bg" cx="50" cy="50" r="40" stroke-width="8" fill="none"/>
-            <circle cx="50" cy="50" r="40" stroke="#FF5500" stroke-width="8" stroke-dasharray="251.2" stroke-dashoffset="60" stroke-linecap="round" fill="none"/>
+            <circle id="ring-circle-cal" cx="50" cy="50" r="40" stroke="#FF5500" stroke-width="8" stroke-dasharray="251.2" stroke-dashoffset="60" stroke-linecap="round" fill="none"/>
             <!-- Anel Minutos -->
             <circle class="ring-bg" cx="50" cy="50" r="30" stroke-width="8" fill="none"/>
-            <circle cx="50" cy="50" r="30" stroke="#10B981" stroke-width="8" stroke-dasharray="188.4" stroke-dashoffset="40" stroke-linecap="round" fill="none"/>
+            <circle id="ring-circle-min" cx="50" cy="50" r="30" stroke="#10B981" stroke-width="8" stroke-dasharray="188.4" stroke-dashoffset="40" stroke-linecap="round" fill="none"/>
             <!-- Anel Passos -->
             <circle class="ring-bg" cx="50" cy="50" r="20" stroke-width="8" fill="none"/>
-            <circle cx="50" cy="50" r="20" stroke="#0EA5E9" stroke-width="8" stroke-dasharray="125.6" stroke-dashoffset="25" stroke-linecap="round" fill="none"/>
+            <circle id="ring-circle-passos" cx="50" cy="50" r="20" stroke="#0EA5E9" stroke-width="8" stroke-dasharray="125.6" stroke-dashoffset="25" stroke-linecap="round" fill="none"/>
           </svg>
           <div class="ring-center-stat">
-            <span class="ring-percent">75%</span>
+            <span class="ring-percent" id="ring-percent-display">75%</span>
           </div>
         </div>
 
         <div class="rings-legend">
           <div class="legend-item">
             <span class="legend-dot" style="background: #FF5500;"></span>
-            <span><b>520</b> / 600 kcal</span>
+            <span><b id="ring-cal-atual">520</b> / <span id="ring-cal-meta">600</span> kcal</span>
           </div>
           <div class="legend-item">
             <span class="legend-dot" style="background: #10B981;"></span>
-            <span><b>45</b> / 50 min</span>
+            <span><b id="ring-min-atual">45</b> / <span id="ring-min-meta">50</span> min</span>
           </div>
           <div class="legend-item">
             <span class="legend-dot" style="background: #0EA5E9;"></span>
-            <span><b>8.752</b> passos</span>
+            <span><b id="ring-passos-atual">8.752</b> passos</span>
           </div>
         </div>
       </div>
@@ -412,15 +412,15 @@
           <div class="inputs-row">
             <div class="input-box">
               <label for="input-peso">PESO (KG)</label>
-              <input type="number" step="0.1" id="input-peso" placeholder="78.5" required value="78.5">
+              <input type="number" step="0.1" id="input-peso" placeholder="83" required value="83">
             </div>
             <div class="input-box">
               <label for="input-altura">ALTURA (M)</label>
-              <input type="number" step="0.01" id="input-altura" placeholder="1.75" required value="1.75">
+              <input type="number" step="0.01" id="input-altura" placeholder="1.78" required value="1.78">
             </div>
             <div class="input-box">
               <label for="input-idade">IDADE</label>
-              <input type="number" id="input-idade" placeholder="26" required value="26">
+              <input type="number" id="input-idade" placeholder="28" required value="28">
             </div>
           </div>
 

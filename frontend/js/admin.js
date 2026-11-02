@@ -121,6 +121,9 @@ function configurarNavegacaoMenus() {
     // Fecha sidebar se estiver aberta no mobile
     fecharSidebarMobile();
 
+    // Salva a seção ativa para persistência total
+    localStorage.setItem('vnfitness_admin_active_sec', targetSecId);
+
     // Rola suavemente ao topo
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -138,6 +141,12 @@ function configurarNavegacaoMenus() {
       ativarSecao(btn.getAttribute('data-sec'));
     });
   });
+
+  // Restaura a seção do admin previamente ativa
+  const savedAdminSec = localStorage.getItem('vnfitness_admin_active_sec');
+  if (savedAdminSec && document.getElementById(savedAdminSec)) {
+    ativarSecao(savedAdminSec);
+  }
 }
 
 // ==============================================================================
@@ -435,14 +444,26 @@ function carregarTabelaRetencao(filtro = 'all') {
     }
   });
 
-  // Filtros de pílula da tabela
+  // Filtros de pílula da tabela com persistência
   document.querySelectorAll('.filter-pill-btn[data-filter]').forEach(btn => {
     btn.onclick = () => {
+      const f = btn.getAttribute('data-filter');
       document.querySelectorAll('.filter-pill-btn[data-filter]').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      carregarTabelaRetencao(btn.getAttribute('data-filter'));
+      localStorage.setItem('vnfitness_admin_retencao_filtro', f);
+      carregarTabelaRetencao(f);
     };
   });
+
+  // Restaura filtro de retenção salvo
+  const savedRetencaoFiltro = localStorage.getItem('vnfitness_admin_retencao_filtro');
+  if (savedRetencaoFiltro) {
+    const savedBtn = document.querySelector(`.filter-pill-btn[data-filter="${savedRetencaoFiltro}"]`);
+    if (savedBtn) {
+      document.querySelectorAll('.filter-pill-btn[data-filter]').forEach(b => b.classList.remove('active'));
+      savedBtn.classList.add('active');
+    }
+  }
 }
 
 function abrirDetalhesAluno(aluno, isUserClick = false) {
@@ -633,17 +654,28 @@ async function carregarListaAlunos(filtro = 'todos') {
   }
 }
 
-// Filtros da aba de alunos
+// Filtros da aba de alunos com persistência
 ['todos', 'pendentes', 'aprovados', 'inativos'].forEach(f => {
   const btn = document.getElementById(`filter-alunos-${f}`);
   if (btn) {
     btn.onclick = () => {
       document.querySelectorAll('#sec-alunos .filter-pill-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      localStorage.setItem('vnfitness_admin_alunos_filtro', f);
       carregarListaAlunos(f === 'todos' ? 'todos' : f.slice(0, -1)); // pendente, aprovado, inativo
     };
   }
 });
+
+// Restaura o filtro de alunos salvo
+const savedAlunosFiltro = localStorage.getItem('vnfitness_admin_alunos_filtro');
+if (savedAlunosFiltro) {
+  const savedBtn = document.getElementById(`filter-alunos-${savedAlunosFiltro}`);
+  if (savedBtn) {
+    document.querySelectorAll('#sec-alunos .filter-pill-btn').forEach(b => b.classList.remove('active'));
+    savedBtn.classList.add('active');
+  }
+}
 
 // ==============================================================================
 // 4. PROFESSORES (Supabase)
