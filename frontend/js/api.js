@@ -132,6 +132,25 @@ export const ApiClient = {
     });
   },
 
+  async interagirCoach(mensagem) {
+    return this.request('/coach/chat', {
+      method: 'POST',
+      body: JSON.stringify({ mensagem })
+    });
+  },
+
+  async chamarMcp(method, params = {}) {
+    return this.request('/mcp', {
+      method: 'POST',
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: Date.now(),
+        method,
+        params
+      })
+    });
+  },
+
   // Admin
   async getMetricasAdmin() {
     return this.request('/admin/metricas-dashboard');

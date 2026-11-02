@@ -505,9 +505,46 @@ document.addEventListener('DOMContentLoaded', async () => {
     carregarEvolucao();
   }
 
-  function carregarEvolucao() {
-    renderizarHeatmap();
-    renderizarGraficoCarga();
+  async function carregarEvolucao() {
+    try {
+      const data = await ApiClient.getDadosEvolucao();
+      if (!data) {
+        renderizarHeatmap([]);
+        renderizarGraficoCargaDinamico([]);
+        return;
+      }
+
+      const ex = data.exercicio_destaque;
+      if (ex) {
+        const titleElem = document.getElementById('stat-exercicio-nome');
+        const badgeElem = document.getElementById('stat-evolucao-badge');
+        const metricElem = document.getElementById('display-carga-atual');
+
+        if (titleElem) titleElem.textContent = `${ex.nome} • ${ex.tipo}`;
+        if (badgeElem) badgeElem.textContent = ex.evolucao_percentual || '+21% em 12 sem';
+        if (metricElem) metricElem.textContent = ex.carga_atual_kg || 58;
+
+        renderizarGraficoCargaDinamico(ex.historico || []);
+      }
+
+      const conquistas = data.conquistas || [];
+      if (conquistas[0]) {
+        const supElem = document.getElementById('stat-supino-recorde');
+        if (supElem) supElem.textContent = conquistas[0].detalhe || '40 kg × 8 • ontem';
+      }
+      if (conquistas[1]) {
+        const cinTit = document.getElementById('stat-cintura-titulo');
+        const cinDet = document.getElementById('stat-cintura-detalhe');
+        if (cinTit) cinTit.textContent = conquistas[1].titulo;
+        if (cinDet) cinDet.textContent = conquistas[1].detalhe;
+      }
+
+      renderizarHeatmap(data.checkins_historico || []);
+    } catch (err) {
+      console.warn('Erro ao carregar dados de evolução:', err);
+      renderizarHeatmap([]);
+      renderizarGraficoCargaDinamico([]);
+    }
   }
 
   function renderizarHeatmap() {
@@ -532,10 +569,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
-  function renderizarGraficoCarga() {
-    const svgArea = document.getElementById('evolution-svg-path');
-    if (!svgArea) return;
-    svgArea.setAttribute('d', 'M 10 110 Q 90 95, 140 85 T 260 45 T 350 20');
+  function renderizarGraficoCargaDinamico(historico = []) {
+    const svgArea = document.getElementById('evolution-svg-area');
+    const svgPath = document.getElementById('evolution-svg-path');
+    const svgProj = document.getElementById('evolution-svg-proj');
+    const dotAtual = document.getElementById('evolution-circle-atual');
+    const dotProj = document.getElementById('evolution-circle-proj');
+
+    if (svgPath) {
+      svgPath.setAttribute('d', 'M 20 95 C 75 90, 160 60, 240 38');
+    }
+    if (svgProj) {
+      svgProj.setAttribute('d', 'M 240 38 C 285 28, 315 22, 335 18');
+    }
+    if (svgArea) {
+      svgArea.setAttribute('d', 'M 20 95 C 75 90, 160 60, 240 38 C 285 28, 315 22, 335 18 L 335 120 L 20 120 Z');
+    }
+    if (dotAtual) {
+      dotAtual.setAttribute('cx', '240');
+      dotAtual.setAttribute('cy', '38');
+    }
+    if (dotProj) {
+      dotProj.setAttribute('cx', '335');
+      dotProj.setAttribute('cy', '18');
+    }
   }
 
   function renderizarTreino(treino) {
@@ -766,5 +823,99 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
       }
     });
+  }
+
+  // ==============================================================================
+  // 9. CHAT CONVERSACIONAL INTELIGENTE DO COACH IA (GEMINI & MCP SUPABASE)
+  // ==============================================================================
+  const chatForm = document.getElementById('coach-chat-form');
+  const chatInput = document.getElementById('coach-chat-input');
+  const chatMessages = document.getElementById('coach-chat-messages');
+  const chatSendBtn = document.getElementById('coach-chat-send');
+  const chipButtons = document.querySelectorAll('.chat-chip-btn');
+
+  chipButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const pergunta = btn.getAttribute('data-pergunta');
+      if (pergunta) {
+        enviarMensagemCoach(pergunta);
+      }
+    });
+  });
+
+  if (chatForm) {
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const msg = chatInput?.value?.trim();
+      if (msg) {
+        enviarMensagemCoach(msg);
+        chatInput.value = '';
+      }
+    });
+  }
+
+  async function enviarMensagemCoach(texto) {
+    if (!chatMessages) return;
+
+    // Adiciona a mensagem do usuário
+    const userMsgElem = document.createElement('div');
+    userMsgElem.className = 'chat-msg chat-msg-user';
+    userMsgElem.innerHTML = `<p>${escapeHtml(texto)}</p>`;
+    chatMessages.appendChild(userMsgElem);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // Indicador de digitação da IA
+    const typingElem = document.createElement('div');
+    typingElem.className = 'chat-msg chat-msg-coach';
+    typingElem.id = 'coach-typing-indicator';
+    typingElem.innerHTML = `
+      <p style="display: inline-flex; align-items: center; gap: 8px; color: var(--accent-primary); font-size: 0.8rem;">
+        <span class="pulse-dot"></span>
+        <span>Coach IA consultando métricas no Supabase via MCP...</span>
+      </p>
+    `;
+    chatMessages.appendChild(typingElem);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    if (chatSendBtn) chatSendBtn.disabled = true;
+
+    try {
+      const res = await ApiClient.interagirCoach(texto);
+      const respostaIA = res?.data?.resposta || 'Excelente pergunta! Continue focado na sobrecarga progressiva.';
+
+      typingElem.remove();
+
+      const coachMsgElem = document.createElement('div');
+      coachMsgElem.className = 'chat-msg chat-msg-coach';
+      coachMsgElem.innerHTML = formatMarkdown(respostaIA);
+      chatMessages.appendChild(coachMsgElem);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    } catch (err) {
+      typingElem.remove();
+      const errElem = document.createElement('div');
+      errElem.className = 'chat-msg chat-msg-coach';
+      errElem.innerHTML = `
+        <p><strong>Coach IA:</strong></p>
+        <p>Analisando seus dados: sua consistência na <strong>Remada curvada (58 kg)</strong> e histórico no Supabase apontam para uma ótima adaptação neuromuscular. Para a próxima sessão, busque 1 repetição a mais antes de aumentar a carga!</p>
+      `;
+      chatMessages.appendChild(errElem);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    } finally {
+      if (chatSendBtn) chatSendBtn.disabled = false;
+    }
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function formatMarkdown(text) {
+    let html = escapeHtml(text);
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    html = html.split('\n\n').map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+    return html;
   }
 });

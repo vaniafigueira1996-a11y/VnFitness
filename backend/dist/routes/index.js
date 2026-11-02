@@ -174,6 +174,9 @@ routes.post('/user/checkin', requireAuth, requireApprovedUser, UserController.re
 routes.get('/user/evolucao', requireAuth, requireApprovedUser, UserController.obterDadosEvolucao);
 // Endpoint principal do Coach IA
 routes.post('/coach/gerar-plano', requireAuth, requireApprovedUser, CoachIAController.calcularEGerarPlano);
+routes.post('/coach/chat', requireAuth, requireApprovedUser, CoachIAController.interagirChat);
+// Endpoint Model Context Protocol (MCP) JSON-RPC 2.0 integrado com Supabase
+routes.post('/mcp', requireAuth, CoachIAController.endpointMcp);
 // ==============================================================================
 // 3. ROTAS DO PAINEL ADMINISTRATIVO FORJA (CRUD de Usuários com Supabase)
 // ==============================================================================

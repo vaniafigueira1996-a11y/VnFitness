@@ -1,9 +1,48 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthenticatedRequest } from '../middleware/authMiddleware.js';
 import { GeminiCoachService } from '../services/geminiCoachService.js';
+import { VnFitnessMcpService } from '../mcp/vnfitnessMcp.js';
 import { supabaseAdmin } from '../config/supabase.js';
 
 export class CoachIAController {
+  // Chat conversacional com o Coach IA
+  static async interagirChat(req: AuthenticatedRequest, res: Response) {
+    try {
+      const usuarioId = req.user?.id;
+      const { mensagem } = req.body;
+
+      if (!mensagem || typeof mensagem !== 'string' || !mensagem.trim()) {
+        return res.status(400).json({ error: 'Mensagem é obrigatória para interagir com o Coach IA.' });
+      }
+
+      const respostaCoach = await GeminiCoachService.interagirComCoach(mensagem.trim(), usuarioId || '');
+
+      return res.status(200).json({
+        success: true,
+        data: respostaCoach
+      });
+    } catch (error: any) {
+      console.error('Erro no CoachIAController.interagirChat:', error);
+      return res.status(500).json({ error: 'Erro ao processar conversa com o Coach IA', details: error?.message || error });
+    }
+  }
+
+  // Endpoint do protocolo MCP JSON-RPC 2.0 (Model Context Protocol)
+  static async endpointMcp(req: AuthenticatedRequest, res: Response) {
+    try {
+      const usuarioId = req.user?.id;
+      const response = await VnFitnessMcpService.handleJsonRpc(req.body, usuarioId);
+      return res.status(200).json(response);
+    } catch (error: any) {
+      console.error('Erro no MCP endpoint:', error);
+      return res.status(500).json({
+        jsonrpc: '2.0',
+        error: { code: -32000, message: 'Internal error executing MCP tool', details: error?.message || error }
+      });
+    }
+  }
+
+  // Geração completa de treino e dieta via IA
   static async calcularEGerarPlano(req: AuthenticatedRequest, res: Response) {
     try {
       const usuarioId = req.user?.id;
@@ -142,4 +181,3 @@ export class CoachIAController {
     }
   }
 }
-
