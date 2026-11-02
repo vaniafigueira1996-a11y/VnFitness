@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "id": "/app",
+  "name": "VnFitness — Coach IA & Treinos",
+  "short_name": "VnFitness",
+  "description": "Aplicativo de alta performance para evolução de cargas, treinos personalizados e mentoria com Coach IA.",
+  "start_url": "/app",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "background_color": "#0B0F19",
+  "theme_color": "#FF7300",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "categories": ["fitness", "health", "sports", "lifestyle"],
+  "icons": [
+    {
+      "src": "/img/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/img/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/img/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/img/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Evolução & Cargas",
+      "short_name": "Evolução",
+      "description": "Ver gráfico de evolução de carga e previsões da IA",
+      "url": "/app#tab-evolucao",
+      "icons": [{ "src": "/img/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Treino Personalizado",
+      "short_name": "Treino",
+      "description": "Acessar ficha de exercícios atualizada",
+      "url": "/app#tab-treino",
+      "icons": [{ "src": "/img/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Coach IA",
+      "short_name": "Coach IA",
+      "description": "Consultar mentor esportivo e nutricional inteligente",
+      "url": "/app#tab-coach",
+      "icons": [{ "src": "/img/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Painel Administrativo",
+      "short_name": "Admin",
+      "description": "Gestão de alunos e retenção",
+      "url": "/admin",
+      "icons": [{ "src": "/img/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

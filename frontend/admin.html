@@ -4,6 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>VnFitness — Painel Administrativo de Gestão & IA</title>
+
+  <!-- PWA Meta Tags & Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#FF7300">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="VnFitness Admin">
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="/img/icon-192.png">
+  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/admin.css">
 </head>
@@ -236,6 +247,14 @@
               <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
               <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
             </svg>
+          </button>
+          <button class="btn btn-secondary pwa-install-trigger" id="btn-pwa-install" style="font-size: 0.82rem; padding: 9px 14px; display: none; align-items: center; gap: 6px; color: #FF7300; border-color: rgba(255, 115, 0, 0.4);" title="Instalar VnFitness no Computador ou Tablet">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <span>Instalar App</span>
           </button>
           <a href="/app.html" class="btn btn-secondary topbar-app-link" style="font-size: 0.82rem; padding: 9px 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;" title="Abrir Visão do Aluno">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -998,6 +1017,7 @@
 
   </div>
 
+  <script src="js/pwa-install.js" defer></script>
   <script type="module" src="js/admin.js"></script>
 </body>
 </html>
