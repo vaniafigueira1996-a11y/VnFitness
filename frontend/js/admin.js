@@ -202,7 +202,7 @@ function configurarResponsividadeMobile() {
 // ==============================================================================
 // 2. RETENÇÃO E ALUNOS EM RISCO (DashBoard.jpg)
 // ==============================================================================
-const ALUNOS_FORJA = [
+let ALUNOS_FORJA = [
   {
     id: 'u1',
     nome: 'Rafael Tavares',
@@ -320,10 +320,10 @@ async function carregarMetricasDashboard() {
   try {
     const res = await ApiClient.getMetricasAdmin();
     if (res?.kpis) {
-      if (kpiAtivos) kpiAtivos.textContent = res.kpis.alunos_ativos || '1.284';
+      if (kpiAtivos) kpiAtivos.textContent = res.kpis.alunos_ativos || '1.282';
       if (kpiRisco) kpiRisco.innerHTML = `${res.kpis.risco_alto_cancelar || 14} <span style="font-size: 1rem; font-weight: 500; color: #A0A5B5;">+41 em risco médio</span>`;
       if (kpiFreq) kpiFreq.innerHTML = `${res.kpis.frequencia_media_semanal || 2.7} <span style="font-size: 1rem; font-weight: 500; color: #9CA3AF;">treinos por semana</span>`;
-      if (kpiIA) kpiIA.innerHTML = `${res.kpis.ajustes_ia_semana || 312} <span style="font-size: 1rem; font-weight: 500; color: #9CA3AF;">treinos</span>`;
+      if (kpiIA) kpiIA.innerHTML = `${res.kpis.ajustes_ia_semana || 318} <span style="font-size: 1rem; font-weight: 500; color: #9CA3AF;">treinos</span>`;
 
       // Atualiza badge de pendentes se houver
       const badgePend = document.getElementById('badge-pendentes-count');
@@ -331,16 +331,50 @@ async function carregarMetricasDashboard() {
         badgePend.style.display = 'inline-flex';
         badgePend.textContent = res.kpis.alunos_pendentes;
       }
+
+      // Conexão com os alunos de retenção vindos do Supabase
+      if (res.alunos_risco && res.alunos_risco.length > 0) {
+        ALUNOS_FORJA = res.alunos_risco.map(item => {
+          const u = item.usuarios || {};
+          const prefs = u.preferencias || {};
+          return {
+            id: item.usuario_id || u.id,
+            nome: u.nome_completo || 'Aluno VnFitness',
+            telefone: u.telefone || '11988887700',
+            matricula: item.matricula || prefs.matricula || '04821',
+            professor: item.professor || prefs.professor || 'Prof. Diego Lima',
+            plano: item.plano || prefs.plano || 'Mensal (1 ano e 2 meses)',
+            ultimo_treino: item.dias_sem_treinar ? `há ${item.dias_sem_treinar} dias` : (prefs.ultimo_treino || 'há 9 dias'),
+            frequencia_antiga: prefs.frequencia_antiga || `era ${item.frequencia_semanal_atual || 4}x por semana`,
+            motivo_ia: item.motivo_apontado || 'Mudou de horário e parou de abrir o treino',
+            score_risco: item.score_risco || 82,
+            nivel: item.nivel_risco === 'alto' ? 'high' : (item.nivel_risco === 'medio' ? 'mid' : 'low'),
+            acao: item.acao_sugerida || 'Mensagem',
+            fatores: (item.fatores && item.fatores.length > 0) ? item.fatores : (prefs.fatores || [
+              { texto: 'Caiu de 4 para 1 treino/semana', peso: '+34' },
+              { texto: 'Horário mudou de 7h para 21h', peso: '+22' },
+              { texto: 'Não abre o treino há 9 dias', peso: '+18' },
+              { texto: 'Plano mensal, sem fidelidade', peso: '-8' }
+            ]),
+            whatsapp_msg: item.mensagem_whatsapp_sugerida || 'Oi! Aqui é a equipe da VnFitness. Como podemos te ajudar no próximo treino?',
+            timeline: (item.timeline && item.timeline.length > 0) ? item.timeline : (prefs.timeline || [
+              { dot: 'red', texto: 'Hoje, 06:00: risco passou de 61 para 82' },
+              { dot: 'green', texto: '21/09: último check-in' }
+            ])
+          };
+        });
+        carregarTabelaRetencao('high');
+      }
       return;
     }
   } catch (err) {
     console.warn('Usando valores padrão:', err);
   }
 
-  if (kpiAtivos) kpiAtivos.textContent = '1.284';
+  if (kpiAtivos) kpiAtivos.textContent = '1.282';
   if (kpiRisco) kpiRisco.innerHTML = '14 <span style="font-size: 1rem; font-weight: 500; color: #A0A5B5;">+41 em risco médio</span>';
-  if (kpiFreq) kpiFreq.innerHTML = '2,7 <span style="font-size: 1rem; font-weight: 500; color: #9CA3AF;">treinos por semana</span>';
-  if (kpiIA) kpiIA.innerHTML = '312 <span style="font-size: 1rem; font-weight: 500; color: #9CA3AF;">treinos</span>';
+  if (kpiFreq) kpiFreq.innerHTML = '2.7 <span style="font-size: 1rem; font-weight: 500; color: #9CA3AF;">treinos por semana</span>';
+  if (kpiIA) kpiIA.innerHTML = '318 <span style="font-size: 1rem; font-weight: 500; color: #9CA3AF;">treinos</span>';
 }
 
 function carregarTabelaRetencao(filtro = 'all') {
@@ -450,9 +484,30 @@ function abrirDetalhesAluno(aluno, isUserClick = false) {
   }
 
   if (sendBtn) {
-    sendBtn.onclick = () => {
+    sendBtn.onclick = async () => {
       const msgEncoded = encodeURIComponent(aluno.whatsapp_msg);
-      window.open(`https://wa.me/?text=${msgEncoded}`, '_blank');
+      const telLimpo = (aluno.telefone || '').replace(/\D/g, '');
+      const url = telLimpo ? `https://wa.me/55${telLimpo}?text=${msgEncoded}` : `https://wa.me/?text=${msgEncoded}`;
+      window.open(url, '_blank');
+
+      try {
+        await fetch('/api/admin/mensagens-whatsapp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${ApiClient.getToken()}`
+          },
+          body: JSON.stringify({
+            aluno_id: aluno.id,
+            aluno_nome: aluno.nome,
+            telefone: aluno.telefone,
+            mensagem: aluno.whatsapp_msg,
+            motivo_ia: aluno.motivo_ia
+          })
+        });
+      } catch (e) {
+        console.warn('Registro de mensagem WhatsApp:', e);
+      }
     };
   }
 

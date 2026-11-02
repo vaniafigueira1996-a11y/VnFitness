@@ -198,6 +198,7 @@ routes.get('/admin/professores', requireAuth, requireAdminOnly, AdminController.
 routes.post('/admin/professores', requireAuth, requireAdminOnly, AdminController.criarProfessor);
 routes.delete('/admin/professores/:id', requireAuth, requireAdminOnly, AdminController.excluirProfessor);
 routes.get('/admin/mensagens-whatsapp', requireAuth, requireAdminOnly, AdminController.listarMensagensWhatsApp);
+routes.post('/admin/mensagens-whatsapp', requireAuth, requireAdminOnly, AdminController.criarMensagemWhatsApp);
 routes.patch('/admin/mensagens-whatsapp/:id/enviar', requireAuth, requireAdminOnly, AdminController.marcarMensagemWhatsAppEnviada);
 routes.get('/admin/checkins-recentes', requireAuth, requireAdminOnly, AdminController.listarCheckinsRecentes);
 routes.get('/admin/treinos-ia', requireAuth, requireAdminOnly, AdminController.listarTreinosIA);

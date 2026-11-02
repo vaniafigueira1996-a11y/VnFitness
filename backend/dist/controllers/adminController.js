@@ -355,6 +355,29 @@ export class AdminController {
             return res.status(500).json({ error: 'Erro ao listar mensagens de WhatsApp', details: error });
         }
     }
+    static async criarMensagemWhatsApp(req, res) {
+        try {
+            const { aluno_id, aluno_nome, telefone, mensagem, motivo_ia } = req.body;
+            const { data, error } = await supabaseAdmin
+                .from('mensagens_whatsapp')
+                .insert({
+                aluno_id: aluno_id || null,
+                aluno_nome: aluno_nome || 'Aluno',
+                telefone: telefone || null,
+                mensagem: mensagem || '',
+                motivo_ia: motivo_ia || 'Intervenção preventiva de retenção',
+                status: 'enviada'
+            })
+                .select()
+                .single();
+            if (error)
+                throw error;
+            return res.status(201).json({ success: true, mensagem: data });
+        }
+        catch (error) {
+            return res.status(500).json({ error: 'Erro ao registrar mensagem de WhatsApp', details: error });
+        }
+    }
     static async marcarMensagemWhatsAppEnviada(req, res) {
         try {
             const { id } = req.params;
