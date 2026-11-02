@@ -33,18 +33,18 @@
 }
 
 /* ==============================================================================
-   Frame do Mobile Phone (Mockup que reproduz fielmente a Imagem 2)
+   Card Container de Autenticação (Elegante, Fluido e Adaptável)
    ============================================================================== */
 .auth-phone-frame {
   position: relative;
   width: 100%;
-  max-width: 414px;
-  min-height: 820px;
-  border-radius: 46px;
+  max-width: 440px;
+  min-height: 640px;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow: 
-    0 25px 60px -15px rgba(0, 0, 0, 0.8),
-    0 0 0 10px rgba(255, 255, 255, 0.08),
-    0 0 0 11px rgba(0, 0, 0, 0.6);
+    0 24px 64px -12px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -81,59 +81,48 @@
   height: 100%;
   background: linear-gradient(
     180deg,
-    rgba(15, 23, 42, 0.15) 0%,
-    rgba(15, 23, 42, 0.0) 30%,
-    rgba(30, 27, 75, 0.25) 60%,
-    rgba(15, 23, 42, 0.5) 100%
+    rgba(15, 23, 42, 0.2) 0%,
+    rgba(15, 23, 42, 0.0) 25%,
+    rgba(30, 27, 75, 0.25) 55%,
+    rgba(15, 23, 42, 0.6) 100%
   );
   pointer-events: none;
 }
 
-/* Barra de status superior do mockup de celular */
-.auth-phone-header {
+/* Marca Superior VnFitness */
+.auth-top-brand {
   position: absolute;
-  top: 14px;
-  left: 0;
-  width: 100%;
-  padding: 0 28px;
-  display: flex;
-  justify-content: space-between;
+  top: 18px;
+  left: 20px;
+  z-index: 25;
+}
+
+.auth-brand-pill {
+  display: inline-flex;
   align-items: center;
-  font-size: 0.85rem;
-  font-weight: 700;
+  gap: 7px;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   color: #FFFFFF;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
-  z-index: 15;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
 }
 
-.phone-status-time {
-  letter-spacing: -0.2px;
-  font-weight: 700;
-}
-
-.phone-status-icon {
-  display: block;
-  color: #FFFFFF;
-  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
-}
-
-.phone-island {
-  width: 110px;
-  height: 26px;
-  background: #000000;
-  border-radius: 20px;
-  position: absolute;
-  left: 50%;
-  top: 10px;
-  transform: translateX(-50%);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+.auth-brand-pill svg {
+  color: #38bdf8;
 }
 
 /* Controles para Adicionar / Trocar foto de fundo */
 .auth-photo-controls {
   position: absolute;
-  top: 48px;
-  right: 18px;
+  top: 18px;
+  right: 20px;
   display: flex;
   gap: 8px;
   z-index: 25;
@@ -375,21 +364,102 @@
 }
 
 /* ==============================================================================
-   Responsividade Mobile
+   Responsividade Avançada & Adaptabilidade (Mobile, Tablet e Desktop)
    ============================================================================== */
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .auth-viewport {
     padding: 0;
+    align-items: stretch;
   }
+
   .auth-phone-frame {
     max-width: 100%;
     min-height: 100vh;
+    min-height: 100dvh;
     border-radius: 0;
+    border: none;
     box-shadow: none;
   }
+
+  .auth-top-brand {
+    top: 14px;
+    left: 16px;
+  }
+
+  .auth-photo-controls {
+    top: 14px;
+    right: 16px;
+  }
+
   .auth-glass-card {
-    padding: 24px 20px 28px 20px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
+    border-radius: 28px 28px 0 0;
+    padding: 22px 18px 26px 18px;
+    border-left: none;
+    border-right: none;
+  }
+
+  .auth-title {
+    font-size: 1.18rem;
+    margin-bottom: 16px;
+  }
+
+  .auth-input {
+    font-size: 0.9rem;
+    padding: 13px 42px 13px 44px;
+  }
+
+  .btn-auth-action {
+    padding: 14px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Telas muito pequenas (ex: iPhone SE / 360px) */
+@media (max-width: 380px) {
+  .auth-brand-pill {
+    padding: 5px 10px;
+    font-size: 0.76rem;
+  }
+
+  .btn-photo-action {
+    padding: 5px 10px;
+    font-size: 0.7rem;
+  }
+
+  .auth-glass-card {
+    padding: 18px 14px 22px 14px;
+  }
+}
+
+/* Dispositivos com altura reduzida (Landscape ou telas curtas) */
+@media (max-height: 720px) {
+  .auth-phone-frame {
+    min-height: auto;
+  }
+
+  .auth-glass-card {
+    padding: 18px 20px 22px 20px;
+  }
+
+  .auth-title {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+  }
+
+  .auth-mode-tabs {
+    margin-bottom: 12px;
+  }
+
+  .auth-input-group {
+    margin-bottom: 10px;
+  }
+
+  .btn-auth-action {
+    padding: 12px;
+    margin-top: 4px;
+  }
+
+  .auth-toggle-text {
+    margin-top: 10px;
   }
 }
