@@ -202,7 +202,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // Chamar Agente Coach IA (Backend + Gemini + Supabase)
       btnGerarIA.disabled = true;
-      btnGerarIA.innerHTML = '<span style="display: flex; align-items: center; justify-content: center; gap: 8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/></svg> Coach IA Gerando Treino e Dieta...</span>';
+      btnGerarIA.innerHTML = '<span style="display: flex; align-items: center; justify-content: center; gap: 8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/></svg> Coach IA Gerando Treino, Dieta & Evolução...</span>';
 
       try {
         const res = await ApiClient.gerarPlanoCoach({
@@ -213,16 +213,30 @@ document.addEventListener('DOMContentLoaded', async () => {
           objetivo: peso > maxPeso ? 'Emagrecimento e Definição' : 'Hipertrofia e Força'
         });
 
-        renderizarTreino(res.treino);
-        renderizarNutricao(res.nutricao);
-        alert('Seu treino e plano alimentar foram salvos no Supabase com sucesso pelo Coach IA!');
+        if (res.treino) renderizarTreino(res.treino);
+        if (res.nutricao) renderizarNutricao(res.nutricao);
 
-        // Leva o usuário para a aba de treino
-        document.querySelector('[data-target="tab-treino"]').click();
+        // Atualiza a evolução imediatamente a partir dos dados persistidos no Supabase
+        await carregarEvolucao();
+        await carregarDadosIniciais();
+
+        // Notificação rica ao usuário com botões diretos
+        mostrarNotificacaoToast({
+          titulo: '✨ Treino, Dieta & Evolução Prontos!',
+          mensagem: `Seu plano para ${localTreinoSelecionado === 'casa' ? 'Em Casa' : 'Na Academia'} foi gerado pela IA e salvo no Supabase.`,
+          acaoTreino: () => document.querySelector('[data-target="tab-treino"]').click(),
+          acaoEvolucao: () => document.querySelector('[data-target="tab-evolucao"]').click()
+        });
+
+        // Alterna suavemente para a aba de treino
+        setTimeout(() => {
+          document.querySelector('[data-target="tab-treino"]').click();
+        }, 1200);
+
       } catch (err) {
         console.error('Erro ao gerar com IA:', err);
         renderizarFallbackTreino(localTreinoSelecionado);
-        alert('Plano gerado e adaptado para você!');
+        alert('Plano adaptado gerado com sucesso!');
       } finally {
         btnGerarIA.disabled = false;
         btnGerarIA.innerHTML = '<span style="display: flex; align-items: center; justify-content: center; gap: 8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg> Gerar Meu Treino e Dieta com IA</span>';
@@ -519,10 +533,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         const titleElem = document.getElementById('stat-exercicio-nome');
         const badgeElem = document.getElementById('stat-evolucao-badge');
         const metricElem = document.getElementById('display-carga-atual');
+        const unidadeElem = document.getElementById('display-carga-unidade');
 
         if (titleElem) titleElem.textContent = `${ex.nome} • ${ex.tipo}`;
         if (badgeElem) badgeElem.textContent = ex.evolucao_percentual || '+21% em 12 sem';
         if (metricElem) metricElem.textContent = ex.carga_atual_kg || 58;
+        if (unidadeElem) unidadeElem.textContent = ex.unidade || 'kg';
 
         renderizarGraficoCargaDinamico(ex.historico || []);
       }
@@ -537,6 +553,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         const cinDet = document.getElementById('stat-cintura-detalhe');
         if (cinTit) cinTit.textContent = conquistas[1].titulo;
         if (cinDet) cinDet.textContent = conquistas[1].detalhe;
+      }
+
+      if (data.peso_diff_formatado) {
+        const pesoDiffElem = document.getElementById('medida-peso-diff');
+        if (pesoDiffElem) pesoDiffElem.textContent = data.peso_diff_formatado;
+      }
+
+      if (data.insight_coach_ia) {
+        const insightElem = document.getElementById('display-coach-insight');
+        if (insightElem) insightElem.innerHTML = data.insight_coach_ia;
+      }
+
+      if (data.estatisticas?.treinos_por_semana) {
+        const freqElem = document.getElementById('display-frequencia-media');
+        if (freqElem) freqElem.textContent = `${data.estatisticas.treinos_por_semana} treinos por semana`;
       }
 
       renderizarHeatmap(data.checkins_historico || []);
@@ -576,23 +607,121 @@ document.addEventListener('DOMContentLoaded', async () => {
     const dotAtual = document.getElementById('evolution-circle-atual');
     const dotProj = document.getElementById('evolution-circle-proj');
 
-    if (svgPath) {
-      svgPath.setAttribute('d', 'M 20 95 C 75 90, 160 60, 240 38');
+    if (!historico || historico.length < 3) {
+      if (svgPath) svgPath.setAttribute('d', 'M 20 95 C 75 90, 160 60, 240 38');
+      if (svgProj) svgProj.setAttribute('d', 'M 240 38 C 285 28, 315 22, 335 18');
+      if (svgArea) svgArea.setAttribute('d', 'M 20 95 C 75 90, 160 60, 240 38 C 285 28, 315 22, 335 18 L 335 120 L 20 120 Z');
+      if (dotAtual) { dotAtual.setAttribute('cx', '240'); dotAtual.setAttribute('cy', '38'); }
+      if (dotProj) { dotProj.setAttribute('cx', '335'); dotProj.setAttribute('cy', '18'); }
+      return;
     }
-    if (svgProj) {
-      svgProj.setAttribute('d', 'M 240 38 C 285 28, 315 22, 335 18');
-    }
-    if (svgArea) {
-      svgArea.setAttribute('d', 'M 20 95 C 75 90, 160 60, 240 38 C 285 28, 315 22, 335 18 L 335 120 L 20 120 Z');
-    }
+
+    const loads = historico.map(h => Number(h.carga_kg) || 0);
+    const minVal = Math.min(...loads) * 0.85;
+    const maxVal = Math.max(...loads) * 1.08;
+    const range = (maxVal - minVal) || 1;
+
+    // ViewBox: 0 0 360 120 (topo y=18, base y=96)
+    const calcY = (val) => Math.round(96 - (((val - minVal) / range) * 78));
+
+    const y0 = calcY(loads[0]);
+    const y1 = calcY(loads[1]);
+    const y2 = calcY(loads[2]);
+    const y3 = calcY(loads[3] || loads[2] * 1.07);
+
+    const x0 = 20, x1 = 120, x2 = 240, x3 = 335;
+
+    const dMain = `M ${x0} ${y0} C ${(x0 + x1) / 2} ${y0}, ${(x1 + x2) / 2} ${y2}, ${x2} ${y2}`;
+    const dProj = `M ${x2} ${y2} C ${(x2 + x3) / 2} ${y2}, ${(x2 + x3) / 2} ${y3}, ${x3} ${y3}`;
+    const dArea = `M ${x0} ${y0} C ${(x0 + x1) / 2} ${y0}, ${(x1 + x2) / 2} ${y2}, ${x2} ${y2} C ${(x2 + x3) / 2} ${y2}, ${(x2 + x3) / 2} ${y3}, ${x3} ${y3} L ${x3} 120 L ${x0} 120 Z`;
+
+    if (svgPath) svgPath.setAttribute('d', dMain);
+    if (svgProj) svgProj.setAttribute('d', dProj);
+    if (svgArea) svgArea.setAttribute('d', dArea);
     if (dotAtual) {
-      dotAtual.setAttribute('cx', '240');
-      dotAtual.setAttribute('cy', '38');
+      dotAtual.setAttribute('cx', String(x2));
+      dotAtual.setAttribute('cy', String(y2));
     }
     if (dotProj) {
-      dotProj.setAttribute('cx', '335');
-      dotProj.setAttribute('cy', '18');
+      dotProj.setAttribute('cx', String(x3));
+      dotProj.setAttribute('cy', String(y3));
     }
+  }
+
+  function mostrarNotificacaoToast({ titulo, mensagem, acaoTreino, acaoEvolucao }) {
+    let toast = document.getElementById('vn-toast-notification');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'vn-toast-notification';
+      toast.style.cssText = `
+        position: fixed;
+        bottom: 85px;
+        left: 50%;
+        transform: translateX(-50%) translateY(20px);
+        width: calc(100% - 32px);
+        max-width: 440px;
+        background: rgba(18, 18, 24, 0.96);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 115, 0, 0.4);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 115, 0, 0.2);
+        border-radius: 16px;
+        padding: 16px;
+        z-index: 9999;
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      `;
+      document.body.appendChild(toast);
+    }
+
+    toast.innerHTML = `
+      <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="width: 32px; height: 32px; border-radius: 10px; background: rgba(255, 115, 0, 0.2); display: flex; align-items: center; justify-content: center; color: #FF7300;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3Z"/></svg>
+          </div>
+          <div>
+            <strong style="color: #FFFFFF; font-size: 0.9rem; display: block;">${titulo}</strong>
+            <p style="color: var(--text-muted); font-size: 0.78rem; margin: 0; line-height: 1.3;">${mensagem}</p>
+          </div>
+        </div>
+        <button id="toast-close-btn" style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; font-size: 1rem;">✕</button>
+      </div>
+      <div style="display: flex; gap: 8px; margin-top: 4px;">
+        <button id="toast-btn-treino" style="flex: 1; padding: 9px 12px; background: #FF7300; color: #FFFFFF; font-weight: 700; font-size: 0.8rem; border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
+          Ver Treino &rarr;
+        </button>
+        <button id="toast-btn-evolucao" style="flex: 1; padding: 9px 12px; background: rgba(255,255,255,0.08); color: var(--text-primary); font-weight: 700; font-size: 0.8rem; border: 1px solid var(--border-subtle); border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px;">
+          Ver Evolução 📈
+        </button>
+      </div>
+    `;
+
+    requestAnimationFrame(() => {
+      toast.style.opacity = '1';
+      toast.style.transform = 'translateX(-50%) translateY(0)';
+    });
+
+    const closeToast = () => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(-50%) translateY(20px)';
+    };
+
+    document.getElementById('toast-close-btn')?.addEventListener('click', closeToast);
+    document.getElementById('toast-btn-treino')?.addEventListener('click', () => {
+      closeToast();
+      if (acaoTreino) acaoTreino();
+    });
+    document.getElementById('toast-btn-evolucao')?.addEventListener('click', () => {
+      closeToast();
+      if (acaoEvolucao) acaoEvolucao();
+    });
+
+    setTimeout(() => {
+      closeToast();
+    }, 6000);
   }
 
   function renderizarTreino(treino) {

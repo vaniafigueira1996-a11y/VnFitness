@@ -71,7 +71,7 @@
     </header>
 
     <!-- ================= SEÇÃO 1: EVOLUÇÃO (Tela de evolução.png) ================= -->
-    <section id="section-evolucao" style="display: block;">
+    <section id="section-evolucao" style="display: none;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
         <h1 style="font-size: 1.6rem; font-weight: 800; text-transform: uppercase;">
           Sua <span style="color: var(--accent-primary);">Evolução</span>
@@ -103,7 +103,7 @@
           </div>
 
           <div class="big-metric">
-            <span id="display-carga-atual">58</span> <span>kg</span>
+            <span id="display-carga-atual">58</span> <span id="display-carga-unidade">kg</span>
           </div>
 
           <!-- Gráfico de Área Iluminado em SVG -->
@@ -229,7 +229,7 @@
                 <span id="medida-peso-val">83.0</span><span>kg</span>
               </div>
               <div class="bio-metric-sub">
-                <span style="color: #10B981; font-weight: 700;">↓ 1.4 kg</span><span>no último mês</span>
+                <span id="medida-peso-diff" style="color: #10B981; font-weight: 700;">↓ 1.4 kg</span><span>no último mês</span>
               </div>
             </div>
 
@@ -362,7 +362,7 @@
     </section>
 
     <!-- ================= SEÇÃO 2: HOJE & CALCULADORA IMC COM IA ================= -->
-    <section id="section-hoje" style="display: none;">
+    <section id="section-hoje" style="display: block;">
       <!-- Anéis de Atividade Concêntricos (telas.jpg) -->
       <div class="activity-rings-card">
         <div class="rings-svg-wrapper">
@@ -569,7 +569,7 @@
 
     <!-- ================= BARRA DE NAVEGAÇÃO INFERIOR ================= -->
     <nav class="bottom-nav">
-      <div class="nav-tab-item" data-target="tab-hoje">
+      <div class="nav-tab-item active" data-target="tab-hoje">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
           <polyline points="9 22 9 12 15 12 15 22"/>
@@ -592,7 +592,7 @@
         </svg>
       </div>
 
-      <div class="nav-tab-item active" data-target="tab-evolucao">
+      <div class="nav-tab-item" data-target="tab-evolucao">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
           <polyline points="16 7 22 7 22 13"/>
